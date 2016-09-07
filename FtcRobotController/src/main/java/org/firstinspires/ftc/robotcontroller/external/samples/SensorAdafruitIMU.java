@@ -100,6 +100,7 @@ public class SensorAdafruitIMU extends LinearOpMode
 
         // Wait until we're told to go
         waitForStart();
+        Orientation or = imu.getAngularOrientation();
 
         // Start the logging of measured acceleration
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
