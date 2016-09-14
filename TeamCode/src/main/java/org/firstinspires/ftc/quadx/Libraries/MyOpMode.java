@@ -26,6 +26,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor motorFL;
     public static DcMotor motorFR;
 
+    public static DcMotor manip;
+    public static DcMotor flywheel;
+
     public static ColorSensor sensorRGB;
 
     public static BNO055IMU gyro;
@@ -116,14 +119,85 @@ public abstract class MyOpMode extends LinearOpMode {
             for (; currentPosition > pos; currentPosition -= .005) {
                 servo.setPosition(currentPosition);
                 wait(1);
+                idle();
             }
         }
         else {
             for (; currentPosition < pos; currentPosition += .005) {
                 servo.setPosition(currentPosition);
                 Thread.sleep(1);
+                idle();
             }
         }
+    }
+
+    public void turnPID(double pow, double deg) throws InterruptedException {turnPID(pow, deg, 5000);}
+
+    public void turnPID(double pow, double deg, int tim) throws InterruptedException {
+        wait(750);
+        resetGyro();
+
+        double inte = 0;
+        double power;
+        double der;
+        double error;
+        double previousError = deg - getGyroYaw();
+
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+        resetStartTime();
+
+        do {
+            error = deg - getGyroYaw();
+            power = pow * error * .0222;
+            inte = inte + (getRuntime() * error * .02);
+            der = (error - previousError) / getRuntime() * .02;
+
+            power += inte + der;
+
+            if (power > 1)
+                power = 1;
+            else if (power < -1) {
+                power = -1;
+            }
+
+            setMotors(power, -power);
+            resetStartTime();
+            previousError = error;
+            idle();
+
+        } while (Math.abs(power) > .15 && time.milliseconds() < tim);
+
+        stopMotors();
+    }
+
+    public void turn(double pow, double deg) throws InterruptedException {turn(pow, deg, 15000);}
+
+    public void turn(double pow, double deg, int tim) throws InterruptedException {
+
+        resetGyro();
+        wait(750);
+
+        ElapsedTime time = new ElapsedTime();
+
+        time.reset();
+
+        if (deg > 0) {
+            while (deg > getGyroYaw() && time.milliseconds() < tim) {
+                setMotors(pow, -pow);
+                idle();
+            }
+        }
+
+        else {
+            while (deg < getGyroYaw() && time.milliseconds() < tim) {
+                setMotors(-pow, pow);
+                idle();
+            }
+        }
+
+        stopMotors();
     }
 }
 
