@@ -21,6 +21,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Created by jspspike on 1/15/2016.
  */
 public abstract class MyOpMode extends LinearOpMode {
+
+    public static final int MOVEMENT_DELAY = 500;
+
     public static DcMotor motorBL;
     public static DcMotor motorBR;
     public static DcMotor motorFL;
@@ -67,7 +70,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     }
 
-    public void setMotors(double left, double right){
+    public void setMotors(double left, double right) {
         motorFL.setPower(left);
         motorBL.setPower(left);
         motorFR.setPower(-right);
@@ -91,6 +94,33 @@ public abstract class MyOpMode extends LinearOpMode {
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
+    public int getEncoderAverage() {
+        int encoders = 0;
+        int value = 0;
+
+        if (Math.abs(motorFL.getCurrentPosition()) < 2) {
+            value += Math.abs(motorFL.getCurrentPosition());
+            encoders++;
+        }
+
+        if (Math.abs(motorFR.getCurrentPosition()) < 2) {
+            value += Math.abs(motorFR.getCurrentPosition());
+            encoders++;
+        }
+
+        if (Math.abs(motorBL.getCurrentPosition()) < 2) {
+            value += Math.abs(motorBL.getCurrentPosition());
+            encoders++;
+        }
+
+        if (Math.abs(motorBR.getCurrentPosition()) < 2) {
+            value += Math.abs(motorBR.getCurrentPosition());
+            encoders++;
+        }
+
+        return value / encoders;
     }
 
     public void resetGyro() {
@@ -134,7 +164,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void turnPID(double pow, double deg) throws InterruptedException {turnPID(pow, deg, 5000);}
 
     public void turnPID(double pow, double deg, int tim) throws InterruptedException {
-        wait(750);
+        wait(MOVEMENT_DELAY);
         resetGyro();
 
         double inte = 0;
@@ -177,7 +207,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void turn(double pow, double deg, int tim) throws InterruptedException {
 
         resetGyro();
-        wait(750);
+        wait(MOVEMENT_DELAY);
 
         ElapsedTime time = new ElapsedTime();
 
@@ -196,6 +226,85 @@ public abstract class MyOpMode extends LinearOpMode {
                 idle();
             }
         }
+
+        stopMotors();
+    }
+
+    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, 1.5);}
+
+    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 4.0);}
+
+    public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException { moveTo(pow, deg, threshold, red, 15000);}
+
+    public void moveTo(double pow, double deg, double threshold, double red, int tim) throws InterruptedException {
+
+        ElapsedTime time = new ElapsedTime();
+        resetGyro();
+        resetEncoders();
+        wait(MOVEMENT_DELAY);
+
+        time.reset();
+
+        if (deg > 0) {
+            while(deg > getEncoderAverage() && time.milliseconds() < tim) {
+                if (getGyroYaw() > threshold)
+                    setMotors(pow / red, pow);
+                else if (getGyroYaw() < -threshold)
+                    setMotors(pow, pow / red);
+                else
+                    setMotors(pow, pow);
+                idle();
+            }
+        }
+
+        else {
+            while(Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
+                if (getGyroYaw() > threshold)
+                    setMotors(-pow , -pow / red);
+                else if (getGyroYaw() < -threshold)
+                    setMotors(-pow / red, -pow);
+                else
+                    setMotors(pow, pow);
+                idle();
+            }
+        }
+
+        stopMotors();
+    }
+
+    public void turnCorr(double pow, double deg) throws InterruptedException {turnCorr(pow, deg, 8000);}
+
+    public void turnCorr (double pow, double deg, int tim) throws InterruptedException {
+        double newPow;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        wait(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg > 0) {
+            while(deg > getGyroYaw() && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
+
+                if (newPow < .2)
+                    newPow = .2;
+
+                setMotors(newPow, -newPow);
+                idle();
+            }
+        }
+        else {
+            while(deg < getGyroYaw() && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - getGyroYaw()) /80);
+
+                if (newPow < .2)
+                    newPow = .2;
+                setMotors(-newPow, newPow);
+                idle();
+            }
+        }
+
 
         stopMotors();
     }
