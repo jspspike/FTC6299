@@ -48,6 +48,10 @@ public abstract class MyOpMode extends LinearOpMode {
 
         sensorRGB = hardwareMap.colorSensor.get("color");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+
+        manip = hardwareMap.dcMotor.get("manip");
+        flywheel = hardwareMap.dcMotor.get("fly");
+
         telemetry.addData("Status", "Hardware Mapped");
     }
 
@@ -305,8 +309,45 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         }
 
-
         stopMotors();
+    }
+
+    public void startFlyWheel(double desiredSpeed) {
+        Runnable flyLoop = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    wait(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                int prevEncoderVal;
+                double pow = .65;
+
+                flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                prevEncoderVal = flywheel.getCurrentPosition();
+                double speed;
+
+                while(gamepad2.a != true) {
+                    resetStartTime();
+
+                    flywheel.setPower(pow);
+                    try {
+                        idle();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    speed = flywheel.getCurrentPosition() - prevEncoderVal;
+                    prevEncoderVal = flywheel.getCurrentPosition();
+
+
+                }
+            }
+        };
     }
 }
 
