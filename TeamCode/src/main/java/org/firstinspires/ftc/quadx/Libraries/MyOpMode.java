@@ -6,12 +6,8 @@ import android.util.Log;
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -23,6 +19,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
+
+    boolean flyWheelRunning = true;
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -72,6 +70,15 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void initServos() {
 
+    }
+
+    public void delay(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        }
+        catch (Exception e) {
+
+        }
     }
 
     public void setMotors(double left, double right) {
@@ -152,14 +159,14 @@ public abstract class MyOpMode extends LinearOpMode {
         if (currentPosition - pos > 0) {
             for (; currentPosition > pos; currentPosition -= .005) {
                 servo.setPosition(currentPosition);
-                wait(1);
+                delay(1);
                 idle();
             }
         }
         else {
             for (; currentPosition < pos; currentPosition += .005) {
                 servo.setPosition(currentPosition);
-                Thread.sleep(1);
+                delay(1);
                 idle();
             }
         }
@@ -168,7 +175,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void turnPID(double pow, double deg) throws InterruptedException {turnPID(pow, deg, 5000);}
 
     public void turnPID(double pow, double deg, int tim) throws InterruptedException {
-        wait(MOVEMENT_DELAY);
+        delay(MOVEMENT_DELAY);
         resetGyro();
 
         double inte = 0;
@@ -211,7 +218,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public void turn(double pow, double deg, int tim) throws InterruptedException {
 
         resetGyro();
-        wait(MOVEMENT_DELAY);
+        delay(MOVEMENT_DELAY);
 
         ElapsedTime time = new ElapsedTime();
 
@@ -276,15 +283,17 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+
+
     public void turnCorr(double pow, double deg) throws InterruptedException {turnCorr(pow, deg, 8000);}
 
-    public void turnCorr (double pow, double deg, int tim) throws InterruptedException {
+    public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         double newPow;
 
         ElapsedTime time = new ElapsedTime();
 
         resetGyro();
-        wait(MOVEMENT_DELAY);
+        delay(MOVEMENT_DELAY);
         time.reset();
 
         if (deg > 0) {
@@ -310,14 +319,27 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
         stopMotors();
+
+        if (getGyroYaw() > deg) {
+            while (deg < getGyroYaw() && opModeIsActive()) {
+                setMotors(-pow / 3, pow / 3);
+                idle();
+            }
+        } else {
+            while (deg > getGyroYaw() && opModeIsActive()) {
+                setMotors(pow / 3, -pow / 3);
+                idle();
+            }
+        }
+        stopMotors();
     }
 
-    public void startFlyWheel(double desiredSpeed) {
+    public void flyWheel(final double desiredSpeed) {
         Runnable flyLoop = new Runnable() {
             @Override
             public void run() {
                 try {
-                    wait(300);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -329,25 +351,30 @@ public abstract class MyOpMode extends LinearOpMode {
                 flywheel.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 prevEncoderVal = flywheel.getCurrentPosition();
-                double speed;
 
-                while(gamepad2.a != true) {
+                double speed;
+                double error;
+
+                while (flyWheelRunning && opModeIsActive()) {
                     resetStartTime();
 
                     flywheel.setPower(pow);
                     try {
                         idle();
+                        delay(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
-                    speed = flywheel.getCurrentPosition() - prevEncoderVal;
+                    speed = (flywheel.getCurrentPosition() - prevEncoderVal) / getRuntime();
                     prevEncoderVal = flywheel.getCurrentPosition();
 
-
+                    error = desiredSpeed - speed;
+                    pow += error * .002;
                 }
             }
         };
+
     }
 }
 
