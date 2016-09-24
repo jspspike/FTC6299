@@ -20,7 +20,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
 
-    boolean flyWheelRunning = true;
+    public boolean flyWheelRunning = true;
 
     public static DcMotor motorBL;
     public static DcMotor motorBR;
@@ -111,22 +111,22 @@ public abstract class MyOpMode extends LinearOpMode {
         int encoders = 0;
         int value = 0;
 
-        if (Math.abs(motorFL.getCurrentPosition()) < 2) {
+        if (Math.abs(motorFL.getCurrentPosition()) > 2) {
             value += Math.abs(motorFL.getCurrentPosition());
             encoders++;
         }
 
-        if (Math.abs(motorFR.getCurrentPosition()) < 2) {
+        if (Math.abs(motorFR.getCurrentPosition()) > 2) {
             value += Math.abs(motorFR.getCurrentPosition());
             encoders++;
         }
 
-        if (Math.abs(motorBL.getCurrentPosition()) < 2) {
+        if (Math.abs(motorBL.getCurrentPosition()) > 2) {
             value += Math.abs(motorBL.getCurrentPosition());
             encoders++;
         }
 
-        if (Math.abs(motorBR.getCurrentPosition()) < 2) {
+        if (Math.abs(motorBR.getCurrentPosition()) > 2) {
             value += Math.abs(motorBR.getCurrentPosition());
             encoders++;
         }
@@ -163,12 +163,10 @@ public abstract class MyOpMode extends LinearOpMode {
                 idle();
             }
         }
-        else {
-            for (; currentPosition < pos; currentPosition += .005) {
-                servo.setPosition(currentPosition);
-                delay(1);
-                idle();
-            }
+        else for (; currentPosition < pos; currentPosition += .005) {
+            servo.setPosition(currentPosition);
+            delay(1);
+            idle();
         }
     }
 
@@ -334,15 +332,106 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public void arcTurnCorr(double pow, double deg) throws InterruptedException {arcTurnCorr(pow, deg, 6000);}
+
+    public void arcTurnCorr(double pow, double deg, int tim) throws InterruptedException {
+        double newPow;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        delay(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg > 0) {
+            while(deg > getGyroYaw() && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
+
+                if (newPow < .2)
+                    newPow = .2;
+
+                setMotors(newPow, 0);
+                idle();
+            }
+        }
+        else {
+            while(deg < getGyroYaw() && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - getGyroYaw()) /80);
+
+                if (newPow < .2)
+                    newPow = .2;
+                setMotors(0, newPow);
+                idle();
+            }
+        }
+
+        stopMotors();
+
+        if (getGyroYaw() > deg) {
+            while (deg < getGyroYaw() && opModeIsActive()) {
+                setMotors(-pow / 3, pow / 3);
+                idle();
+            }
+        } else {
+            while (deg > getGyroYaw() && opModeIsActive()) {
+                setMotors(pow / 3, -pow / 3);
+                idle();
+            }
+        }
+        stopMotors();
+    }
+
+
+
+    public void untilWhite(double pow) throws InterruptedException {untilWhite(pow, 1.5, 4, 7000);}
+
+    public void untilWhite(double pow, double threshold, double reduction, int tim) throws InterruptedException {
+
+        resetEncoders();
+        resetGyro();
+        delay(1000);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+        if (pow > 0) {
+            while (sensorRGB.alpha() < gray + 25 && time.milliseconds() < tim) {
+                if (getGyroYaw() > threshold)
+                    setMotors(pow / reduction, pow);
+                else if (getGyroYaw() < -threshold)
+                    setMotors(pow, pow / reduction);
+                else
+                    setMotors(pow, pow);
+                idle();
+            }
+        }
+
+        else {
+            while (sensorRGB.alpha() < gray + 25 && time.milliseconds() < tim) {
+                if (getGyroYaw() > threshold) {
+                    setMotors(pow, pow / reduction);
+                }
+
+                else if (getGyroYaw() < -threshold) {
+                    setMotors(pow / reduction, pow);
+                }
+
+                else {
+                    setMotors(pow, pow);
+                }
+
+                idle();
+            }
+        }
+
+        stopMotors();
+    }
+
     public void flyWheel(final double desiredSpeed) {
         Runnable flyLoop = new Runnable() {
             @Override
             public void run() {
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                delay(300);
 
                 int prevEncoderVal;
                 double pow = .65;
@@ -374,7 +463,6 @@ public abstract class MyOpMode extends LinearOpMode {
                 }
             }
         };
-
     }
 }
 
