@@ -87,16 +87,67 @@ public class Teleop extends LinearOpMode {
         telemetry.update();
 
 
-
         waitForStart();
         runtime.reset();
 
         // run until the end of the match (driver presses STOP)
+
+
+        Runnable manipulator = new Runnable() {
+            @Override
+            public void run() {
+                while (opModeIsActive()) {
+                    if (gamepad2.a) {
+                        manip.setPower(1);
+                    }
+                    else if (gamepad2.b) {
+                        manip.setPower(-1);
+                    }
+                    else{
+                        manip.setPower(0);
+                    }
+                    try {
+                        idle();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        Runnable flyWheel = new Runnable() {
+            @Override
+            public void run() {
+                while (opModeIsActive()) {
+                    if (gamepad1.a){
+                        fly.setPower(1);
+                    }
+                    else if (gamepad1.b) {
+                        fly.setPower(-1);
+                    }
+                    else {
+                        fly.setPower(0);
+                    }
+                    try {
+                        idle();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+
+
+        Thread manipThread = new Thread(manipulator);
+        manipThread.start();
+
+        Thread flyWheelThread = new Thread(flyWheel);
+        flyWheelThread.start();
+
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
 
-            if (Math.abs(gamepad1.left_stick_y)> .05 || Math.abs(gamepad1.right_stick_y)> .05) {
+            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorBL.setPower(-gamepad1.left_stick_y);
                 motorBR.setPower(gamepad1.right_stick_y);
                 motorFL.setPower(-gamepad1.left_stick_y);
@@ -108,27 +159,10 @@ public class Teleop extends LinearOpMode {
                 motorFR.setPower(0);
             }
 
-            if (gamepad1.a) {
-                manip.setPower(1);
-            } else if (gamepad1.b){
-                manip.setPower(-1);
-            } else {
-                manip.setPower(0);
-            }
-
-            if (gamepad2.a) {
-                fly.setPower(1);
-            } else if (gamepad2.b) {
-                fly.setPower(-1);
-            } else {
-                fly.setPower(0);
-            }
-
-
-
-
-
-            idle(); // Always call idle() at the bottom of your while(opModeIsActive()) loop
+            idle();
         }
+
+        }
+
     }
-}
+
