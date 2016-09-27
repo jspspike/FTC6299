@@ -30,7 +30,10 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor manip;
     public static DcMotor flywheel;
 
-    public static ColorSensor sensorRGB;
+    public static ColorSensor floorL;
+    public static ColorSensor floorR;
+    public static ColorSensor beaconL;
+    public static ColorSensor beaconR;
 
     public static BNO055IMU gyro;
     public static BNO055IMU.Parameters gyroParam;
@@ -44,7 +47,10 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        sensorRGB = hardwareMap.colorSensor.get("color");
+        floorL = hardwareMap.colorSensor.get("floorL");
+        floorR = hardwareMap.colorSensor.get("floorR");
+        beaconL = hardwareMap.colorSensor.get("beaconL");
+        beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
 
         manip = hardwareMap.dcMotor.get("manip");
@@ -53,9 +59,30 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Status", "Hardware Mapped");
     }
 
+    public void hardwareMapTroll() {
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+        floorL = hardwareMap.colorSensor.get("floorL");
+        floorR = hardwareMap.colorSensor.get("floorR");
+        beaconL = hardwareMap.colorSensor.get("beaconL");
+        beaconR = hardwareMap.colorSensor.get("beaconR");
+
+        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+
+        telemetry.addData("Status", "Hardware Mapped");
+
+    }
+
     public void initSensors() {
-        sensorRGB.enableLed(true);
-        gray = sensorRGB.alpha();
+        floorL.enableLed(true);
+        floorR.enableLed(true);
+        beaconL.enableLed(false);
+        beaconR.enableLed(false);
+
+        gray = ( floorL.alpha() + floorR.alpha() ) / 2;
 
         gyroParam = new BNO055IMU.Parameters();
         gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -395,7 +422,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (pow > 0) {
-            while (sensorRGB.alpha() < gray + 25 && time.milliseconds() < tim) {
+            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim) {
                 if (getGyroYaw() > threshold)
                     setMotors(pow / reduction, pow);
                 else if (getGyroYaw() < -threshold)
@@ -407,7 +434,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
         else {
-            while (sensorRGB.alpha() < gray + 25 && time.milliseconds() < tim) {
+            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim) {
                 if (getGyroYaw() > threshold) {
                     setMotors(pow, pow / reduction);
                 }
