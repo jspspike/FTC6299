@@ -8,6 +8,7 @@ import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -57,6 +58,7 @@ public abstract class MyOpMode extends LinearOpMode {
         flywheel = hardwareMap.dcMotor.get("fly");
 
         telemetry.addData("Status", "Hardware Mapped");
+        telemetry.update();
     }
 
     public void hardwareMapTroll() {
@@ -73,10 +75,16 @@ public abstract class MyOpMode extends LinearOpMode {
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
 
         telemetry.addData("Status", "Hardware Mapped");
+        telemetry.update();
 
     }
 
     public void initSensors() {
+        floorL.setI2cAddress(I2cAddr.create8bit(0x20));
+        floorR.setI2cAddress(I2cAddr.create8bit(0x2a));
+        beaconL.setI2cAddress(I2cAddr.create8bit(0x2c));
+        beaconR.setI2cAddress(I2cAddr.create8bit(0x2e));
+
         floorL.enableLed(true);
         floorR.enableLed(true);
         beaconL.enableLed(false);
@@ -84,15 +92,18 @@ public abstract class MyOpMode extends LinearOpMode {
 
         gray = ( floorL.alpha() + floorR.alpha() ) / 2;
 
-        gyroParam = new BNO055IMU.Parameters();
-        gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        gyroParam.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        gyroParam.calibrationData = gyro.readCalibrationData();
-        gyroParam.loggingEnabled      = true;
-        gyroParam.loggingTag          = "Gryo";
-        gyroParam.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//        gyroParam = new BNO055IMU.Parameters();
+//        gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+//        gyroParam.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        gyroParam.calibrationData = gyro.readCalibrationData();
+//        gyroParam.loggingEnabled      = true;
+//        gyroParam.loggingTag          = "Gryo";
+//        gyroParam.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//
+//        gyro.initialize(gyroParam);
 
-        gyro.initialize(gyroParam);
+        telemetry.addData("Status", "Sensors Initialized");
+        telemetry.update();
     }
 
     public void initServos() {

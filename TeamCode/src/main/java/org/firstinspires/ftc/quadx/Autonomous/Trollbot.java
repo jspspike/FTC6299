@@ -66,9 +66,11 @@ public class Trollbot extends MyOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
         hardwareMapTroll();
+        initSensors();
 
         waitForStart();
         runtime.reset();
+        
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
