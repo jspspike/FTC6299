@@ -56,10 +56,7 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
 @Autonomous(name="Trollbot", group="Testing")
 public class Trollbot extends MyOpMode {
 
-    /* Declare OpMode members. */
     private ElapsedTime runtime = new ElapsedTime();
-    // DcMotor leftMotor = null;
-    // DcMotor rightMotor = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -76,6 +73,7 @@ public class Trollbot extends MyOpMode {
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Gyro", getGyroYaw());
+            telemetry.addData("Ultra", getUltraDistance());
             telemetry.addData("floorL", floorL.alpha());
             telemetry.addData("floorR", floorR.alpha());
             telemetry.addData("beaconL", beaconL.red());

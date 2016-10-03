@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -39,8 +40,11 @@ public abstract class MyOpMode extends LinearOpMode {
     public static BNO055IMU gyro;
     public static BNO055IMU.Parameters gyroParam;
 
+    private static ModernRoboticsI2cRangeSensor ultra;
 
     public int gray;
+
+    public double ultraDistance;
 
     public void hardwareMap() {
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -53,6 +57,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconL = hardwareMap.colorSensor.get("beaconL");
         beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
 
         manip = hardwareMap.dcMotor.get("manip");
         flywheel = hardwareMap.dcMotor.get("fly");
@@ -73,6 +78,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconR = hardwareMap.colorSensor.get("beaconR");
 
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -91,6 +97,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconR.enableLed(false);
 
         gray = ( floorL.alpha() + floorR.alpha() ) / 2;
+        ultraDistance = -1;
 
 //        gyroParam = new BNO055IMU.Parameters();
 //        gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
@@ -189,6 +196,13 @@ public abstract class MyOpMode extends LinearOpMode {
     public double getGyroRoll() {
         Orientation angles = gyro.getAngularOrientation();
         return angles.thirdAngle;
+    }
+
+    public double getUltraDistance() {
+        double value = ultra.cmUltrasonic();
+        if (value != 255)
+            ultraDistance = value;
+        return ultraDistance;
     }
 
     public void setServoSlow(Servo servo, double pos) throws InterruptedException {
