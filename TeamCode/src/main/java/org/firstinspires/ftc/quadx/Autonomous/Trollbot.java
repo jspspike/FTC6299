@@ -64,21 +64,22 @@ public class Trollbot extends MyOpMode {
 
         waitForStart();
         runtime.reset();
-        
+
+        moveToRange(.4, 1000, 15);
 
         // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Gyro", getGyroYaw());
-            telemetry.addData("Ultra", getUltraDistance());
-            telemetry.addData("floorL", floorL.alpha());
-            telemetry.addData("floorR", floorR.alpha());
-            telemetry.addData("beaconL", beaconL.red());
-            telemetry.addData("beaconR", beaconR.red());
-            telemetry.update();
-
-
-            idle();
-        }
+//        while (opModeIsActive()) {
+//            telemetry.addData("Status", "Run Time: " + runtime.toString());
+//            telemetry.addData("Gyro", getGyroYaw());
+//            telemetry.addData("Ultra", getUltraDistance());
+//            telemetry.addData("floorL", floorL.alpha());
+//            telemetry.addData("floorR", floorR.alpha());
+//            telemetry.addData("beaconL", beaconL.red());
+//            telemetry.addData("beaconR", beaconR.red());
+//            telemetry.update();
+//
+//
+//            idle();
+//        }
     }
 }
