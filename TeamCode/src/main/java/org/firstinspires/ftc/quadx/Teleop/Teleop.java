@@ -106,11 +106,13 @@ public class Teleop extends LinearOpMode {
                     else{
                         manip.setPower(0);
                     }
+
                     try {
                         idle();
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                 }
             }
         };
@@ -129,7 +131,7 @@ public class Teleop extends LinearOpMode {
                     }
                     try {
                         idle();
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }

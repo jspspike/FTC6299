@@ -650,12 +650,13 @@ public abstract class MyOpMode extends LinearOpMode {
                     resetStartTime();
 
                     flywheel.setPower(pow);
+
                     try {
                         idle();
-                        delay(100);
-                    } catch (InterruptedException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    delay(100);
 
                     speed = (flywheel.getCurrentPosition() - prevEncoderVal) / getRuntime();
                     prevEncoderVal = flywheel.getCurrentPosition();
