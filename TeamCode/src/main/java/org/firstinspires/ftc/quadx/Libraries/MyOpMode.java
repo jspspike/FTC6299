@@ -102,9 +102,9 @@ public abstract class MyOpMode extends LinearOpMode {
         gray = ( floorL.alpha() + floorR.alpha() ) / 2;
         ultraDistance = -1;
 
-        gyroParam = new BNO055IMU.Parameters();
-        gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        gyroParam.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        gyroParam                     = new BNO055IMU.Parameters();
+        gyroParam.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        gyroParam.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         gyroParam.calibrationDataFile = "AdafruitIMUCalibration.json";
         gyroParam.loggingEnabled      = true;
         gyroParam.loggingTag          = "Gryo";
@@ -656,6 +656,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                     delay(100);
 
                     speed = (flywheel.getCurrentPosition() - prevEncoderVal) / getRuntime();
