@@ -52,7 +52,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Template: Linear OpMode", group="Linear Opmode")  // @Autonomous(...) is the other common choice
-@Disabled
 public class Teleop extends LinearOpMode {
 
     DcMotor motorBL;
