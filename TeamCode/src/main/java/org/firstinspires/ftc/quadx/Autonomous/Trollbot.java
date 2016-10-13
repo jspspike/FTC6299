@@ -67,7 +67,7 @@ public class Trollbot extends MyOpMode {
         waitForStart();
         runtime.reset();
 
-        moveToRange(.4, 1000, 15);
+        moveToRange(.2, 1000, 15);
 
         // run until the end of the match (driver presses STOP)
 //        while (opModeIsActive()) {
