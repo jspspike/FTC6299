@@ -32,6 +32,8 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor manip;
     public static DcMotor flywheel;
 
+    public static Servo buttonPusher;
+
     public static ColorSensor floorL;
     public static ColorSensor floorR;
     public static ColorSensor beaconL;
@@ -61,6 +63,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         manip = hardwareMap.dcMotor.get("manip");
         flywheel = hardwareMap.dcMotor.get("fly");
+
+        buttonPusher = hardwareMap.servo.get("buttonP");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -117,7 +121,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void initServos() {
-
+        buttonPusher.setPosition(.5);
     }
 
     public void delay(long milliseconds) {
@@ -629,6 +633,43 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public void pressRed() {
+        int redLeft = 0;
+
+        redLeft += beaconL.red() - beaconR.red();
+        redLeft += beaconR.blue() - beaconL.blue();
+
+        if (redLeft > 0) {
+            buttonPusher.setPosition(.75);
+            delay(1000);
+        }
+
+        else {
+            buttonPusher.setPosition(.25);
+            delay(1000);
+        }
+        buttonPusher.setPosition(.5);
+    }
+
+    public void pressBlue() {
+        int blueLeft = 0;
+
+
+        blueLeft += beaconL.blue() - beaconR.blue();
+        blueLeft += beaconR.red() - beaconL.red();
+
+        if (blueLeft > 0) {
+            buttonPusher.setPosition(.75);
+            delay(1000);
+        }
+
+        else {
+            buttonPusher.setPosition(.25);
+            delay(1000);
+        }
+        buttonPusher.setPosition(.5);
+    }
+
     public void flyWheel(final double desiredSpeed) {
         Runnable flyLoop = new Runnable() {
             @Override
@@ -665,7 +706,6 @@ public abstract class MyOpMode extends LinearOpMode {
                     error = desiredSpeed - speed;
                     pow += error * .002;
                 }
-
             }
         };
     }
