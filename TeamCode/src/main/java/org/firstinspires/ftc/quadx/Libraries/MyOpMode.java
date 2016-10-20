@@ -37,6 +37,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo buttonPusher;
     public static Servo door;
 
+
     public static ColorSensor floorL;
     public static ColorSensor floorR;
     public static ColorSensor beaconL;
@@ -70,6 +71,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         buttonPusher = hardwareMap.servo.get("buttonP");
         door = hardwareMap.servo.get("door");
+
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -661,6 +663,7 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+
     public void whiteTurn(double pow, int turns) {
         int count = 0;
 
@@ -690,7 +693,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         delay(500);
 
-
         int redLeft = 0;
 
         redLeft += beaconL.red() - beaconR.red();
@@ -698,6 +700,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (redLeft > 0) {
             buttonPusher.setPosition(1);
+
             delay(1000);
         }
 
