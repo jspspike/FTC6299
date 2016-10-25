@@ -51,35 +51,36 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Template: Linear OpMode", group="Linear Opmode")  // @Autonomous(...) is the other common choice
+@TeleOp(name="TeleOp", group="Linear Opmode")  // @Autonomous(...) is the other common choice
 public class Teleop extends LinearOpMode {
 
+    //DcMotor fly;
+    //DcMotor manip;
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    DcMotor manip;
-    DcMotor fly;
-
 
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
 
+        //fly = hardwareMap.dcMotor.get("fly");
+        //manip = hardwareMap.dcMotor.get("manip");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        manip = hardwareMap.dcMotor.get("manip");
-        fly = hardwareMap.dcMotor.get("fly");
 
+
+
+        //fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         telemetry.addData("Status", "Initialized");
@@ -91,6 +92,29 @@ public class Teleop extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
 
+
+
+        /*Runnable flyWheel = new Runnable() {
+            @Override
+            public void run() {
+                while (opModeIsActive()) {
+                    if (gamepad1.a){
+                        fly.setPower(1);
+                    }
+                    else if (gamepad1.b) {
+                        fly.setPower(-1);
+                    }
+                    else {
+                        fly.setPower(0);
+                    }
+                    try {
+                        idle();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
 
         Runnable manipulator = new Runnable() {
             @Override
@@ -115,34 +139,17 @@ public class Teleop extends LinearOpMode {
                 }
             }
         };
-        Runnable flyWheel = new Runnable() {
-            @Override
-            public void run() {
-                while (opModeIsActive()) {
-                    if (gamepad1.a){
-                        fly.setPower(1);
-                    }
-                    else if (gamepad1.b) {
-                        fly.setPower(-1);
-                    }
-                    else {
-                        fly.setPower(0);
-                    }
-                    try {
-                        idle();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
 
 
         Thread manipThread = new Thread(manipulator);
         manipThread.start();
 
+
         Thread flyWheelThread = new Thread(flyWheel);
         flyWheelThread.start();
+
+        */
+
 
         while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -163,7 +170,7 @@ public class Teleop extends LinearOpMode {
             idle();
         }
 
-        }
-
     }
+
+}
 
