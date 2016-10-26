@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @TeleOp(name="TeleOp", group="Teleop")
 public class Teleop extends LinearOpMode {
 
-    //DcMotor fly;
+    DcMotor fly;
     //DcMotor manip;
     DcMotor motorBL;
     DcMotor motorBR;
@@ -55,7 +55,7 @@ public class Teleop extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //fly = hardwareMap.dcMotor.get("fly");
+        fly = hardwareMap.dcMotor.get("fly");
         //manip = hardwareMap.dcMotor.get("manip");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
@@ -155,6 +155,12 @@ public class Teleop extends LinearOpMode {
                 motorFL.setPower(0);
                 motorFR.setPower(0);
             }
+
+            if (Math.abs(gamepad2.left_stick_y) > .05) {
+                fly.setPower(gamepad2.left_stick_y * -1);
+            }
+            else
+                fly.setPower(0);
 
             idle();
         }
