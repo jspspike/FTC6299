@@ -47,9 +47,13 @@ public class EncoderTest extends MyOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    DcMotor fly;
+    boolean isFly;
+    boolean isDrive;
+
 
     @Override
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -57,25 +61,56 @@ public class EncoderTest extends MyOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
+        fly = hardwareMap.dcMotor.get("fly");
 
         motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fly.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        isFly = false;
+        isDrive = false;
 
         waitForStart();
         runtime.reset();
 
         while (opModeIsActive()) {
-            motorFL.setPower(-1);
-            motorBL.setPower(-1);
-            motorFR.setPower(1);
-            motorBR.setPower(1);
+            if (isDrive == false && gamepad1.a) {
+                motorFL.setPower(-1);
+                motorBL.setPower(-1);
+                motorFR.setPower(1);
+                motorBR.setPower(1);
+                isDrive = true;
+                Thread.sleep(500);
+            }
+
+            if (isDrive == true && gamepad1.a) {
+                motorFL.setPower(0);
+                motorBL.setPower(0);
+                motorFR.setPower(0);
+                motorBR.setPower(0);
+                isDrive = false;
+                Thread.sleep(500);
+            }
+
+            if (isFly == false && gamepad1.x) {
+                fly.setPower(.5);
+                isFly = true;
+                Thread.sleep(500);
+            }
+
+            if (isFly == true && gamepad1.x) {
+                fly.setPower(0);
+                isFly = false;
+                Thread.sleep(500);
+            }
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -83,6 +118,7 @@ public class EncoderTest extends MyOpMode {
             telemetry.addData("motorBL", motorBL.getCurrentPosition());
             telemetry.addData("motorFR", motorFR.getCurrentPosition());
             telemetry.addData("motorBR", motorBR.getCurrentPosition());
+            telemetry.addData("fly", fly.getCurrentPosition());
             telemetry.update();
 
             idle();
