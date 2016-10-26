@@ -50,6 +50,8 @@ public class Teleop extends LinearOpMode {
     DcMotor motorFL;
     DcMotor motorFR;
 
+    double flyPow = 0.0;
+
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -156,11 +158,23 @@ public class Teleop extends LinearOpMode {
                 motorFR.setPower(0);
             }
 
-            if (Math.abs(gamepad2.left_stick_y) > .05) {
-                fly.setPower(gamepad2.left_stick_y * -1);
+            if (gamepad2.a) {
+                flyPow = -1;
             }
-            else
-                fly.setPower(0);
+
+            else if (gamepad2.b) {
+                flyPow = -.75;
+            }
+
+            else if (gamepad2.x) {
+                flyPow = -.5;
+            }
+
+            else if (gamepad2.y) {
+                flyPow = 0;
+            }
+
+            fly.setPower(flyPow);
 
             idle();
         }
