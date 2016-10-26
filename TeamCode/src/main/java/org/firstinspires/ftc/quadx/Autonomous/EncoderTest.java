@@ -34,6 +34,9 @@ package org.firstinspires.ftc.quadx.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
@@ -51,37 +54,54 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Trollbot", group="Testing")
-@Disabled
-public class Trollbot extends MyOpMode {
+@Autonomous(name="EncoderTest", group="Testing")
+public class EncoderTest extends MyOpMode {
+
 
     private ElapsedTime runtime = new ElapsedTime();
+    DcMotor motorBL;
+    DcMotor motorBR;
+    DcMotor motorFL;
+    DcMotor motorFR;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        hardwareMapTroll();
-        initSensors();
+
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+
+        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         waitForStart();
         runtime.reset();
 
-        moveToRange(.4, 1000, 15);
+        while (opModeIsActive()) {
+            motorFL.setPower(-1);
+            motorBL.setPower(-1);
+            motorFR.setPower(1);
+            motorBR.setPower(1);
 
-        // run until the end of the match (driver presses STOP)
-//        while (opModeIsActive()) {
-//            telemetry.addData("Status", "Run Time: " + runtime.toString());
-//            telemetry.addData("Gyro", getGyroYaw());
-//            telemetry.addData("Ultra", getUltraDistance());
-//            telemetry.addData("floorL", floorL.alpha());
-//            telemetry.addData("floorR", floorR.alpha());
-//            telemetry.addData("beaconL", beaconL.red());
-//            telemetry.addData("beaconR", beaconR.red());
-//            telemetry.update();
-//
-//
-//            idle();
-//        }
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+            telemetry.update();
+
+            idle();
+        }
     }
 }
