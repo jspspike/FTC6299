@@ -36,6 +36,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -50,7 +51,12 @@ public class Teleop extends LinearOpMode {
     DcMotor motorFL;
     DcMotor motorFR;
 
+    Servo door;
+    Servo buttonP;
+
     double flyPow = 0.0;
+    double oldFly = 0.0;
+    double flyRPM = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -64,9 +70,10 @@ public class Teleop extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
+        door = hardwareMap.servo.get("door");
+        buttonP = hardwareMap.servo.get("buttonP");
 
-
-        //fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         //manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -77,12 +84,11 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        door.setPosition(0);
+        buttonP.setPosition(.5);
 
         waitForStart();
         runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-
 
 
         /*Runnable flyWheel = new Runnable() {
@@ -141,10 +147,9 @@ public class Teleop extends LinearOpMode {
 
         */
 
+        resetStartTime();
 
         while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
 
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
                 motorBL.setPower(-gamepad1.left_stick_y);
@@ -158,27 +163,51 @@ public class Teleop extends LinearOpMode {
                 motorFR.setPower(0);
             }
 
+            if (gamepad2.left_bumper)
+                door.setPosition(0);
+            else if (gamepad2.right_bumper)
+                door.setPosition(.6);
+
             if (gamepad2.a) {
                 flyPow = -1;
             }
 
             else if (gamepad2.b) {
-                flyPow = -.75;
+                flyPow = -.5;
             }
 
             else if (gamepad2.x) {
-                flyPow = -.5;
+                flyPow += -.75;
             }
 
             else if (gamepad2.y) {
                 flyPow = 0;
             }
 
+            if (gamepad2.dpad_left) {
+                flyPow += .05;
+            }
+
+            else if (gamepad2.dpad_right) {
+                flyPow -= .05;
+            }
+
             fly.setPower(flyPow);
 
+            flyRPM = (Math.abs(fly.getCurrentPosition()) - oldFly) / getRuntime();
+
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Flypow", flyPow * -1);
+            telemetry.addData("Fly Position", fly.getCurrentPosition());
+            telemetry.addData("oldFly", oldFly);
+            telemetry.addData("FlyRPM", flyRPM);
+            telemetry.update();
+
+            oldFly = Math.abs(fly.getCurrentPosition());
+            resetStartTime();
+            Thread.sleep(100);
             idle();
         }
-
     }
 
 }
