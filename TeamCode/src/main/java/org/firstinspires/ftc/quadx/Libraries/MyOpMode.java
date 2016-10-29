@@ -662,8 +662,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         stopMotors();
     }
-
-
+    
     public void whiteTurn(double pow, int turns) {
         int count = 0;
 
