@@ -57,6 +57,10 @@ public class Teleop extends LinearOpMode {
     double flyPow = 0.0;
     double oldFly = 0.0;
     double flyRPM = 0;
+    int rpmValCount = 0;
+    double[] rpmVals = new double[100];
+    double rpmAvg;
+    double desiredRPM = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -84,7 +88,7 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        door.setPosition(0);
+        door.setPosition(.2);
         buttonP.setPosition(.5);
 
         waitForStart();
@@ -164,48 +168,81 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper)
-                door.setPosition(0);
-            else if (gamepad2.right_bumper)
                 door.setPosition(.6);
+            else if (gamepad2.right_bumper)
+                door.setPosition(.2);
 
             if (gamepad2.a) {
-                flyPow = -1;
+                desiredRPM = 1600;
             }
 
             else if (gamepad2.b) {
-                flyPow = -.5;
+                desiredRPM = 1350;
             }
 
             else if (gamepad2.x) {
-                flyPow += -.75;
+                desiredRPM = 1450;
             }
 
             else if (gamepad2.y) {
-                flyPow = 0;
+                desiredRPM = 0;
             }
 
             if (gamepad2.dpad_left) {
-                flyPow += .05;
+                desiredRPM -= 10;
+                Thread.sleep(200);
             }
 
             else if (gamepad2.dpad_right) {
-                flyPow -= .05;
+                desiredRPM += 10;
+                Thread.sleep(200);
             }
 
             fly.setPower(flyPow);
 
             flyRPM = (Math.abs(fly.getCurrentPosition()) - oldFly) / getRuntime();
 
+            if (rpmValCount > 99) {
+                rpmAvg = 0;
+                for (int i = 0; i < rpmVals.length; i++) {
+                    rpmAvg += rpmVals[i];
+                }
+
+                rpmAvg /= 100;
+                rpmValCount = 0;
+            }
+
+
+            else {
+                rpmVals[rpmValCount] = flyRPM;
+                rpmValCount++;
+            }
+
+
+            if (desiredRPM <= 0) {
+                flyPow = 0;
+            }
+
+            if (rpmAvg - desiredRPM <= -100) {
+                flyPow -= .01;
+            }
+
+            else if (rpmAvg - desiredRPM >= 100) {
+                flyPow += .01;
+            }
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Flypow", flyPow * -1);
-            telemetry.addData("Fly Position", fly.getCurrentPosition());
-            telemetry.addData("oldFly", oldFly);
-            telemetry.addData("FlyRPM", flyRPM);
+//            telemetry.addData("Fly Position", fly.getCurrentPosition());
+//            telemetry.addData("oldFly", oldFly);
+            telemetry.addData("DesiredRPM", desiredRPM);
+            telemetry.addData("FlyRPM", rpmAvg);
             telemetry.update();
 
             oldFly = Math.abs(fly.getCurrentPosition());
+
             resetStartTime();
-            Thread.sleep(100);
+            Thread.sleep(10);
             idle();
         }
     }
