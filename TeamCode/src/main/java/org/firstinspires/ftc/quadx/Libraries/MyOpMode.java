@@ -633,6 +633,28 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
+    public void whiteTurn(double pow, int turns) {
+        int count = 0;
+
+        while (count < turns) {
+            while(floorR.alpha() < gray + 25) {
+                setMotors(0, pow);
+            }
+
+            count++;
+            if (floorL.alpha() > gray + 25 && floorR.alpha() > gray + 25)
+                break;
+
+            while (floorL.alpha() < gray + 25) {
+                setMotors(-pow, 0);
+            }
+
+            count++;
+            if (floorL.alpha() > gray + 25 && floorR.alpha() > gray + 25)
+                break;
+        }
+    }
+
     public void pressRed() {
         int redLeft = 0;
 
