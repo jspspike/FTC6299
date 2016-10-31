@@ -32,7 +32,6 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package org.firstinspires.ftc.quadx.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -156,10 +155,10 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
-                motorBL.setPower(-gamepad1.left_stick_y);
-                motorBR.setPower(gamepad1.right_stick_y);
-                motorFL.setPower(-gamepad1.left_stick_y);
-                motorFR.setPower(gamepad1.right_stick_y);
+                motorBL.setPower(gamepad1.left_stick_y);
+                motorBR.setPower(-gamepad1.right_stick_y);
+                motorFL.setPower(gamepad1.left_stick_y);
+                motorFR.setPower(-gamepad1.right_stick_y);
             } else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
@@ -202,6 +201,8 @@ public class Teleop extends LinearOpMode {
 
             flyRPM = (Math.abs(fly.getCurrentPosition()) - oldFly) / getRuntime();
 
+            oldFly = Math.abs(fly.getCurrentPosition());
+
             if (rpmValCount > 99) {
                 rpmAvg = 0;
                 for (int i = 0; i < rpmVals.length; i++) {
@@ -223,11 +224,11 @@ public class Teleop extends LinearOpMode {
                 flyPow = 0;
             }
 
-            if (rpmAvg - desiredRPM <= -100) {
+            if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
                 flyPow -= .01;
             }
 
-            else if (rpmAvg - desiredRPM >= 100) {
+            else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
                 flyPow += .01;
             }
 
@@ -238,8 +239,6 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("DesiredRPM", desiredRPM);
             telemetry.addData("FlyRPM", rpmAvg);
             telemetry.update();
-
-            oldFly = Math.abs(fly.getCurrentPosition());
 
             resetStartTime();
             Thread.sleep(10);
