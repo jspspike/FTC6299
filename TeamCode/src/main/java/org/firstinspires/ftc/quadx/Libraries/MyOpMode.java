@@ -37,7 +37,6 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo buttonPusher;
     public static Servo door;
 
-
     public static ColorSensor floorL;
     public static ColorSensor floorR;
     public static ColorSensor beaconL;
@@ -71,7 +70,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         buttonPusher = hardwareMap.servo.get("buttonP");
         door = hardwareMap.servo.get("door");
-
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
