@@ -21,6 +21,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
+    public static final double DDOR_OPEN = .6;
+    public static final double DOOR_CLOSED = .2;
 
     public boolean flyWheelRunning = true;
 
@@ -33,6 +35,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static DcMotor flywheel;
 
     public static Servo buttonPusher;
+    public static Servo door;
 
     public static ColorSensor floorL;
     public static ColorSensor floorR;
@@ -65,6 +68,7 @@ public abstract class MyOpMode extends LinearOpMode {
         flywheel = hardwareMap.dcMotor.get("fly");
 
         buttonPusher = hardwareMap.servo.get("buttonP");
+        door = hardwareMap.servo.get("door");
 
         telemetry.addData("Status", "Hardware Mapped");
         telemetry.update();
@@ -122,6 +126,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void initServos() {
         buttonPusher.setPosition(.5);
+
+        door.setPosition(DOOR_CLOSED);
     }
 
     public void delay(long milliseconds) {

@@ -18,6 +18,7 @@ public class Teleop extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+
     DcMotor manipTop;
 
     Servo door;
@@ -53,11 +54,13 @@ public class Teleop extends LinearOpMode {
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         manipTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
 
         telemetry.addData("Status", "Initialized");
