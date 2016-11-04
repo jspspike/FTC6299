@@ -358,7 +358,7 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, 1.5);}
+    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, 1.0);}
 
     public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.0);}
 
@@ -400,6 +400,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(-pow / red, -pow);
                 else
                     setMotors(-pow, -pow);
+
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("Encoder", getEncoderAverage());
                 telemetry.update();

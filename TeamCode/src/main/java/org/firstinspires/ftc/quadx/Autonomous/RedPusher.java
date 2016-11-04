@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.quadx.Autonomous;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
