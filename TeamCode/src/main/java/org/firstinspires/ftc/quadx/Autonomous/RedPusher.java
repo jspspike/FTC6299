@@ -20,6 +20,7 @@ public class RedPusher extends MyOpMode {
         arcTurnCorr(-.3, -45);
         moveTo(.3, -4800);
         arcTurnCorr(-.3, 45);
-        untilWhite(-.2);
+        moveTo(.25, -550, 2, 3);
+        pressRed();
     }
 }
