@@ -690,7 +690,7 @@ public abstract class MyOpMode extends LinearOpMode {
             return;
 
         delay(500);
-        
+
         int redLeft = 0;
 
         redLeft += beaconL.red() - beaconR.red();
