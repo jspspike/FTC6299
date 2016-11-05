@@ -18,6 +18,7 @@ public class Teleop extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    DcMotor manipTop;
 
     Servo door;
     Servo buttonP;
@@ -44,6 +45,7 @@ public class Teleop extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
+        manipTop = hardwareMap.dcMotor.get("manipTop");
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
@@ -55,6 +57,7 @@ public class Teleop extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        manipTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         telemetry.addData("Status", "Initialized");
@@ -172,22 +175,18 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.a){
                 manip.setPower(1);
+                manipPull.setPosition(1);
+                manipTop.setPower(1);
             }
             else if (gamepad1.b){
                 manip.setPower(-1);
+                manipPull.setPosition(-1);
+                manipTop.setPower(-1);
             }
             else {
                 manip.setPower(0);
-            }
-
-            if (gamepad1.left_bumper) {
-                manipPull.setPosition(-1);
-            }
-            else if (gamepad1.right_bumper) {
-                manipPull.setPosition(1);
-            }
-            else {
                 manipPull.setPosition(0);
+                manipTop.setPower(0);
             }
 
 
