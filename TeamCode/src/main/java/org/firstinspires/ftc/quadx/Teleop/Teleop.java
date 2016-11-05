@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Teleop extends LinearOpMode {
 
     DcMotor fly;
-    //DcMotor manip;
+    DcMotor manip;
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
@@ -21,6 +21,7 @@ public class Teleop extends LinearOpMode {
 
     Servo door;
     Servo buttonP;
+    Servo manipPull;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
@@ -38,7 +39,7 @@ public class Teleop extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         fly = hardwareMap.dcMotor.get("fly");
-        //manip = hardwareMap.dcMotor.get("manip");
+        manip = hardwareMap.dcMotor.get("manip");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -46,9 +47,10 @@ public class Teleop extends LinearOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
+        manipPull = hardwareMap.servo.get("manipPull");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        //manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -167,6 +169,27 @@ public class Teleop extends LinearOpMode {
                 desiredRPM += 10;
                 Thread.sleep(200);
             }
+
+            if (gamepad1.a){
+                manip.setPower(1);
+            }
+            else if (gamepad1.b){
+                manip.setPower(-1);
+            }
+            else {
+                manip.setPower(0);
+            }
+
+            if (gamepad1.left_bumper) {
+                manipPull.setPosition(-1);
+            }
+            else if (gamepad1.right_bumper) {
+                manipPull.setPosition(1);
+            }
+            else {
+                manipPull.setPosition(0);
+            }
+
 
             fly.setPower(flyPow);
 
