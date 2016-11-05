@@ -173,19 +173,19 @@ public class Teleop extends LinearOpMode {
                 Thread.sleep(200);
             }
 
-            if (gamepad1.a){
+            if (gamepad1.right_trigger > .5){
                 manip.setPower(1);
                 manipPull.setPosition(1);
                 manipTop.setPower(1);
             }
-            else if (gamepad1.b){
+            else if (gamepad1.left_trigger > .5){
                 manip.setPower(-1);
-                manipPull.setPosition(-1);
+                manipPull.setPosition(0);
                 manipTop.setPower(-1);
             }
             else {
                 manip.setPower(0);
-                manipPull.setPosition(0);
+                manipPull.setPosition(.5);
                 manipTop.setPower(0);
             }
 
