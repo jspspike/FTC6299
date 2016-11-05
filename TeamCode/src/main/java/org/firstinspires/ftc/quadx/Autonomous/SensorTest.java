@@ -17,6 +17,8 @@ public class SensorTest extends MyOpMode {
         initSensors();
         resetGyro();
         waitForStart();
+        floorL.enableLed(true);
+        floorR.enableLed(true);
 
         floorL.enableLed(true);
         floorR.enableLed(true);
