@@ -103,8 +103,8 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconL.setI2cAddress(I2cAddr.create8bit(0x2a));
         beaconR.setI2cAddress(I2cAddr.create8bit(0x20));
 
-        floorL.enableLed(true);
-        floorR.enableLed(true);
+        floorL.enableLed(false);
+        floorR.enableLed(false);
         beaconL.enableLed(false);
         beaconR.enableLed(false);
 
