@@ -22,7 +22,7 @@ public class Teleop extends LinearOpMode {
 
     Servo door;
     Servo buttonP;
-    Servo manipPull;
+//    Servo topPull;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
@@ -49,7 +49,7 @@ public class Teleop extends LinearOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
-        manipPull = hardwareMap.servo.get("manipPull");
+        //topPull = hardwareMap.servo.get("topPull");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -153,6 +153,8 @@ public class Teleop extends LinearOpMode {
 
             else if (gamepad2.b) {
                 desiredRPM = 1315;
+                flyPow = -.4;
+                runtime.reset();
             }
 
             else if (gamepad2.x) {
@@ -175,17 +177,17 @@ public class Teleop extends LinearOpMode {
 
             if (gamepad1.right_trigger > .5){
                 manip.setPower(1);
-                manipPull.setPosition(1);
-                manipTop.setPower(1);
+//                topPull.setPosition(1);
+                manipTop.setPower(-1);
             }
             else if (gamepad1.left_trigger > .5){
                 manip.setPower(-1);
-                manipPull.setPosition(0);
-                manipTop.setPower(-1);
+//                topPull.setPosition(0);
+                manipTop.setPower(1);
             }
             else {
                 manip.setPower(0);
-                manipPull.setPosition(.5);
+//                topPull.setPosition(.5);
                 manipTop.setPower(0);
             }
 
@@ -212,17 +214,16 @@ public class Teleop extends LinearOpMode {
                 rpmValCount++;
             }
 
+            if (runtime.seconds() > 4) {
+                if (desiredRPM <= 0) {
+                    flyPow = 0;
+                }
 
-            if (desiredRPM <= 0) {
-                flyPow = 0;
-            }
-
-            if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
-                flyPow -= Math.abs(rpmAvg - desiredRPM)/200000;
-            }
-
-            else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
-                flyPow += Math.abs(rpmAvg - desiredRPM)/200000;
+                if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
+                    flyPow -= Math.abs(rpmAvg - desiredRPM) / 200000;
+                } else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
+                    flyPow += Math.abs(rpmAvg - desiredRPM) / 200000;
+                }
             }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
