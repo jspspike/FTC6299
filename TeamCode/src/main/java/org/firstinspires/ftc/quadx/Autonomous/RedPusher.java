@@ -16,6 +16,9 @@ public class RedPusher extends MyOpMode {
         initServos();
         initSensors();
         waitForStart();
+        floorL.enableLed(true);
+        floorR.enableLed(true);
+
 
         arcTurnCorr(-.3, -45);
         moveTo(.3, -4800);
