@@ -20,13 +20,6 @@ public class SensorTest extends MyOpMode {
         floorL.enableLed(true);
         floorR.enableLed(true);
 
-<<<<<<< HEAD
-        floorL.enableLed(true);
-        floorR.enableLed(true);
-
-=======
->>>>>>> cdfda82fd132e0cc53e14f05782f96b8690923e5
-
 
         while(opModeIsActive()) {
             telemetry.addData("FloorL", floorL.alpha());

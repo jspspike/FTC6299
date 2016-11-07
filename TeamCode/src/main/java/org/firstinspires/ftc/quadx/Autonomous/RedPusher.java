@@ -8,10 +8,7 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  * Created by jspspike on 11/3/16.
  */
 
-<<<<<<< HEAD
 
-=======
->>>>>>> cdfda82fd132e0cc53e14f05782f96b8690923e5
 @Autonomous(name="Red Pusher", group="Red")
 public class RedPusher extends MyOpMode {
     @Override
