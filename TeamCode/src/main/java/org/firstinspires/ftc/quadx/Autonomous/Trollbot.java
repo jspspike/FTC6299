@@ -33,6 +33,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package org.firstinspires.ftc.quadx.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
@@ -51,6 +52,7 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 @Autonomous(name="Trollbot", group="Testing")
+@Disabled
 public class Trollbot extends MyOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -65,7 +67,7 @@ public class Trollbot extends MyOpMode {
         waitForStart();
         runtime.reset();
 
-        moveToRange(.4, 1000, 15);
+        moveToRange(.2, 1000, 15);
 
         // run until the end of the match (driver presses STOP)
 //        while (opModeIsActive()) {
