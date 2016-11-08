@@ -3,7 +3,9 @@ package org.firstinspires.ftc.quadx.Teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -18,12 +20,11 @@ public class Teleop extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-
     DcMotor manipTop;
 
     Servo door;
     Servo buttonP;
-//    Servo topPull;
+    CRServo topPull;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
@@ -32,6 +33,7 @@ public class Teleop extends LinearOpMode {
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
     double desiredRPM = 0;
+    double offset = 0;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -50,11 +52,10 @@ public class Teleop extends LinearOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
-        //topPull = hardwareMap.servo.get("topPull");
+        topPull = hardwareMap.crservo.get("topPull");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -62,72 +63,57 @@ public class Teleop extends LinearOpMode {
         manipTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         door.setPosition(.2);
         buttonP.setPosition(.5);
+        topPull.setPower(0);
+
+
+        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+
+        telemetry.addData("Volatage", startingVoltage);
+
+        if (startingVoltage >= 13.8) {
+            flyPow = -.3;
+        }
+
+        else if (startingVoltage >= 13.5) {
+            flyPow = -.31;
+        }
+
+        else if (startingVoltage >= 13.3) {
+            flyPow = -.33;
+        }
+
+        else if (startingVoltage >= 13) {
+            flyPow = -.34;
+        }
+
+        else if (startingVoltage >= 12.7) {
+            flyPow = -.35;
+        }
+
+        else if (startingVoltage >= 12.5) {
+            flyPow = -.37;
+        }
+
+        else if (startingVoltage >= 12.3) {
+            flyPow = -.39;
+        }
+
+        else {
+            flyPow = -.4;
+        }
+
+
 
         waitForStart();
         runtime.reset();
 
 
-        /*Runnable flyWheel = new Runnable() {
-            @Override
-            public void run() {
-                while (opModeIsActive()) {
-                    if (gamepad1.a){
-                        fly.setPower(1);
-                    }
-                    else if (gamepad1.b) {
-                        fly.setPower(-1);
-                    }
-                    else {
-                        fly.setPower(0);
-                    }
-                    try {
-                        idle();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-
-        Runnable manipulator = new Runnable() {
-            @Override
-            public void run() {
-                while (opModeIsActive()) {
-                    if (gamepad2.a) {
-                        manip.setPower(1);
-                    }
-                    else if (gamepad2.b) {
-                        manip.setPower(-1);
-                    }
-                    else{
-                        manip.setPower(0);
-                    }
-
-                    try {
-                        idle();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        };
-
-
-        Thread manipThread = new Thread(manipulator);
-        manipThread.start();
-
-
-        Thread flyWheelThread = new Thread(flyWheel);
-        flyWheelThread.start();
-
-        */
 
         resetStartTime();
 
@@ -155,8 +141,7 @@ public class Teleop extends LinearOpMode {
             }
 
             else if (gamepad2.b) {
-                desiredRPM = 1315;
-                flyPow = -.4;
+                fly.setPower(flyPow);
                 runtime.reset();
             }
 
@@ -165,37 +150,45 @@ public class Teleop extends LinearOpMode {
             }
 
             else if (gamepad2.y) {
-                desiredRPM = 0;
+                fly.setPower(0);
             }
 
             if (gamepad2.dpad_left) {
                 desiredRPM -= 10;
+                flyPow += .01;
                 Thread.sleep(200);
             }
 
             else if (gamepad2.dpad_right) {
                 desiredRPM += 10;
+                flyPow -= .01;
                 Thread.sleep(200);
             }
 
             if (gamepad1.right_trigger > .5){
                 manip.setPower(1);
-//                topPull.setPosition(1);
+                topPull.setPower(-1);
                 manipTop.setPower(-1);
             }
             else if (gamepad1.left_trigger > .5){
                 manip.setPower(-1);
-//                topPull.setPosition(0);
+                topPull.setPower(1);
                 manipTop.setPower(1);
             }
             else {
                 manip.setPower(0);
-//                topPull.setPosition(.5);
+                topPull.setPower(0);
                 manipTop.setPower(0);
             }
 
+            if (gamepad1.left_bumper)
+                buttonP.setPosition(1);
+            else if (gamepad1.right_bumper)
+                buttonP.setPosition(0);
+            else
+                buttonP.setPosition(.5);
 
-            fly.setPower(flyPow);
+
 
             flyRPM = (Math.abs(fly.getCurrentPosition()) - oldFly) / getRuntime();
 
@@ -217,17 +210,17 @@ public class Teleop extends LinearOpMode {
                 rpmValCount++;
             }
 
-            if (runtime.seconds() > 4) {
-                if (desiredRPM <= 0) {
-                    flyPow = 0;
-                }
-
-                if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
-                    flyPow -= Math.abs(rpmAvg - desiredRPM) / 200000;
-                } else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
-                    flyPow += Math.abs(rpmAvg - desiredRPM) / 200000;
-                }
-            }
+//            if (runtime.seconds() > 4) {
+//                if (desiredRPM <= 0) {
+//                    flyPow = 0;
+//                }
+//
+//                if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
+//                    flyPow -= Math.abs(rpmAvg - desiredRPM) / 200000;
+//                } else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
+//                    flyPow += Math.abs(rpmAvg - desiredRPM) / 200000;
+//                }
+//            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Flypow", flyPow * -1);

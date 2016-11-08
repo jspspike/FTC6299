@@ -21,6 +21,10 @@ public class RedPusher extends MyOpMode {
         floorR.enableLed(true);
 
 
+        beaconL.close();
+        beaconR.close();
+
+
         arcTurnCorr(-.3, -45);
         moveTo(.3, -4800);
         arcTurnCorr(-.3, 45);
