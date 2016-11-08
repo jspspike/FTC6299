@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-
 @TeleOp(name="TeleOp", group="Teleop")
+
 public class Teleop extends LinearOpMode {
 
     DcMotor fly;
