@@ -116,6 +116,7 @@ public abstract class MyOpMode extends LinearOpMode {
         grayR = floorR.getRawLightDetected();
         Log.w("grayL", "" + grayL);
         Log.w("grayR", "" + grayR);
+
         ultraDistance = -1;
 
         gyroParam                     = new BNO055IMU.Parameters();
@@ -1027,6 +1028,10 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError;
         stopMotors();
     }
+
+    public void whiteTurnCorr() {
+
+    }
     
     public void whiteTurn(double pow, int turns) {
         int count = 0;
@@ -1045,6 +1050,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
 
             count++;
+
             if (floorL.getRawLightDetected() < grayL - .4 && floorR.getRawLightDetected() < grayR - .4)
                 break;
         }
