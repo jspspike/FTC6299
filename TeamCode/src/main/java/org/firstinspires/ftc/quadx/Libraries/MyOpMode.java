@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -37,8 +38,8 @@ public abstract class MyOpMode extends LinearOpMode {
     public static Servo buttonPusher;
     public static Servo door;
 
-    public static ColorSensor floorL;
-    public static ColorSensor floorR;
+    public static OpticalDistanceSensor floorL;
+    public static OpticalDistanceSensor floorR;
     public static ColorSensor beaconL;
     public static ColorSensor beaconR;
 
@@ -47,7 +48,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     private static ModernRoboticsI2cRangeSensor ultra;
 
-    public int gray;
+    public double gray;
     public double turn;
 
     public double ultraDistance;
@@ -58,8 +59,8 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        floorL = hardwareMap.colorSensor.get("floorL");
-        floorR = hardwareMap.colorSensor.get("floorR");
+        floorL = hardwareMap.opticalDistanceSensor.get("floorL");
+        floorR = hardwareMap.opticalDistanceSensor.get("floorR");
         beaconL = hardwareMap.colorSensor.get("beaconL");
         beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
@@ -81,8 +82,8 @@ public abstract class MyOpMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
 
-        floorL = hardwareMap.colorSensor.get("floorL");
-        floorR = hardwareMap.colorSensor.get("floorR");
+        floorL = hardwareMap.opticalDistanceSensor.get("floorL");
+        floorR = hardwareMap.opticalDistanceSensor.get("floorR");
         beaconL = hardwareMap.colorSensor.get("beaconL");
         beaconR = hardwareMap.colorSensor.get("beaconR");
 
@@ -98,17 +99,15 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Sensors", "Initializing...");
         telemetry.update();
 
-        floorL.setI2cAddress(I2cAddr.create8bit(0x2c));
-        floorR.setI2cAddress(I2cAddr.create8bit(0x2e));
-        beaconL.setI2cAddress(I2cAddr.create8bit(0x2a));
-        beaconR.setI2cAddress(I2cAddr.create8bit(0x20));
+        beaconL.setI2cAddress(I2cAddr.create8bit(0x20));
+        beaconR.setI2cAddress(I2cAddr.create8bit(0x2a));
 
         floorL.enableLed(false);
         floorR.enableLed(false);
         beaconL.enableLed(false);
         beaconR.enableLed(false);
 
-        gray = ( floorL.alpha() + floorR.alpha() ) / 2;
+        gray = ( floorL.getRawLightDetected() + floorR.getRawLightDetected() ) / 2;
         ultraDistance = -1;
 
         gyroParam                     = new BNO055IMU.Parameters();
@@ -177,12 +176,14 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public double getGyroYaw() {
+
+        double turnAbs = Math.abs(turn);
         Orientation angles = gyro.getAngularOrientation();
-        if (turn > 270 && angles.firstAngle < 90)
-            return (angles.firstAngle - (turn - 360)) * -1;
-        else if (turn < 90 && angles.firstAngle > 270)
-            return ((angles.firstAngle - 360) - turn)  * -1;
-        return (angles.firstAngle - turn)  * -1;
+        if (turnAbs > 270 && Math.abs(angles.firstAngle)< 90)
+            return (Math.abs(angles.firstAngle) - (turnAbs - 360));
+        else if (turnAbs < 90 && Math.abs(angles.firstAngle) > 270)
+            return ((Math.abs(angles.firstAngle) - 360) - turnAbs);
+        return (Math.abs(angles.firstAngle) - turnAbs);
     }
 
     public double getGryoPitch() {
@@ -564,7 +565,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (pow > 0) {
-            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim) {
+            while (floorL.getRawLightDetected() < gray + 25 && time.milliseconds() < tim) {
                 if (getUltraDistance() < cm)
                     setMotors(pow / red, pow);
                 else if (getUltraDistance() > cm)
@@ -580,14 +581,14 @@ public abstract class MyOpMode extends LinearOpMode {
                 }
                 telemetry.addData("Gryo", getGyroYaw());
                 telemetry.addData("Ultra", getUltraDistance());
-                telemetry.addData("Color", floorL.alpha());
+                telemetry.addData("Color", floorL.getRawLightDetected());
                 telemetry.update();
                 idle();
             }
         }
 
         else {
-            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim) {
+            while (floorL.getRawLightDetected() < gray + 25 && time.milliseconds() < tim) {
                 if (getUltraDistance() < cm)
                     setMotors(pow / red, pow);
                 else if (getUltraDistance() > cm)
@@ -602,7 +603,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 }
                 telemetry.addData("Gryo", getGyroYaw());
                 telemetry.addData("Ultra", getUltraDistance());
-                telemetry.addData("Color", floorL.alpha());
+                telemetry.addData("Color", floorL.getRawLightDetected());
                 telemetry.update();
                 idle();
             }
@@ -627,21 +628,22 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (pow > 0) {
-            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim  && opModeIsActive()) {
+            while ((floorL.getRawLightDetected() < gray + 1 && floorR.getRawLightDetected() < gray + 1) && time.milliseconds() < tim  && opModeIsActive()) {
                 if (getGyroYaw() > threshold)
                     setMotors(pow / reduction, pow);
                 else if (getGyroYaw() < -threshold)
                     setMotors(pow, pow / reduction);
                 else
                     setMotors(pow, pow);
-                telemetry.addData("FloorL", floorL.alpha());
+                telemetry.addData("FloorL", floorL.getRawLightDetected());
+                telemetry.addData("FloorR", floorR.getRawLightDetected());
                 telemetry.update();
                 idle();
             }
         }
 
         else {
-            while (floorL.alpha() < gray + 25 && time.milliseconds() < tim && opModeIsActive()) {
+            while ((floorL.getRawLightDetected() < gray + 1 && floorR.getRawLightDetected() < gray + 1) && time.milliseconds() < tim && opModeIsActive()) {
                 if (getGyroYaw() > threshold) {
                     setMotors(pow, pow / reduction);
                 }
@@ -653,7 +655,8 @@ public abstract class MyOpMode extends LinearOpMode {
                 else {
                     setMotors(pow, pow);
                 }
-                telemetry.addData("FloorL", floorL.alpha());
+                telemetry.addData("FloorL", floorL.getRawLightDetected());
+                telemetry.addData("FloorR", floorR.getRawLightDetected());
                 telemetry.update();
                 idle();
             }
@@ -661,25 +664,29 @@ public abstract class MyOpMode extends LinearOpMode {
 
         stopMotors();
     }
+
+    public void whiteTurnCorr() {
+
+    }
     
     public void whiteTurn(double pow, int turns) {
         int count = 0;
 
         while (count < turns) {
-            while(floorR.alpha() < gray + 25) {
+            while(floorR.getRawLightDetected() > gray - .4) {
                 setMotors(0, pow);
             }
 
             count++;
-            if (floorL.alpha() > gray + 25 && floorR.alpha() > gray + 25)
+            if (floorL.getRawLightDetected() < gray - .4 && floorR.getRawLightDetected() < gray - .4)
                 break;
 
-            while (floorL.alpha() < gray + 25) {
+            while (floorL.getRawLightDetected() > gray - .4) {
                 setMotors(-pow, 0);
             }
 
             count++;
-            if (floorL.alpha() > gray + 25 && floorR.alpha() > gray + 25)
+            if (floorL.getRawLightDetected() < gray - .4 && floorR.getRawLightDetected() < gray - .4)
                 break;
         }
     }

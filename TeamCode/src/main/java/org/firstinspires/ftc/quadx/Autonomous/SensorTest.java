@@ -22,8 +22,8 @@ public class SensorTest extends MyOpMode {
 
 
         while(opModeIsActive()) {
-            telemetry.addData("FloorL", floorL.alpha());
-            telemetry.addData("FloorR", floorR.alpha());
+            telemetry.addData("FloorL", floorL.getRawLightDetected());
+            telemetry.addData("FloorR", floorR.getRawLightDetected());
             telemetry.addData("BeaconL Red", beaconL.red());
             telemetry.addData("BeaconL Blue", beaconL.blue());
             telemetry.addData("BeaconR Red", beaconR.red());
