@@ -16,6 +16,7 @@ public class BluePusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
+        
         int moveVal = 4640;
 
         resetGyro();

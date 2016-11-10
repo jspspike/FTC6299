@@ -378,7 +378,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, .6);}
 
-    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2   );}
+    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2);}
 
     public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException { moveTo(pow, deg, threshold, red, 15000, true);}
 
@@ -852,7 +852,6 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
         }
 
-
     public void untilWhite(double pow) throws InterruptedException {untilWhite(pow, 0);}
 
     public void untilWhite(double pow, int deg) throws InterruptedException {untilWhite(pow, deg, .6, 1.75, 7000, false);}
@@ -1115,7 +1114,6 @@ public abstract class MyOpMode extends LinearOpMode {
             delay(1000);
             buttonPusher.setPosition(.5);
         }
-
     }
     
 

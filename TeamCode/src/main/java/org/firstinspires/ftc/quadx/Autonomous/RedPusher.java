@@ -63,6 +63,7 @@ public class RedPusher extends MyOpMode {
             idle();
         }
 
+
         telemetry.addData("Gyro", "Finished");
         telemetry.update();
 
