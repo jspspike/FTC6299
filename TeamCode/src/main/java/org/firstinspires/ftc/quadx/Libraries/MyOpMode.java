@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -359,9 +360,9 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, 1.5);}
+    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, .6);}
 
-    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.0);}
+    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2);}
 
     public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException { moveTo(pow, deg, threshold, red, 15000);}
 
@@ -528,9 +529,9 @@ public abstract class MyOpMode extends LinearOpMode {
         if (getGyroYaw() > deg) {
             while (deg < getGyroYaw() && opModeIsActive()) {
                 if (pow > 0)
-                    setMotors(-.15, 0);
+                    setMotors(-.12, 0);
                 else
-                    setMotors(0, .15);
+                    setMotors(0, .12);
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.update();
                 idle();
@@ -538,9 +539,9 @@ public abstract class MyOpMode extends LinearOpMode {
         } else {
             while (deg > getGyroYaw() && opModeIsActive()) {
                 if (pow > 0)
-                    setMotors(0, -.15);
+                    setMotors(0, -.12);
                 else
-                    setMotors(.15, 0);
+                    setMotors(.12, 0);
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.update();
                 idle();
@@ -550,7 +551,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-    public void untilWhiteRange(double pow, double cm) throws InterruptedException {untilWhiteRange(pow, cm, 1, 2, 7000);}
+    public void untilWhiteRange(double pow, double cm) throws InterruptedException {untilWhiteRange(pow, cm, .7, 2, 7000);}
 
     public void untilWhiteRange(double pow, double cm, double threshold, double red, int tim) throws InterruptedException {
 
@@ -613,7 +614,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-    public void untilWhite(double pow) throws InterruptedException {untilWhite(pow, 1.5, 2, 7000);}
+    public void untilWhite(double pow) throws InterruptedException {untilWhite(pow, .6, 2, 7000);}
 
     public void untilWhite(double pow, double threshold, double reduction, int tim) throws InterruptedException {
 
@@ -635,6 +636,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(pow, pow / reduction);
                 else
                     setMotors(pow, pow);
+                telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("FloorL", floorL.getRawLightDetected());
                 telemetry.addData("FloorR", floorR.getRawLightDetected());
                 telemetry.update();
@@ -655,6 +657,8 @@ public abstract class MyOpMode extends LinearOpMode {
                 else {
                     setMotors(pow, pow);
                 }
+
+                telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("FloorL", floorL.getRawLightDetected());
                 telemetry.addData("FloorR", floorR.getRawLightDetected());
                 telemetry.update();
@@ -705,15 +709,16 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (redLeft > 0) {
             buttonPusher.setPosition(1);
-
-            delay(1000);
+            delay(1250);
+            buttonPusher.setPosition(.45);
         }
 
         else {
             buttonPusher.setPosition(0);
-            delay(1000);
+            delay(1250);
+            buttonPusher.setPosition(.5);
+
         }
-        buttonPusher.setPosition(.5);
     }
 
     public void pressBlue() {
@@ -732,13 +737,16 @@ public abstract class MyOpMode extends LinearOpMode {
         if (blueLeft > 0) {
             buttonPusher.setPosition(1);
             delay(1000);
+            buttonPusher.setPosition(.5);
+
         }
 
         else {
             buttonPusher.setPosition(0);
             delay(1000);
+            buttonPusher.setPosition(.5);
         }
-        buttonPusher.setPosition(.5);
+
     }
 
 

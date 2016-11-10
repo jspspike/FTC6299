@@ -9,8 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Red Pusher", group="Red")
-public class RedPusher extends MyOpMode {
+@Autonomous(name="Blue Pusher", group="Blue")
+public class BluePusher extends MyOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hardwareMap();
@@ -21,13 +21,14 @@ public class RedPusher extends MyOpMode {
         floorR.enableLed(true);
 
 
-        arcTurnCorr(-.2, -45);
-        moveTo(.2, -4650);
-        arcTurnCorr(-.2, 46);
-        untilWhite(-.12);
-        pressRed();
-        untilWhite(-.12);
-        moveTo(.2, 50);
-        pressRed();
+        arcTurnCorr(.2, 45);
+        moveTo(.2, 4800);
+        arcTurnCorr(.2, -46);
+        untilWhite(.12);
+        moveTo(.2, -100);
+        pressBlue();
+        untilWhite(.12);
+        moveTo(.2, -100);
+        pressBlue();
     }
 }
