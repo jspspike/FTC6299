@@ -210,15 +210,15 @@ public class Teleop extends LinearOpMode {
             }
 
 //            if (runtime.seconds() > 4) {
-//                if (desiredRPM <= 0) {
-//                    flyPow = 0;
-//                }
-//
-//                if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
-//                    flyPow -= Math.abs(rpmAvg - desiredRPM) / 200000;
-//                } else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
-//                    flyPow += Math.abs(rpmAvg - desiredRPM) / 200000;
-//                }
+    //                if (desiredRPM <= 0) {
+    //                    flyPow = 0;
+    //                }
+    //
+    //                if (rpmAvg - desiredRPM <= -100 && flyPow >= -1) {
+    //                    flyPow -= Math.abs(rpmAvg - desiredRPM) / 200000;
+    //                } else if (rpmAvg - desiredRPM >= 100 && flyPow <= 0) {
+    //                    flyPow += Math.abs(rpmAvg - desiredRPM) / 200000;
+    //                }
 //            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

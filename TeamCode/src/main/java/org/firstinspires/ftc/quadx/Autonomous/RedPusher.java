@@ -16,19 +16,27 @@ public class RedPusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
+        int moveVal = -4650;
+
         waitForStart();
+
+
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
+            moveVal = -4720;
+        }
+
         floorL.enableLed(true);
         floorR.enableLed(true);
 
 
-        beaconL.close();
-        beaconR.close();
-
-
-        arcTurnCorr(-.3, -45);
-        moveTo(.3, -4800);
-        arcTurnCorr(-.3, 45);
-        moveTo(.25, -550, 2, 3);
+        arcTurnCorr(-.2, -45);
+        moveTo(.2, moveVal);
+        arcTurnCorr(-.2, 45);
+        untilWhite(-.12);
+        pressRed();
+        arcTurn(-.2, .7);
+        untilWhite(-.12);
+        moveTo(.2, 50);
         pressRed();
     }
 }
