@@ -378,7 +378,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, .6);}
 
-    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2);}
+    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2   );}
 
     public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException { moveTo(pow, deg, threshold, red, 15000, true);}
 
@@ -592,7 +592,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg + gyroError > 0) {
-            while(deg > getGyroYaw() +gyroError && time.milliseconds() < tim  && opModeIsActive()) {
+            while(deg > getGyroYaw() + gyroError && time.milliseconds() < tim  && opModeIsActive()) {
                 newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
 
                 if (newPow < .15)
