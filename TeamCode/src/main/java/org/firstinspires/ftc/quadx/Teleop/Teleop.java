@@ -33,6 +33,7 @@ public class Teleop extends LinearOpMode {
     double rpmAvg;
     double desiredRPM = 0;
     double offset = 0;
+    boolean active = false;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -54,6 +55,7 @@ public class Teleop extends LinearOpMode {
         topPull = hardwareMap.crservo.get("topPull");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -76,35 +78,35 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            flyPow = -.3;
+            flyPow = .3;
         }
 
         else if (startingVoltage >= 13.5) {
-            flyPow = -.31;
+            flyPow = .31;
         }
 
         else if (startingVoltage >= 13.3) {
-            flyPow = -.33;
+            flyPow = .33;
         }
 
         else if (startingVoltage >= 13) {
-            flyPow = -.34;
+            flyPow = .34;
         }
 
         else if (startingVoltage >= 12.7) {
-            flyPow = -.35;
+            flyPow = .35;
         }
 
         else if (startingVoltage >= 12.5) {
-            flyPow = -.37;
+            flyPow = .37;
         }
 
         else if (startingVoltage >= 12.3) {
-            flyPow = -.39;
+            flyPow = .39;
         }
 
         else {
-            flyPow = -.4;
+            flyPow = .4;
         }
 
 
@@ -140,7 +142,7 @@ public class Teleop extends LinearOpMode {
             }
 
             else if (gamepad2.b) {
-                fly.setPower(flyPow);
+                active = true;
                 runtime.reset();
             }
 
@@ -149,18 +151,18 @@ public class Teleop extends LinearOpMode {
             }
 
             else if (gamepad2.y) {
-                fly.setPower(0);
+                active = false;
             }
 
             if (gamepad2.dpad_left) {
                 desiredRPM -= 10;
-                flyPow += .01;
+                flyPow -= .01;
                 Thread.sleep(200);
             }
 
             else if (gamepad2.dpad_right) {
                 desiredRPM += 10;
-                flyPow -= .01;
+                flyPow += .01;
                 Thread.sleep(200);
             }
 
@@ -187,6 +189,11 @@ public class Teleop extends LinearOpMode {
             else
                 buttonP.setPosition(.5);
 
+
+            if (active)
+                 fly.setPower(flyPow);
+            else
+                fly.setPower(0);
 
 
             flyRPM = (Math.abs(fly.getCurrentPosition()) - oldFly) / getRuntime();
@@ -222,7 +229,7 @@ public class Teleop extends LinearOpMode {
 //            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Flypow", flyPow * -1);
+            telemetry.addData("Flypow", flyPow);
 //            telemetry.addData("Fly Position", fly.getCurrentPosition());
 //            telemetry.addData("oldFly", oldFly);
             telemetry.addData("DesiredRPM", desiredRPM);
