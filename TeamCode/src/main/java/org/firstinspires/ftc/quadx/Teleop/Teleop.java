@@ -78,35 +78,35 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            flyPow = .3;
+            flyPow = -.3;
         }
 
         else if (startingVoltage >= 13.5) {
-            flyPow = .31;
+            flyPow = -.31;
         }
 
         else if (startingVoltage >= 13.3) {
-            flyPow = .33;
+            flyPow = -.33;
         }
 
         else if (startingVoltage >= 13) {
-            flyPow = .34;
+            flyPow = -.34;
         }
 
         else if (startingVoltage >= 12.7) {
-            flyPow = .35;
+            flyPow = -.35;
         }
 
         else if (startingVoltage >= 12.5) {
-            flyPow = .37;
+            flyPow = -.37;
         }
 
         else if (startingVoltage >= 12.3) {
-            flyPow = .39;
+            flyPow = -.39;
         }
 
         else {
-            flyPow = .4;
+            flyPow = -.4;
         }
 
 
@@ -155,14 +155,14 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.dpad_left) {
-                desiredRPM -= 10;
-                flyPow -= .01;
+                desiredRPM += 10;
+                flyPow += .01;
                 Thread.sleep(200);
             }
 
             else if (gamepad2.dpad_right) {
-                desiredRPM += 10;
-                flyPow += .01;
+                desiredRPM -= 10;
+                flyPow -= .01;
                 Thread.sleep(200);
             }
 
