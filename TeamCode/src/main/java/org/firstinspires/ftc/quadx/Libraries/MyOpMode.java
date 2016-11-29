@@ -844,5 +844,55 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         };
     }
+    public void untilRange(double pow) throws InterruptedException {untilRange(pow, 30, .5, 2.2, 7000);}
+
+    public void untilRange(double pow, double endDistance, double threshold, double reduction, int tim) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        resetEncoders();
+        delay(1000);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
+            if (pow > 0) {
+            while ((getUltraDistance() < endDistance) && time.milliseconds() < tim  && opModeIsActive()) {
+                if (getGyroYaw() > threshold)
+                    setMotors(pow / reduction, pow);
+                else if (getGyroYaw() < -threshold)
+                    setMotors(pow, pow / reduction);
+                else
+                    setMotors(pow, pow);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Ultrasonic", getUltraDistance());
+                Log.w("Ultrasonic", "" + getUltraDistance());
+                telemetry.update();
+                idle();
+            }
+        }
+
+        else {
+            while ((getUltraDistance() > endDistance) && time.milliseconds() < tim && opModeIsActive()) {
+                if (getGyroYaw() > threshold) {
+                    setMotors(pow, pow / reduction);
+                }
+                else if (getGyroYaw() < -threshold) {
+                    setMotors(pow / reduction, pow);
+                }
+                else {
+                    setMotors(pow, pow);
+                }
+
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Ultrasonic", getUltraDistance());
+                Log.w("Ultrasonic", "" + getUltraDistance());
+                telemetry.update();
+                idle();
+            }
+        }
+        stopMotors();
+    }
 }
 
