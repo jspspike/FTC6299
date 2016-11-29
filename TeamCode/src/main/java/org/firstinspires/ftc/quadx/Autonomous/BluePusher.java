@@ -16,7 +16,7 @@ public class BluePusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
-        int moveVal = 4650;
+        int moveVal = 4680;
 
         waitForStart();
 
@@ -26,7 +26,7 @@ public class BluePusher extends MyOpMode {
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            moveVal = 4700;
+            moveVal = 4730;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
@@ -41,18 +41,18 @@ public class BluePusher extends MyOpMode {
 
 
         arcTurnCorr(.2, 45);
-        moveTo(.2, moveVal);
+        moveTo(.2, moveVal, .6, 1.5);
         arcTurnCorr(.2, -45);
-        untilWhite(.12);
-        moveTo(.2, -140);
+        untilWhite(.2);
+        moveTo(.2, -285, .6, 1.5);
         pressBlue();
-        moveTo(.15, 400);
-        if (moveVal == 4825)
-            arcTurn(-.2, -.7);
-        else
-            arcTurn(-.2, -.7);
-        untilWhite(.12);
-        moveTo(.2, -145);
+        moveTo(.15, 400, .6, 1.5);
+//        if (moveVal == 4825)
+//            arcTurn(-.2, -.7);
+//        else
+//            arcTurn(-.2, -.7);
+        untilWhite(.2);
+        moveTo(.2, -285, .6, 1.5);
         pressBlue();
     }
 }

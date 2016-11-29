@@ -16,15 +16,17 @@ public class RedPusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
-        int moveVal = -4650;
+        int moveVal = -4700;
 
         waitForStart();
 
 
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
             moveVal = -4720;
         }
-
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5){
+            moveVal = -4690;
+        }
         floorL.enableLed(true);
         floorR.enableLed(true);
 
