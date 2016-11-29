@@ -20,7 +20,7 @@ public class RedPusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
-<<<<<<< 226031f6d581d9f0f53ff65c02fa47f678272c98
+
         int moveVal = -4670;
 
         resetGyro();
@@ -80,23 +80,19 @@ public class RedPusher extends MyOpMode {
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5){
             moveVal = -4690;
         }
-=======
-        int moveVal = -4650;
 
         waitForStart();
 
 
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
             moveVal = -4720;
         }
 
->>>>>>> Finalized autonomous
         floorL.enableLed(true);
         floorR.enableLed(true);
 
         arcTurnCorr(-.2, -45);
         moveTo(.2, moveVal);
-<<<<<<< 226031f6d581d9f0f53ff65c02fa47f678272c98
         arcTurnCorr(-.2, 44.3);
         untilWhiteRange(-.2, 13, -150);
         moveTo(.2, 150);
@@ -104,14 +100,6 @@ public class RedPusher extends MyOpMode {
         untilWhiteRange(-.2, 13, -1000);
         moveTo(.2, 230);
 //        flywheel.setPower(flyPow);
-=======
-        arcTurnCorr(-.2, 45);
-        untilWhite(-.12);
-        pressRed();
-        arcTurn(-.2, .7);
-        untilWhite(-.12);
-        moveTo(.2, 50);
->>>>>>> Finalized autonomous
         pressRed();
 //        arcTurn(-.2, -45);
 //        moveTo(.2, 2500);

@@ -114,6 +114,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         grayL = floorL.getRawLightDetected();
         grayR = floorR.getRawLightDetected();
+
         Log.w("grayL", "" + grayL);
         Log.w("grayR", "" + grayR);
 

@@ -98,7 +98,7 @@ public class Shoot extends MyOpMode {
         door.setPosition(DOOR_CLOSED);
         delay(1000);
         flywheel.setPower(0);
-        
+
         moveTo(.4, 3800);
     }
 }
