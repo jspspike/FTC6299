@@ -9,8 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Shoot", group="Blue")
-public class Shoot extends MyOpMode {
+@Autonomous(name="Shoot Red", group="Red")
+public class ShootRed extends MyOpMode {
 
 
     public static final int POLL_RATE = 40;
@@ -86,8 +86,8 @@ public class Shoot extends MyOpMode {
 
         flywheel.setPower(flyPow);
 
-        arcTurn(.2, 40);
-        moveTo(.2, 2800, 8);
+        arcTurn(.2, -30);
+        moveTo(.2, 3200, 8);
         delay(7000);
         door.setPosition(DDOR_OPEN);
         delay(500);
