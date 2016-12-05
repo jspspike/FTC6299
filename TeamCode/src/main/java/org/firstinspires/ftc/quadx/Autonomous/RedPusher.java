@@ -45,7 +45,7 @@ public class RedPusher extends MyOpMode {
         else if (startingVoltage >= 12.7) {
             flyPow = -.48;
         }
-        
+
         else if (startingVoltage >= 12.5) {
             flyPow = -.49;
         }
@@ -63,7 +63,6 @@ public class RedPusher extends MyOpMode {
             telemetry.update();
             idle();
         }
-
 
         telemetry.addData("Gyro", "Finished");
         telemetry.update();
