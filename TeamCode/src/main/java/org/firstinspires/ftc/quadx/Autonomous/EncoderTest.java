@@ -83,10 +83,10 @@ public class EncoderTest extends MyOpMode {
 
         while (opModeIsActive()) {
             if (isDrive == false && gamepad1.a) {
-                motorFL.setPower(-1);
-                motorBL.setPower(-1);
-                motorFR.setPower(1);
-                motorBR.setPower(1);
+                motorFL.setPower(-.2);
+                motorBL.setPower(-.2);
+                motorFR.setPower(.2);
+                motorBR.setPower(.2);
                 isDrive = true;
                 Thread.sleep(500);
             }

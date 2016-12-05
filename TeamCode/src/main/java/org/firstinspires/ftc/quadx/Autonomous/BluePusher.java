@@ -16,21 +16,47 @@ public class BluePusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
-        int moveVal = 4650;
+        int moveVal = 4640;
+
+        resetGyro();
+
+        while (!gamepad1.a && opModeIsActive()) {
+            telemetry.addData("gyro", getGyroYaw());
+            telemetry.update();
+            idle();
+        }
+        telemetry.addData("Gyro", "Completed");
+        telemetry.update();
 
         waitForStart();
 
 
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            moveVal = 4750;
+            moveVal = 4761;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.65) {
+            moveVal = 4745;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            moveVal = 4700;
+            moveVal = 4720;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.55) {
+            moveVal = 4680;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
             moveVal = 4660;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.4) {
+            moveVal = 4635;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.2) {
+            moveVal = 4640;
         }
 
         telemetry.addData("MoveVal", moveVal);
@@ -39,20 +65,16 @@ public class BluePusher extends MyOpMode {
         floorL.enableLed(true);
         floorR.enableLed(true);
 
-
+        manip.setPower(-.3);
         arcTurnCorr(.2, 45);
-        moveTo(.2, moveVal);
-        arcTurnCorr(.2, -45);
-        untilWhite(.12);
-        moveTo(.2, -140);
+        moveTo(.2, moveVal, .6, 1.5);
+        arcTurnCorr(.2, -44.3);
+        untilWhite(.17);
+        moveTo(.2, -135, .6, 1.5);
         pressBlue();
-        moveTo(.15, 400);
-        if (moveVal == 4825)
-            arcTurn(-.2, -.7);
-        else
-            arcTurn(-.2, -.7);
-        untilWhite(.12);
-        moveTo(.2, -145);
+//        arcTurn(-.2, .7);
+        untilWhite(.15, 1000, .6, 1.5, 7000, true);
+        moveTo(.2, -200, .6, 1.5);
         pressBlue();
     }
 }

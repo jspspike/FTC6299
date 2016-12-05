@@ -205,8 +205,6 @@ public class Teleop extends LinearOpMode {
                 rpmValCount++;
             }
 
-
-
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Flypow", flyPow);
 //            telemetry.addData("Fly Position", fly.getCurrentPosition());
