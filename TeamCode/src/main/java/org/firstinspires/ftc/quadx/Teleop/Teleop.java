@@ -73,35 +73,35 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            flyPow = -.43;
-        }
-
-        else if (startingVoltage >= 13.5) {
             flyPow = -.44;
         }
 
-        else if (startingVoltage >= 13.3) {
+        else if (startingVoltage >= 13.5) {
             flyPow = -.45;
         }
 
-        else if (startingVoltage >= 13) {
+        else if (startingVoltage >= 13.3) {
             flyPow = -.46;
         }
 
-        else if (startingVoltage >= 12.7) {
+        else if (startingVoltage >= 13) {
             flyPow = -.47;
         }
 
-        else if (startingVoltage >= 12.5) {
+        else if (startingVoltage >= 12.7) {
             flyPow = -.48;
         }
 
+        else if (startingVoltage >= 12.5) {
+            flyPow = -.49;
+        }
+
         else if (startingVoltage >= 12.3) {
-            flyPow = -.5;
+            flyPow = -.51;
         }
 
         else {
-            flyPow = -.51;
+            flyPow = -.52;
         }
 
 
@@ -180,7 +180,7 @@ public class Teleop extends LinearOpMode {
 
 
             if (active)
-                 fly.setPower(flyPow);
+                fly.setPower(flyPow);
             else
                 fly.setPower(0);
 
