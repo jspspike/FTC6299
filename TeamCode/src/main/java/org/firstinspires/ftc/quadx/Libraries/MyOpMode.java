@@ -23,6 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
+
     public static final double DOOR_OPEN = .2;
     public static final double DOOR_CLOSED = .6;
 
@@ -698,7 +699,6 @@ public abstract class MyOpMode extends LinearOpMode {
             while(Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim && opModeIsActive()) {
 
                     if (!cancer) {
-
                         if (getUltraDistance() > cm && getGyroYaw() > - 4) {
                             setMotors(pow, pow / reduction);
                         }
@@ -717,7 +717,6 @@ public abstract class MyOpMode extends LinearOpMode {
                             telemetry.addData("Gyro", getGyroYaw());
                             telemetry.addData("Gyro Error", gyroError);
                             telemetry.addData("Encoder", getEncoderAverage());
-                            telemetry.addData("Ultra", getUltraDistance());
                             telemetry.update();
                             Log.w("Gyro", "" + getGyroYaw());
                             idle();
@@ -797,7 +796,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         else {
             while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim && opModeIsActive()) {
-
                 if (!cancer) {
 
                     if (getUltraDistance() > cm  && getGyroYaw() > -4) {
