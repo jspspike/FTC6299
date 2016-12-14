@@ -30,6 +30,7 @@ public class SensorTest extends MyOpMode {
             telemetry.addData("BeaconR Blue", beaconR.blue());
             telemetry.addData("Gryo Raw", gyro.getAngularOrientation().firstAngle);
             telemetry.addData("Gyro", getGyroYaw());
+            telemetry.addData("Ultra", getUltraDistance());
             telemetry.update();
         }
     }

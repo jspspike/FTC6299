@@ -23,8 +23,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
-    public static final double DDOR_OPEN = .6;
-    public static final double DOOR_CLOSED = .2;
+    public static final double DDOR_OPEN = .2;
+    public static final double DOOR_CLOSED = .6;
 
     public boolean flyWheelRunning = true;
 
@@ -67,7 +67,7 @@ public abstract class MyOpMode extends LinearOpMode {
         beaconL = hardwareMap.colorSensor.get("beaconL");
         beaconR = hardwareMap.colorSensor.get("beaconR");
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-//        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
+        ultra = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "ultra");
 
         manip = hardwareMap.dcMotor.get("manip");
         flywheel = hardwareMap.dcMotor.get("fly");
@@ -125,6 +125,7 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroParam.loggingEnabled      = true;
         gyroParam.loggingTag          = "Gryo";
         gyroParam.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+
 
         gyro.initialize(gyroParam);
 
@@ -627,75 +628,201 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError - deg;
     }
 
-    public void untilWhiteRange(double pow, double cm) throws InterruptedException {untilWhiteRange(pow, cm, .7, 2, 7000);}
+    public void untilWhiteRange(double pow, double cm, double deg) throws InterruptedException {untilWhiteRange(pow, cm, deg, .7, 2, false, 7000);}
 
-    public void untilWhiteRange(double pow, double cm, double threshold, double red, int tim) throws InterruptedException {
+    public void untilWhiteRange(double pow, double cm, double deg, double threshold, double reduction, boolean cancer, int tim) throws InterruptedException {
 
         if (!opModeIsActive())
             return;
 
         resetEncoders();
         resetGyro();
+//        grayL = floorL.getRawLightDetected();
+//        grayR = floorR.getRawLightDetected();
         delay(1000);
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
 
-        if (pow > 0) {
-            while (floorL.getRawLightDetected() < grayL + 25 && time.milliseconds() < tim) {
-                if (getUltraDistance() < cm)
-                    setMotors(pow / red, pow);
-                else if (getUltraDistance() > cm)
-                    setMotors(pow, pow / red);
+        if (deg > 0) {
+            while(deg > getEncoderAverage() && time.milliseconds() < tim && opModeIsActive()) {
+
+                if (!cancer) {
+
+                    if (getUltraDistance() > cm) {
+                        setMotors(pow, pow / reduction);
+                    }
+
+                    else if (getUltraDistance() < cm) {
+                        setMotors(pow / reduction, pow);
+                    }
+
+                    else {
+
+                        if (getGyroYaw() + gyroError > threshold)
+                            setMotors(pow / reduction, pow);
+                        else if (getGyroYaw() + gyroError < -threshold)
+                            setMotors(pow, pow / reduction);
+                        else
+                            setMotors(pow, pow);
+                        telemetry.addData("Gyro", getGyroYaw());
+                        telemetry.addData("Gyro Error", gyroError);
+                        telemetry.addData("Encoder", getEncoderAverage());
+                        telemetry.update();
+                        Log.w("Gyro", "" + getGyroYaw());
+                        idle();
+                    }
+                }
 
                 else {
-                    if (getGyroYaw() > threshold)
-                        setMotors(pow / red, pow);
-                    else if (getGyroYaw() < -threshold)
-                        setMotors(pow, pow / red);
+                    if (getGyroYaw() + gyroError > threshold)
+                        setMotorsCancer(pow / reduction, pow);
+                    else if (getGyroYaw() + gyroError < -threshold)
+                        setMotorsCancer(pow, pow / reduction);
                     else
-                        setMotors(pow, pow);
+                        setMotorsCancer(pow, pow);
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("Encoder", getEncoderAverage());
+                    telemetry.update();
+                    Log.w("Gyro", "" + getGyroYaw());
+                    idle();
                 }
-                telemetry.addData("Gryo", getGyroYaw());
-                telemetry.addData("Ultra", getUltraDistance());
-                telemetry.addData("Color", floorL.getRawLightDetected());
-                telemetry.update();
-                Log.w("Gryo", "" + getGyroYaw());
-                Log.w("Ultra", "" + getUltraDistance());
-                Log.w("Color", "" + floorL.getRawLightDetected());
-                Log.w("ColorR", "" + floorL.getRawLightDetected());
-                idle();
             }
         }
 
         else {
-            while (floorL.getRawLightDetected() < grayL + 25 && time.milliseconds() < tim) {
-                if (getUltraDistance() < cm)
-                    setMotors(pow / red, pow);
-                else if (getUltraDistance() > cm)
-                    setMotors(pow, pow / red);
-                else {
-                    if (getGyroYaw() > threshold)
-                        setMotors(pow , pow / red);
-                    else if (getGyroYaw() < -threshold)
-                        setMotors(pow / red, pow);
-                    else
-                        setMotors(pow, pow);
+            while(Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim && opModeIsActive()) {
+
+                    if (!cancer) {
+
+                        if (getUltraDistance() > cm) {
+                            setMotors(pow, pow / reduction);
+                        }
+
+                        else if (getUltraDistance() < cm) {
+                            setMotors(pow / reduction, pow);
+                        }
+
+                        else {
+
+                            if (getGyroYaw() + gyroError > threshold)
+                                setMotors(pow / reduction, pow);
+                            else if (getGyroYaw() + gyroError < -threshold)
+                                setMotors(pow, pow / reduction);
+                            else
+                                setMotors(pow, pow);
+                            telemetry.addData("Gyro", getGyroYaw());
+                            telemetry.addData("Gyro Error", gyroError);
+                            telemetry.addData("Encoder", getEncoderAverage());
+                            telemetry.update();
+                            Log.w("Gyro", "" + getGyroYaw());
+                            idle();
+                        }
+                    }
                 }
-                telemetry.addData("Gryo", getGyroYaw());
-                telemetry.addData("Ultra", getUltraDistance());
-                telemetry.addData("Color", floorL.getRawLightDetected());
-                telemetry.update();
-                Log.w("Gryo", "" + getGyroYaw());
-                Log.w("Ultra", "" + getUltraDistance());
-                Log.w("Color", "" + floorL.getRawLightDetected());
-                Log.w("ColorR", "" + floorL.getRawLightDetected());
-                idle();
+
+                else {
+                    if (getGyroYaw() + gyroError > threshold)
+                        setMotorsCancer(-pow, -pow / reduction);
+                    else if (getGyroYaw() + gyroError < -threshold)
+                        setMotorsCancer(-pow / reduction, -pow);
+                    else
+                        setMotorsCancer(-pow, -pow);
+
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("Encoder", getEncoderAverage());
+                    telemetry.update();
+                    Log.w("Gyro", "" + getGyroYaw());
+                    idle();
+                }
             }
         }
 
+        if (pow > 0) {
+            while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim  && opModeIsActive()) {
 
-        gyroError = getGyroYaw();
+                if (!cancer) {
+                    if (getGyroYaw() + gyroError > threshold)
+                        setMotors(pow / reduction, pow);
+                    else if (getGyroYaw() + gyroError < -threshold)
+                        setMotors(pow, pow / reduction);
+                    else
+                        setMotors(pow, pow);
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("FloorL", floorL.getRawLightDetected());
+                    telemetry.addData("FloorR", floorR.getRawLightDetected());
+                    Log.w("FloorL", "" + floorL.getRawLightDetected());
+                    Log.w("FloorR", "" + floorR.getRawLightDetected());
+                    telemetry.update();
+                    idle();
+                }
+
+                else {
+                    if (getGyroYaw() + gyroError > threshold)
+                        setMotorsCancer(pow / reduction, pow);
+                    else if (getGyroYaw() + gyroError < -threshold)
+                        setMotorsCancer(pow, pow / reduction);
+                    else
+                        setMotorsCancer(pow, pow);
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("FloorL", floorL.getRawLightDetected());
+                    telemetry.addData("FloorR", floorR.getRawLightDetected());
+                    Log.w("FloorL", "" + floorL.getRawLightDetected());
+                    Log.w("FloorR", "" + floorR.getRawLightDetected());
+                    telemetry.update();
+                    idle();
+                }
+            }
+        }
+
+        else {
+            while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim && opModeIsActive()) {
+
+                if (!cancer) {
+                    if (getGyroYaw() + gyroError > threshold) {
+                        setMotors(pow, pow / reduction);
+                    } else if (getGyroYaw() + gyroError < -threshold) {
+                        setMotors(pow / reduction, pow);
+                    } else {
+                        setMotors(pow, pow);
+                    }
+
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("FloorL", floorL.getRawLightDetected());
+                    telemetry.addData("FloorR", floorR.getRawLightDetected());
+                    Log.w("FloorL", "" + floorL.getRawLightDetected());
+                    Log.w("FloorR", "" + floorR.getRawLightDetected());
+                    telemetry.update();
+                    idle();
+                }
+
+                else {
+                    if (getGyroYaw() + gyroError > threshold) {
+                        setMotorsCancer(pow, pow / reduction);
+                    } else if (getGyroYaw() + gyroError < -threshold) {
+                        setMotorsCancer(pow / reduction, pow);
+                    } else {
+                        setMotorsCancer(pow, pow);
+                    }
+
+                    telemetry.addData("Gyro", getGyroYaw());
+                    telemetry.addData("Gyro Error", gyroError);
+                    telemetry.addData("FloorL", floorL.getRawLightDetected());
+                    telemetry.addData("FloorR", floorR.getRawLightDetected());
+                    Log.w("FloorL", "" + floorL.getRawLightDetected());
+                    Log.w("FloorR", "" + floorR.getRawLightDetected());
+                    telemetry.update();
+                    idle();
+                }
+            }
+        }
+
+        gyroError = getGyroYaw() + gyroError;
         stopMotors();
     }
 
