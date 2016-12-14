@@ -63,7 +63,7 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        door.setPosition(.2);
+        door.setPosition(.6);
         buttonP.setPosition(.5);
 
 
@@ -73,35 +73,35 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            flyPow = -.44;
+            flyPow = .43;
         }
 
         else if (startingVoltage >= 13.5) {
-            flyPow = -.45;
+            flyPow = .44;
         }
 
         else if (startingVoltage >= 13.3) {
-            flyPow = -.46;
+            flyPow = .45;
         }
 
         else if (startingVoltage >= 13) {
-            flyPow = -.47;
+            flyPow = .46;
         }
 
         else if (startingVoltage >= 12.7) {
-            flyPow = -.48;
+            flyPow = .47;
         }
 
         else if (startingVoltage >= 12.5) {
-            flyPow = -.49;
+            flyPow = .48;
         }
 
         else if (startingVoltage >= 12.3) {
-            flyPow = -.51;
+            flyPow = .5;
         }
 
         else {
-            flyPow = -.52;
+            flyPow = .51;
         }
 
 
@@ -128,9 +128,9 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper)
-                door.setPosition(.6);
-            else if (gamepad2.right_bumper)
                 door.setPosition(.2);
+            else if (gamepad2.right_bumper)
+                door.setPosition(.6);
 
             if (gamepad2.a) {
                 flyPow = -.8;
@@ -149,12 +149,12 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.dpad_left) {
-                flyPow += .01;
+                flyPow -= .01;
                 Thread.sleep(150);
             }
 
             else if (gamepad2.dpad_right) {
-                flyPow -= .01;
+                flyPow += .01;
                 Thread.sleep(150);
             }
 
