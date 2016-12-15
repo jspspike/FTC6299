@@ -84,14 +84,10 @@ public class RedPusher extends MyOpMode {
         arcTurnCorr(-.2, -45);
         moveTo(.2, moveVal);
         arcTurnCorr(-.2, 44.3);
-        untilWhite(-.2);
+        untilWhiteRange(-.2, 13, -150);
         moveTo(.2, 150);
         pressRed();
-//        arcTurn(-.2, .7);
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() < 13.5)
-            untilWhite(-.15, 1000, .6, 1.4, 7000, true);
-        else
-            untilWhite(-.15, 1000, .6, 1.4, 7000, true);
+        untilWhiteRange(-.2, 13, -1000);
         moveTo(.2, 230);
 //        flywheel.setPower(flyPow);
         pressRed();
