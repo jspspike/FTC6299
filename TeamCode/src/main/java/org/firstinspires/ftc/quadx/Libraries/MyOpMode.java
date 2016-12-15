@@ -717,6 +717,7 @@ public abstract class MyOpMode extends LinearOpMode {
                             telemetry.addData("Gyro", getGyroYaw());
                             telemetry.addData("Gyro Error", gyroError);
                             telemetry.addData("Encoder", getEncoderAverage());
+                            telemetry.addData("Ultra", getUltraDistance());
                             telemetry.update();
                             Log.w("Gyro", "" + getGyroYaw());
                             idle();
