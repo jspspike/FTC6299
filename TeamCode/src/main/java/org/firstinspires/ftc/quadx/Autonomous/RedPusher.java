@@ -93,11 +93,11 @@ public class RedPusher extends MyOpMode {
         pressRed();
 //        arcTurn(-.2, -45);
 //        moveTo(.2, 2500);
-//        door.setPosition(DDOR_OPEN);
+//        door.setPosition(DOOR_OPEN);
 //        delay(500);
 //        door.setPosition(DOOR_CLOSED);
 //        delay(1300);
-//        door.setPosition(DDOR_OPEN);
+//        door.setPosition(DOOR_OPEN);
 //        delay(500);
 //        door.setPosition(DOOR_CLOSED);
 //        delay(1000);
