@@ -89,7 +89,6 @@ public class Shoot extends MyOpMode {
         arcTurn(.2, 40);
         moveTo(.2, 2800, 8);
         delay(7000);
-
         door.setPosition(DOOR_OPEN);
         delay(500);
         door.setPosition(DOOR_CLOSED);

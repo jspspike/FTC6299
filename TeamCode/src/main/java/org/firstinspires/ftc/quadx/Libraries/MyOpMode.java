@@ -1027,10 +1027,6 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError;
         stopMotors();
     }
-
-    public void whiteTurnCorr() {
-
-    }
     
     public void whiteTurn(double pow, int turns) {
         int count = 0;
