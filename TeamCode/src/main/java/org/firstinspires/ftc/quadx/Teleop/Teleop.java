@@ -19,7 +19,8 @@ public class Teleop extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    DcMotor manipTop;
+    DcMotor liftL;
+    DcMotor liftR;
 
     Servo door;
     Servo buttonP;
@@ -45,7 +46,8 @@ public class Teleop extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        manipTop = hardwareMap.dcMotor.get("manipTop");
+        liftL = hardwareMap.dcMotor.get("liftL");
+        liftR = hardwareMap.dcMotor.get("liftR");
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
@@ -57,13 +59,14 @@ public class Teleop extends LinearOpMode {
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        manipTop.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        liftR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        door.setPosition(.2);
+        door.setPosition(.6);
         buttonP.setPosition(.5);
 
 
@@ -73,35 +76,35 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            flyPow = -.44;
+            flyPow = .43;
         }
 
         else if (startingVoltage >= 13.5) {
-            flyPow = -.45;
+            flyPow = .44;
         }
 
         else if (startingVoltage >= 13.3) {
-            flyPow = -.46;
+            flyPow = .45;
         }
 
         else if (startingVoltage >= 13) {
-            flyPow = -.47;
+            flyPow = .46;
         }
 
         else if (startingVoltage >= 12.7) {
-            flyPow = -.48;
+            flyPow = .47;
         }
 
         else if (startingVoltage >= 12.5) {
-            flyPow = -.49;
+            flyPow = .48;
         }
 
         else if (startingVoltage >= 12.3) {
-            flyPow = -.51;
+            flyPow = .5;
         }
 
         else {
-            flyPow = -.52;
+            flyPow = .51;
         }
 
 
@@ -128,9 +131,9 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.left_bumper)
-                door.setPosition(.6);
-            else if (gamepad2.right_bumper)
                 door.setPosition(.2);
+            else if (gamepad2.right_bumper)
+                door.setPosition(.6);
 
             if (gamepad2.a) {
                 flyPow = -.8;
@@ -149,26 +152,23 @@ public class Teleop extends LinearOpMode {
             }
 
             if (gamepad2.dpad_left) {
-                flyPow += .01;
+                flyPow -= .01;
                 Thread.sleep(150);
             }
 
             else if (gamepad2.dpad_right) {
-                flyPow -= .01;
+                flyPow += .01;
                 Thread.sleep(150);
             }
 
             if (gamepad1.right_trigger > .5){
                 manip.setPower(1);
-                manipTop.setPower(-1);
             }
             else if (gamepad1.left_trigger > .5){
                 manip.setPower(-1);
-                manipTop.setPower(1);
             }
             else {
                 manip.setPower(0);
-                manipTop.setPower(0);
             }
 
             if (gamepad1.left_bumper)
@@ -178,6 +178,15 @@ public class Teleop extends LinearOpMode {
             else
                 buttonP.setPosition(.5);
 
+            if (Math.abs(gamepad2.left_stick_y) > .05) {
+                liftL.setPower(gamepad2.left_stick_y);
+                liftR.setPower(-gamepad2.left_stick_y);
+            }
+
+            else {
+                liftL.setPower(0);
+                liftR.setPower(0);
+            }
 
             if (active)
                 fly.setPower(flyPow);
