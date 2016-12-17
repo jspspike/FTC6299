@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public abstract class MyOpMode extends LinearOpMode {
 
     public static final int MOVEMENT_DELAY = 500;
-    public static final double DDOR_OPEN = .2;
+    public static final double DOOR_OPEN = .2;
     public static final double DOOR_CLOSED = .6;
 
     public boolean flyWheelRunning = true;
@@ -1026,10 +1026,6 @@ public abstract class MyOpMode extends LinearOpMode {
 
         gyroError = getGyroYaw() + gyroError;
         stopMotors();
-    }
-
-    public void whiteTurnCorr() {
-
     }
     
     public void whiteTurn(double pow, int turns) {
