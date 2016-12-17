@@ -69,11 +69,11 @@ public class BluePusher extends MyOpMode {
         arcTurnCorr(.2, 45);
         moveTo(.2, moveVal, .6, 1.5);
         arcTurnCorr(.2, -44.3);
-        untilWhite(.17);
+        untilWhiteRange(.2, 13, 100);
         moveTo(.2, -135, .6, 1.5);
         pressBlue();
 //        arcTurn(-.2, .7);
-        untilWhite(.15, 1000, .6, 1.5, 7000, true);
+        untilWhiteRange(.2, 13, 1000);
         moveTo(.2, -200, .6, 1.5);
         pressBlue();
     }

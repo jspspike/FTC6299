@@ -89,11 +89,11 @@ public class ShootRed extends MyOpMode {
         arcTurn(.2, -30);
         moveTo(.2, 3200, 8);
         delay(7000);
-        door.setPosition(DDOR_OPEN);
+        door.setPosition(DOOR_OPEN);
         delay(500);
         door.setPosition(DOOR_CLOSED);
         delay(1500);
-        door.setPosition(DDOR_OPEN);
+        door.setPosition(DOOR_OPEN);
         delay(900);
         door.setPosition(DOOR_CLOSED);
         delay(1000);
