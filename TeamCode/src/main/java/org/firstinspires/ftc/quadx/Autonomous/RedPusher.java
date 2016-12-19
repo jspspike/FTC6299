@@ -58,7 +58,7 @@ public class RedPusher extends MyOpMode {
             flyPow = -.52;
         }
 
-        while (!gamepad1.a && opModeIsActive()) {
+        while (!gamepad1.a && !opModeIsActive()) {
             telemetry.addData("Gyro", getGyroYaw());
             telemetry.update();
             idle();
@@ -93,10 +93,10 @@ public class RedPusher extends MyOpMode {
         arcTurnCorr(-.2, -45);
         moveTo(.2, moveVal);
         arcTurnCorr(-.2, 44.3);
-        untilWhiteRange(-.2, 13, -150);
+        untilWhiteRange(-.35, -.15, 13, -150);
         moveTo(.2, 150);
         pressRed();
-        untilWhiteRange(-.2, 13, -1000);
+        untilWhiteRange(-.35, -.15, 13, -1000);
         moveTo(.2, 230);
 //        flywheel.setPower(flyPow);
         pressRed();
