@@ -26,6 +26,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static final double DOOR_OPEN = .2;
     public static final double DOOR_CLOSED = .6;
+
     public static final double BUTTONP_CENTER = .47;
     public static final double BUTTONP_LEFT = 1;
     public static final double BUTTONP_RIGHT = 0;
@@ -840,7 +841,6 @@ public abstract class MyOpMode extends LinearOpMode {
         else {
             while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim && opModeIsActive()) {
                 if (!cancer) {
-
                     if (getUltraDistance() > cm  && getGyroYaw() > -3.5) {
                         setMotors(powWhite, powWhite / reduction);
                     }
