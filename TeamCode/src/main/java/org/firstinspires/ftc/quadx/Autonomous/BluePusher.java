@@ -41,16 +41,18 @@ public class BluePusher extends MyOpMode {
         floorR.enableLed(true);
 
         manip.setPower(-.3);
+
         moveTo(.25, moveVal, .6, 1.5);
         arcTurnCorr(.4, -44.3);
         untilWhite(.3, .15, 200);
         moveTo(.2, -100, .6, 1.5);
         pressBlue();
-//        arcTurn(-.2, .7);
+
         untilWhiteRange(.35, .15, 14, 1450);
         moveTo(.2, -200, .6, 1.5);
         manip.setPower(0);
         pressBlue();
+
         moveTo(.2, -600);
         arcTurn(.35, -132);
         flywheel.setPower(flyPow);
@@ -59,6 +61,7 @@ public class BluePusher extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(1000);
         flywheel.setPower(0);
+
         moveTo(.2, 1600, 6);
     }
 }

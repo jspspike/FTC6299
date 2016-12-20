@@ -907,7 +907,7 @@ public abstract class MyOpMode extends LinearOpMode {
         resetGyro();
 //        grayL = floorL.getRawLightDetected();
 //        grayR = floorR.getRawLightDetected();
-        delay(1000);
+        delay(300);
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
