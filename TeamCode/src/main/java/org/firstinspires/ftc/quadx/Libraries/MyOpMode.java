@@ -197,42 +197,60 @@ public abstract class MyOpMode extends LinearOpMode {
     public void resetGyro() {
         turn = gyro.getAngularOrientation().firstAngle;
     }
-    
-    public double flyPow() {
+
+    public int encoderPow() {
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
+        if (startingVoltage > 13.9) {
+            return 4750;
+        }
+
+        if (startingVoltage > 13.8) {
+            return 4740;
+        }
+
+        else if (startingVoltage > 13.5) {
+            return 4720;
+        }
+
+        return 4720;
+
+    }
+
+    public double flyPow() {
+        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         telemetry.addData("Voltage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            return .43;
+            return .42;
         }
 
         else if (startingVoltage >= 13.5) {
-            return .44;
+            return .43;
         }
 
         else if (startingVoltage >= 13.3) {
-            return .45;
+            return .44;
         }
 
         else if (startingVoltage >= 13) {
-            return .46;
+            return .45;
         }
 
         else if (startingVoltage >= 12.7) {
-            return .47;
+            return .46;
         }
 
         else if (startingVoltage >= 12.5) {
-            return .48;
+            return .47;
         }
 
         else if (startingVoltage >= 12.3) {
-            return .5;
+            return .49;
         }
 
-        return .51;
+        return .5;
     }
 
     public double getGyroYaw() {
@@ -695,20 +713,20 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (!cancer) {
 
-                    if (getUltraDistance() > cm && getGyroYaw() < 3.5) {
-                        setMotors(pow, pow / (reduction + .5));
+                    if (getUltraDistance() > cm && getGyroYaw() < 3) {
+                        setMotors(pow, pow / (reduction));
                     }
 
-                    else if (getUltraDistance() < cm && getGyroYaw() > -3.5) {
-                        setMotors(pow / (reduction + .5), pow);
+                    else if (getUltraDistance() < cm && getGyroYaw() > -3) {
+                        setMotors(pow / (reduction), pow);
                     }
 
                     else {
 
                         if (getGyroYaw() + gyroError > threshold)
-                            setMotors(pow / (reduction + .5), pow);
+                            setMotors(pow / (reduction), pow);
                         else if (getGyroYaw() + gyroError < -threshold)
-                            setMotors(pow, pow / (reduction + .5));
+                            setMotors(pow, pow / (reduction));
                         else
                             setMotors(pow, pow);
                         telemetry.addData("Gyro", getGyroYaw());
@@ -723,9 +741,9 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 else {
                     if (getGyroYaw() + gyroError > threshold)
-                        setMotorsCancer(pow / (reduction + .5), pow);
+                        setMotorsCancer(pow / (reduction), pow);
                     else if (getGyroYaw() + gyroError < -threshold)
-                        setMotorsCancer(pow, pow / (reduction + .5));
+                        setMotorsCancer(pow, pow / (reduction));
                     else
                         setMotorsCancer(pow, pow);
                     telemetry.addData("Gyro", getGyroYaw());
@@ -742,19 +760,19 @@ public abstract class MyOpMode extends LinearOpMode {
             while(Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim && opModeIsActive()) {
 
                     if (!cancer) {
-                        if (getUltraDistance() > cm && getGyroYaw() > - 3.5) {
-                            setMotors(pow, pow / (reduction + .5));
+                        if (getUltraDistance() > cm && getGyroYaw() > - 3) {
+                            setMotors(pow, pow / (reduction));
                         }
 
-                        else if (getUltraDistance() < cm && getGyroYaw() < 3.5) {
-                            setMotors(pow / (reduction + .5), pow);
+                        else if (getUltraDistance() < cm && getGyroYaw() < 3) {
+                            setMotors(pow / (reduction), pow);
                         }
 
                         else {
                             if (getGyroYaw() + gyroError > threshold)
-                                setMotors(pow, pow / (reduction + .5));
+                                setMotors(pow, pow / (reduction));
                             else if (getGyroYaw() + gyroError < -threshold)
-                                setMotors(pow / (reduction + .5), pow);
+                                setMotors(pow / (reduction), pow);
                             else
                                 setMotors(pow, pow);
                             telemetry.addData("Gyro", getGyroYaw());
@@ -769,9 +787,9 @@ public abstract class MyOpMode extends LinearOpMode {
 
                     else {
                         if (getGyroYaw() + gyroError > threshold)
-                            setMotorsCancer(pow, pow / (reduction + .5));
+                            setMotorsCancer(pow, pow / (reduction));
                         else if (getGyroYaw() + gyroError < -threshold)
-                            setMotorsCancer(-pow / (reduction + .5), -pow);
+                            setMotorsCancer(-pow / (reduction), -pow);
                         else
                             setMotorsCancer(-pow, -pow);
 
@@ -790,11 +808,11 @@ public abstract class MyOpMode extends LinearOpMode {
             while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim  && opModeIsActive()) {
 
                 if (!cancer) {
-                    if (getUltraDistance() > cm && getGyroYaw() < 3.5) {
+                    if (getUltraDistance() > cm && getGyroYaw() < 3) {
                         setMotors(powWhite, powWhite / reduction);
                     }
 
-                    else if (getUltraDistance() < cm && getGyroYaw() > -3.5) {
+                    else if (getUltraDistance() < cm && getGyroYaw() > -3) {
                         setMotors(powWhite / reduction, powWhite);
                     }
 
@@ -841,11 +859,11 @@ public abstract class MyOpMode extends LinearOpMode {
         else {
             while ((floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim && opModeIsActive()) {
                 if (!cancer) {
-                    if (getUltraDistance() > cm  && getGyroYaw() > -3.5) {
+                    if (getUltraDistance() > cm  && getGyroYaw() > -3) {
                         setMotors(powWhite, powWhite / reduction);
                     }
 
-                    else if (getUltraDistance() < cm  && getGyroYaw() < 3.5) {
+                    else if (getUltraDistance() < cm  && getGyroYaw() < 3) {
                         setMotors(powWhite / reduction, powWhite);
                     }
 
@@ -952,11 +970,11 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (!cancer) {
                     if (getGyroYaw() + gyroError > threshold)
-                        setMotors(-pow, -pow / reduction);
+                        setMotors(pow, pow / reduction);
                     else if (getGyroYaw() + gyroError < -threshold)
-                        setMotors(-pow / reduction, -pow);
+                        setMotors(pow / reduction, pow);
                     else
-                        setMotors(-pow, -pow);
+                        setMotors(pow, pow);
 
                     telemetry.addData("Gyro", getGyroYaw());
                     telemetry.addData("Gyro Error", gyroError);
@@ -968,11 +986,11 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 else {
                     if (getGyroYaw() + gyroError > threshold)
-                        setMotorsCancer(-pow, -pow / reduction);
+                        setMotorsCancer(pow, pow / reduction);
                     else if (getGyroYaw() + gyroError < -threshold)
-                        setMotorsCancer(-pow / reduction, -pow);
+                        setMotorsCancer(pow / reduction, pow);
                     else
-                        setMotorsCancer(-pow, -pow);
+                        setMotorsCancer(pow, pow);
 
                     telemetry.addData("Gyro", getGyroYaw());
                     telemetry.addData("Gyro Error", gyroError);

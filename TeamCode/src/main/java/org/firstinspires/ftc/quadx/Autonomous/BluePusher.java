@@ -17,8 +17,6 @@ public class BluePusher extends MyOpMode {
         initServos();
         initSensors();
 
-        int moveVal = 4720;
-
         resetGyro();
 
         while (!gamepad1.a && !opModeIsActive()) {
@@ -30,6 +28,7 @@ public class BluePusher extends MyOpMode {
         telemetry.update();
 
         double flyPow = flyPow();
+        int moveVal = encoderPow();
 
         waitForStart();
 
@@ -43,8 +42,8 @@ public class BluePusher extends MyOpMode {
         manip.setPower(-.3);
 
         moveTo(.25, moveVal, .6, 1.5);
-        arcTurnCorr(.4, -44.3);
-        untilWhite(.3, .15, 200);
+        arcTurnCorr(.45, -44.3);
+        untilWhite(.15, .15);
         moveTo(.2, -100, .6, 1.5);
         pressBlue();
 
@@ -56,8 +55,8 @@ public class BluePusher extends MyOpMode {
         moveTo(.2, -600);
         arcTurn(.35, -132);
         flywheel.setPower(flyPow);
-        moveTo(.2, 2300, 6);
-        delay(3500);
+        moveTo(.2, 2500, 6);
+        delay(4000);
         door.setPosition(DOOR_OPEN);
         delay(1000);
         flywheel.setPower(0);
