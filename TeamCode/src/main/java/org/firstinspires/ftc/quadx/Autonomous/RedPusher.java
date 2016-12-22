@@ -18,8 +18,6 @@ public class RedPusher extends MyOpMode {
         initServos();
         initSensors();
 
-
-
         resetGyro();
 
         while (!gamepad1.a && !opModeIsActive()) {
