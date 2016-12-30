@@ -24,6 +24,8 @@ public class Teleop extends LinearOpMode {
 
     Servo door;
     Servo buttonP;
+    Servo lServoL;
+    Servo lServoR;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
@@ -36,6 +38,11 @@ public class Teleop extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     public static final int POLL_RATE = 40;
+
+    public static final double LEFTSERVO_CLOSE = 0;
+    public static final double LEFTSERVO_OPEN = 1;
+    public static final double RIGHTSERVO_CLOSE = 1;
+    public static final double RIGHTSERVO_OPEN = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,6 +58,8 @@ public class Teleop extends LinearOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
+        lServoL = hardwareMap.servo.get("servoL");
+        lServoR = hardwareMap.servo.get("servoR");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -68,6 +77,9 @@ public class Teleop extends LinearOpMode {
 
         door.setPosition(.6);
         buttonP.setPosition(.5);
+
+        lServoL.setPosition(LEFTSERVO_OPEN);
+        lServoR.setPosition(RIGHTSERVO_CLOSE);
 
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -171,6 +183,16 @@ public class Teleop extends LinearOpMode {
                 manip.setPower(0);
             }
 
+            if (gamepad2.left_bumper) {
+                lServoL.setPosition(LEFTSERVO_CLOSE);
+                lServoR.setPosition(RIGHTSERVO_CLOSE);
+            }
+
+            else if (gamepad2.right_bumper) {
+                lServoL.setPosition(LEFTSERVO_OPEN);
+                lServoR.setPosition(RIGHTSERVO_OPEN);
+            }
+
             if (gamepad1.left_bumper)
                 buttonP.setPosition(1);
             else if (gamepad1.right_bumper)
@@ -213,6 +235,8 @@ public class Teleop extends LinearOpMode {
                 rpmVals[rpmValCount] = flyRPM;
                 rpmValCount++;
             }
+
+
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Flypow", flyPow);
