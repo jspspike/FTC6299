@@ -40,11 +40,11 @@ public class RedPusher extends MyOpMode {
 
         moveTo(.2, moveVal);
         arcTurnCorr(-.5, 44.3);
-        untilWhite(-.15, -.15);
+        untilWhite(-.15, -.15, 100, 3000);
         moveTo(.2, 100);
         pressRed();
 
-        untilWhiteRange(-.35, -.15, 14, -1000);
+        untilWhiteRange(-.35, -.15, 14, -1000, -5000);
         moveTo(.2, 230);
         pressRed();
 

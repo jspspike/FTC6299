@@ -43,11 +43,11 @@ public class BluePusher extends MyOpMode {
 
         moveTo(.25, moveVal, .6, 1.5);
         arcTurnCorr(.45, -44.3);
-        untilWhite(.15, .15);
+        untilWhite(.15, .15, 100, 3000);
         moveTo(.2, -100, .6, 1.5);
         pressBlue();
 
-        untilWhiteRange(.35, .15, 14, 1450);
+        untilWhiteRange(.35, .15, 14, 1450, 4000);
         moveTo(.2, -200, .6, 1.5);
         manip.setPower(0);
         pressBlue();
