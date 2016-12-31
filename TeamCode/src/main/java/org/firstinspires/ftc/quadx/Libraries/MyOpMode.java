@@ -22,6 +22,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 public abstract class MyOpMode extends LinearOpMode {
 
+    public static boolean fail;
+
     public static final int MOVEMENT_DELAY = 500;
 
     public static final double DOOR_OPEN = .2;
@@ -31,9 +33,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double BUTTONP_LEFT = 1;
     public static final double BUTTONP_RIGHT = 0;
     public static final double LEFT_SERVO_CLOSE = 0;
-    public static final double LEFT_SERVO_OPEN = 1;
-    public static final double RIGHT_SERVO_CLOSE = 1;
-    public static final double RIGHT_SERVO_OPEN = 0;
+    public static final double LEFT_SERVO_OPEN = .7;
+    public static final double RIGHT_SERVO_CLOSE = .8;
+    public static final double RIGHT_SERVO_OPEN = 0.15;
 
     public boolean flyWheelRunning = true;
 
@@ -152,6 +154,9 @@ public abstract class MyOpMode extends LinearOpMode {
         buttonPusher.setPosition(BUTTONP_CENTER);
 
         door.setPosition(DOOR_CLOSED);
+
+        lServoL.setPosition(LEFT_SERVO_CLOSE);
+        lServoR.setPosition(RIGHT_SERVO_CLOSE);
     }
 
     public void delay(long milliseconds) {
@@ -203,7 +208,7 @@ public abstract class MyOpMode extends LinearOpMode {
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         if (startingVoltage > 13.9) {
-            return 4750;
+            return 4755;
         }
 
         if (startingVoltage > 13.8) {
@@ -211,10 +216,10 @@ public abstract class MyOpMode extends LinearOpMode {
         }
 
         else if (startingVoltage > 13.5) {
-            return 4720;
+            return 4735;
         }
 
-        return 4720;
+        return 4730;
 
     }
 
@@ -224,34 +229,34 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Voltage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
-            return .39;
+            return .38;
         }
 
         else if (startingVoltage >= 13.5) {
-            return .4;
+            return .39;
         }
 
         else if (startingVoltage >= 13.3) {
-            return .41;
+            return .4;
         }
 
         else if (startingVoltage >= 13) {
-            return .42;
+            return .41;
         }
 
         else if (startingVoltage >= 12.7) {
-            return .43;
+            return .42;
         }
 
         else if (startingVoltage >= 12.5) {
-            return .44;
+            return .43;
         }
 
         else if (startingVoltage >= 12.3) {
-            return .46;
+            return .45;
         }
 
-        return .47;
+        return .46;
     }
 
     public double getGyroYaw() {
@@ -700,6 +705,8 @@ public abstract class MyOpMode extends LinearOpMode {
         if (!opModeIsActive())
             return;
 
+        fail = false;
+
         resetEncoders();
         resetGyro();
 //        grayL = floorL.getRawLightDetected();
@@ -790,6 +797,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhiteRange(-.15, -.15, 14, 0, 3000);
+                    moveTo(.2, 100, .6, 1.5);
+                    fail = true;
                     break;
                 }
                 telemetry.addData("Gyro", getGyroYaw());
@@ -826,6 +835,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhiteRange(.15, .15, 14, 0, 3000);
+                    moveTo(.2, -100, .6, 1.5);
+                    fail = true;
                     break;
                 }
                 telemetry.addData("Gyro", getGyroYaw());
@@ -852,6 +863,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (!opModeIsActive())
             return;
+
+        fail = false;
 
         resetEncoders();
         resetGyro();
@@ -911,6 +924,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhite(-.15, -.15, 0, 3000);
+                    moveTo(.2, 100, .6, 1.5);
+                    fail = true;
                     break;
                 }
                 telemetry.addData("Gyro", getGyroYaw());
@@ -937,6 +952,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhite(.15, .15, 0, 3000);
+                    moveTo(.2, -100, .6, 1.5);
+                    fail = true;
                     break;
                 }
 
