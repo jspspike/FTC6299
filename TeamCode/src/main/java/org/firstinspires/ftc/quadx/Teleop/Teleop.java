@@ -1,17 +1,17 @@
 
 package org.firstinspires.ftc.quadx.Teleop;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
+
 @TeleOp(name="TeleOp", group="Teleop")
 
-public class Teleop extends LinearOpMode {
+public class Teleop extends MyOpMode {
 
     DcMotor fly;
     DcMotor manip;
@@ -24,6 +24,8 @@ public class Teleop extends LinearOpMode {
 
     Servo door;
     Servo buttonP;
+    Servo lServoL;
+    Servo lServoR;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
@@ -51,6 +53,8 @@ public class Teleop extends LinearOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
+        lServoL = hardwareMap.servo.get("servoL");
+        lServoR = hardwareMap.servo.get("servoR");
 
         fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -69,43 +73,15 @@ public class Teleop extends LinearOpMode {
         door.setPosition(.6);
         buttonP.setPosition(.5);
 
+        lServoL.setPosition(LEFT_SERVO_OPEN);
+        lServoR.setPosition(RIGHT_SERVO_CLOSE);
+
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
 
-        telemetry.addData("Voltage", startingVoltage);
-
-        if (startingVoltage >= 13.8) {
-            flyPow = .43;
-        }
-
-        else if (startingVoltage >= 13.5) {
-            flyPow = .44;
-        }
-
-        else if (startingVoltage >= 13.3) {
-            flyPow = .45;
-        }
-
-        else if (startingVoltage >= 13) {
-            flyPow = .46;
-        }
-
-        else if (startingVoltage >= 12.7) {
-            flyPow = .47;
-        }
-
-        else if (startingVoltage >= 12.5) {
-            flyPow = .48;
-        }
-
-        else if (startingVoltage >= 12.3) {
-            flyPow = .5;
-        }
-
-        else {
-            flyPow = .51;
-        }
+        telemetry.addData("Volatage", startingVoltage);
+        flyPow = flyPow();
 
 
 
@@ -171,6 +147,16 @@ public class Teleop extends LinearOpMode {
                 manip.setPower(0);
             }
 
+            if (gamepad2.left_bumper) {
+                lServoL.setPosition(LEFT_SERVO_CLOSE);
+                lServoR.setPosition(RIGHT_SERVO_CLOSE);
+            }
+
+            else if (gamepad2.right_bumper) {
+                lServoL.setPosition(LEFT_SERVO_OPEN);
+                lServoR.setPosition(RIGHT_SERVO_OPEN);
+            }
+
             if (gamepad1.left_bumper)
                 buttonP.setPosition(1);
             else if (gamepad1.right_bumper)
@@ -213,6 +199,8 @@ public class Teleop extends LinearOpMode {
                 rpmVals[rpmValCount] = flyRPM;
                 rpmValCount++;
             }
+
+
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Flypow", flyPow);
