@@ -25,6 +25,10 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final int MOVEMENT_DELAY = 500;
     public static final double DDOR_OPEN = .6;
     public static final double DOOR_CLOSED = .2;
+    public static final double LEFT_SERVO_CLOSE = 0;
+    public static final double LEFT_SERVO_OPEN = 1;
+    public static final double RIGHT_SERVO_CLOSE = 1;
+    public static final double RIGHT_SERVO_OPEN = 0;
 
     public boolean flyWheelRunning = true;
 
