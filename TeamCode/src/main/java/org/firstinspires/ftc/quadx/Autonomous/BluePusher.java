@@ -16,11 +16,10 @@ public class BluePusher extends MyOpMode {
         hardwareMap();
         initServos();
         initSensors();
-        int moveVal = 4640;
 
         resetGyro();
 
-        while (!gamepad1.a && opModeIsActive()) {
+        while (!gamepad1.a && !opModeIsActive()) {
             telemetry.addData("gyro", getGyroYaw());
             telemetry.update();
             idle();
@@ -28,36 +27,11 @@ public class BluePusher extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
+        double flyPow = flyPow();
+        int moveVal = encoderPow();
+
         waitForStart();
 
-
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            moveVal = 4761;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.65) {
-            moveVal = 4745;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            moveVal = 4720;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.55) {
-            moveVal = 4680;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
-            moveVal = 4660;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.4) {
-            moveVal = 4635;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.2) {
-            moveVal = 4640;
-        }
 
         telemetry.addData("MoveVal", moveVal);
         telemetry.update();
@@ -66,15 +40,27 @@ public class BluePusher extends MyOpMode {
         floorR.enableLed(true);
 
         manip.setPower(-.3);
-        arcTurnCorr(.2, 45);
-        moveTo(.2, moveVal, .6, 1.5);
-        arcTurnCorr(.2, -44.3);
-        untilWhite(.17);
-        moveTo(.2, -135, .6, 1.5);
+
+        moveTo(.25, moveVal, .6, 1.5);
+        arcTurnCorr(.45, -44.3);
+        untilWhite(.15, .15, 100, 3000);
+        moveTo(.2, -100, .6, 1.5);
         pressBlue();
-//        arcTurn(-.2, .7);
-        untilWhite(.15, 1000, .6, 1.5, 7000, true);
+
+        untilWhiteRange(.35, .15, 14, 1450, 4000);
         moveTo(.2, -200, .6, 1.5);
+        manip.setPower(0);
         pressBlue();
+
+        moveTo(.2, -600);
+        arcTurn(.35, -132);
+        flywheel.setPower(flyPow);
+        moveTo(.2, 2500, 6);
+        delay(4000);
+        door.setPosition(DOOR_OPEN);
+        delay(1000);
+        flywheel.setPower(0);
+
+        moveTo(.2, 1600, 6);
     }
 }
