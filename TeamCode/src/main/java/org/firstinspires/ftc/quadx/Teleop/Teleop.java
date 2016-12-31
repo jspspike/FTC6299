@@ -73,7 +73,7 @@ public class Teleop extends LinearOpMode {
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
 
-        telemetry.addData("Volatage", startingVoltage);
+        telemetry.addData("Voltage", startingVoltage);
 
         if (startingVoltage >= 13.8) {
             flyPow = .43;

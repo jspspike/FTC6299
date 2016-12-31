@@ -12,52 +12,15 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
 @Autonomous(name="Red Pusher", group="Red")
 public class RedPusher extends MyOpMode {
 
-    double startingVoltage;
-    double flyPow;
-
     @Override
     public void runOpMode() throws InterruptedException {
         hardwareMap();
         initServos();
         initSensors();
-        int moveVal = -4670;
 
         resetGyro();
 
-
-        if (startingVoltage >= 13.8) {
-            flyPow = -.44;
-        }
-
-        else if (startingVoltage >= 13.5) {
-            flyPow = -.45;
-        }
-
-        else if (startingVoltage >= 13.3) {
-            flyPow = -.46;
-        }
-
-        else if (startingVoltage >= 13) {
-            flyPow = -.47;
-        }
-
-        else if (startingVoltage >= 12.7) {
-            flyPow = -.48;
-        }
-
-        else if (startingVoltage >= 12.5) {
-            flyPow = -.49;
-        }
-
-        else if (startingVoltage >= 12.3) {
-            flyPow = -.51;
-        }
-
-        else {
-            flyPow = -.52;
-        }
-
-        while (!gamepad1.a && opModeIsActive()) {
+        while (!gamepad1.a && !opModeIsActive()) {
             telemetry.addData("Gyro", getGyroYaw());
             telemetry.update();
             idle();
@@ -66,45 +29,33 @@ public class RedPusher extends MyOpMode {
         telemetry.addData("Gyro", "Finished");
         telemetry.update();
 
+        double flyPow = flyPow();
+        int moveVal = -(encoderPow() + 40);
+
         waitForStart();
 
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.8) {
-            moveVal = -4780;
-        }
-
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            moveVal = -4775;
-        }
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5){
-            moveVal = -4690;
-        }
         floorL.enableLed(true);
         floorR.enableLed(true);
 
-        arcTurnCorr(-.2, -45);
+
         moveTo(.2, moveVal);
-        arcTurnCorr(-.2, 44.3);
-        untilWhite(-.2);
-        moveTo(.2, 150);
+        arcTurnCorr(-.5, 44.3);
+        untilWhite(-.15, -.15, 100, 3000);
+        moveTo(.2, 100);
         pressRed();
-//        arcTurn(-.2, .7);
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() < 13.5)
-            untilWhite(-.15, 1000, .6, 1.4, 7000, true);
-        else
-            untilWhite(-.15, 1000, .6, 1.4, 7000, true);
+
+        untilWhiteRange(-.35, -.15, 14, -1000, -5000);
         moveTo(.2, 230);
-//        flywheel.setPower(flyPow);
         pressRed();
-//        arcTurn(-.2, -45);
-//        moveTo(.2, 2500);
-//        door.setPosition(DDOR_OPEN);
-//        delay(500);
-//        door.setPosition(DOOR_CLOSED);
-//        delay(1300);
-//        door.setPosition(DDOR_OPEN);
-//        delay(500);
-//        door.setPosition(DOOR_CLOSED);
-//        delay(1000);
-//        flywheel.setPower(0);
+
+        arcTurn(.35, -46);
+        flywheel.setPower(flyPow);
+        moveTo(.25, 2800, 6);
+        delay(3500);
+        door.setPosition(DOOR_OPEN);
+        delay(1000);
+        flywheel.setPower(0);
+
+        moveTo(.2, 1800, 6);
     }
 }
