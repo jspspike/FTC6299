@@ -780,7 +780,7 @@ public abstract class MyOpMode extends LinearOpMode {
                             setMotors(powWhite, powWhite);
                     }
 
-                if (degFail < Math.abs(getEncoderAverage())) {
+                if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhiteRange(-.15, -.15, 14, 0, 3000);
                     break;
                 }
@@ -816,7 +816,7 @@ public abstract class MyOpMode extends LinearOpMode {
                         }
                     }
 
-                if (degFail < Math.abs(getEncoderAverage())) {
+                if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhiteRange(.15, .15, 14, 0, 3000);
                     break;
                 }
@@ -901,7 +901,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     else
                         setMotors(powWhite, powWhite);
 
-                if (degFail < Math.abs(getEncoderAverage())) {
+                if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhite(-.15, -.15, 0, 3000);
                     break;
                 }
@@ -927,7 +927,7 @@ public abstract class MyOpMode extends LinearOpMode {
                         setMotors(powWhite, powWhite);
                     }
 
-                if (degFail < Math.abs(getEncoderAverage())) {
+                if (Math.abs(degFail) < getEncoderAverage()) {
                     untilWhite(.15, .15, 0, 3000);
                     break;
                 }
