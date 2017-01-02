@@ -34,6 +34,7 @@ public class Teleop extends MyOpMode {
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
     boolean active = false;
+    boolean liftActive = false;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -73,7 +74,7 @@ public class Teleop extends MyOpMode {
         door.setPosition(.6);
         buttonP.setPosition(.5);
 
-        lServoL.setPosition(LEFT_SERVO_OPEN);
+        lServoL.setPosition(LEFT_SERVO_CLOSE);
         lServoR.setPosition(RIGHT_SERVO_CLOSE);
 
 
@@ -94,16 +95,32 @@ public class Teleop extends MyOpMode {
 
         while (opModeIsActive()) {
 
-            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
+
+            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && !liftActive) {
                 motorBL.setPower(gamepad1.left_stick_y);
                 motorBR.setPower(-gamepad1.right_stick_y);
                 motorFL.setPower(gamepad1.left_stick_y);
                 motorFR.setPower(-gamepad1.right_stick_y);
+            }
+
+            else if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && liftActive) {
+                motorBL.setPower(-gamepad1.left_stick_y*.4);
+                motorBR.setPower(gamepad1.right_stick_y*.4);
+                motorFL.setPower(-gamepad1.left_stick_y*.4);
+                motorFR.setPower(gamepad1.right_stick_y*.4);
             } else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
                 motorFL.setPower(0);
                 motorFR.setPower(0);
+            }
+
+            if (gamepad1.x) {
+                liftActive = true;
+            }
+
+            if (gamepad1.a) {
+                liftActive = false;
             }
 
             if (gamepad2.left_bumper)
@@ -147,12 +164,12 @@ public class Teleop extends MyOpMode {
                 manip.setPower(0);
             }
 
-            if (gamepad2.left_bumper) {
+            if (gamepad2.left_trigger > .05) {
                 lServoL.setPosition(LEFT_SERVO_CLOSE);
                 lServoR.setPosition(RIGHT_SERVO_CLOSE);
             }
 
-            else if (gamepad2.right_bumper) {
+            else if (gamepad2.right_trigger > .05) {
                 lServoL.setPosition(LEFT_SERVO_OPEN);
                 lServoR.setPosition(RIGHT_SERVO_OPEN);
             }
