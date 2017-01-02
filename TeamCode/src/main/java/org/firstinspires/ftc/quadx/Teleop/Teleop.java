@@ -34,6 +34,7 @@ public class Teleop extends MyOpMode {
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
     boolean active = false;
+    boolean liftActive = false;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -94,16 +95,32 @@ public class Teleop extends MyOpMode {
 
         while (opModeIsActive()) {
 
-            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
+
+            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && !liftActive) {
                 motorBL.setPower(gamepad1.left_stick_y);
                 motorBR.setPower(-gamepad1.right_stick_y);
                 motorFL.setPower(gamepad1.left_stick_y);
                 motorFR.setPower(-gamepad1.right_stick_y);
+            }
+
+            else if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && liftActive) {
+                motorBL.setPower(-gamepad1.left_stick_y*.4);
+                motorBR.setPower(gamepad1.right_stick_y*.4);
+                motorFL.setPower(-gamepad1.left_stick_y*.4);
+                motorFR.setPower(gamepad1.right_stick_y*.4);
             } else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
                 motorFL.setPower(0);
                 motorFR.setPower(0);
+            }
+
+            if (gamepad1.x) {
+                liftActive = true;
+            }
+
+            if (gamepad1.a) {
+                liftActive = false;
             }
 
             if (gamepad2.left_bumper)
