@@ -42,7 +42,7 @@ public class BluePusher extends MyOpMode {
         manip.setPower(-.3);
 
         moveTo(.25, moveVal, .6, 1.5);
-        arcTurnCorr(.45, -44.3);
+        arcTurnCorr(.5, -44.3);
         untilWhite(.15, .15, 100, 2400);
         if (!fail)
             moveTo(.2, -100, .6, 1.5);

@@ -38,24 +38,24 @@ public class RedPusher extends MyOpMode {
         floorR.enableLed(true);
 
 
-        moveTo(.2, moveVal);
+        moveTo(.25, moveVal);
         arcTurnCorr(-.5, 44.3);
-        untilWhite(-.15, -.15, 100, 3000);
-        moveTo(.2, 100);
+        untilWhite(-.15, -.15, -100, -2400);
+        if (!fail)
+            moveTo(.2, 100);
         pressRed();
 
-        untilWhiteRange(-.35, -.15, 14, -1000, -5000);
-        moveTo(.2, 230);
+        untilWhiteRange(-.35, -.15, 14, -1000, -5830);
+        if (!fail)
+            moveTo(.2, 230);
         pressRed();
 
         arcTurn(.35, -46);
         flywheel.setPower(flyPow);
         moveTo(.25, 2800, 6);
-        delay(3500);
+        delay(4000);
         door.setPosition(DOOR_OPEN);
-        delay(1000);
-        flywheel.setPower(0);
-
+        delay(1100);
         moveTo(.2, 1800, 6);
     }
 }
