@@ -35,6 +35,7 @@ public class Teleop extends MyOpMode {
     double rpmAvg;
     boolean active = false;
     boolean liftActive = false;
+    boolean lessenPower = false;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -96,19 +97,36 @@ public class Teleop extends MyOpMode {
         while (opModeIsActive()) {
 
 
-            if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && !liftActive) {
+            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive && lessenPower) {
+                motorBL.setPower(-gamepad1.left_stick_y*.25);
+                motorBR.setPower(gamepad1.right_stick_y*.25);
+                motorFL.setPower(-gamepad1.left_stick_y*.25);
+                motorFR.setPower(gamepad1.right_stick_y*.25);
+            }
+
+            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && !liftActive && !lessenPower) {
                 motorBL.setPower(gamepad1.left_stick_y);
                 motorBR.setPower(-gamepad1.right_stick_y);
                 motorFL.setPower(gamepad1.left_stick_y);
                 motorFR.setPower(-gamepad1.right_stick_y);
             }
 
-            else if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05 && liftActive) {
-                motorBL.setPower(-gamepad1.left_stick_y*.4);
-                motorBR.setPower(gamepad1.right_stick_y*.4);
-                motorFL.setPower(-gamepad1.left_stick_y*.4);
-                motorFR.setPower(gamepad1.right_stick_y*.4);
-            } else {
+            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive) {
+                motorBL.setPower(-gamepad1.right_stick_y);
+                motorBR.setPower(gamepad1.left_stick_y);
+                motorFL.setPower(-gamepad1.right_stick_y);
+                motorFR.setPower(gamepad1.left_stick_y);
+            }
+
+            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && lessenPower) {
+                motorBL.setPower(gamepad1.left_stick_y*.25);
+                motorBR.setPower(-gamepad1.right_stick_y*.25);
+                motorFL.setPower(gamepad1.left_stick_y*.25);
+                motorFR.setPower(-gamepad1.right_stick_y*.25);
+            }
+
+
+            else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
                 motorFL.setPower(0);
@@ -119,8 +137,12 @@ public class Teleop extends MyOpMode {
                 liftActive = true;
             }
 
+            if (gamepad1.y) {
+                lessenPower = true;
+            }
             if (gamepad1.a) {
                 liftActive = false;
+                lessenPower = false;
             }
 
             if (gamepad2.left_bumper)
