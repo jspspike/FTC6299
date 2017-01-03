@@ -38,7 +38,6 @@ public class Teleop extends MyOpMode {
     boolean liftActive = false;
     boolean lessenPower = false;
 
-
     private ElapsedTime runtime = new ElapsedTime();
 
     public static final int POLL_RATE = 40;
@@ -104,9 +103,6 @@ public class Teleop extends MyOpMode {
         resetStartTime();
 
         while (opModeIsActive()) {
-
-
-
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive && lessenPower) {
                 motorBL.setPower(-gamepad1.left_stick_y*.25);
                 motorBR.setPower(gamepad1.right_stick_y*.25);
@@ -120,7 +116,6 @@ public class Teleop extends MyOpMode {
                 motorFL.setPower(gamepad1.left_stick_y);
                 motorFR.setPower(-gamepad1.right_stick_y);
             }
-
 
             else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive) {
                 motorBL.setPower(-gamepad1.right_stick_y);
