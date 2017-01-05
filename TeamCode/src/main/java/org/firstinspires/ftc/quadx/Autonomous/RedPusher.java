@@ -45,14 +45,14 @@ public class RedPusher extends MyOpMode {
             moveTo(.2, 100);
         pressRed();
 
-        untilWhiteRange(-.35, -.15, 14, -1000, -5830);
+        untilWhiteRange(-.35, -.15, 15, -1000, -5830);
         if (!fail)
             moveTo(.2, 230);
         pressRed();
 
-        arcTurn(.35, -46);
-        flywheel.setPower(flyPow);
-        moveTo(.25, 2800, 6);
+        arcTurn(.37, -41.5);
+        setFly(flyPow);
+        moveTo(.25, 2900, 6);
         delay(4000);
         door.setPosition(DOOR_OPEN);
         delay(1100);
