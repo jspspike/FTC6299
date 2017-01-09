@@ -30,9 +30,10 @@ public class ShootRed extends MyOpMode {
 
         flywheel.setPower(flyPow);
 
+        delay(3000);
         arcTurn(.2, -30);
         moveTo(.2, 3200, 8);
-        delay(7000);
+        delay(4000);
         door.setPosition(DOOR_OPEN);
         delay(500);
         door.setPosition(DOOR_CLOSED);

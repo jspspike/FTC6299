@@ -40,7 +40,7 @@ public class RedPusher extends MyOpMode {
 
         moveTo(.25, moveVal);
         arcTurnCorr(-.5, 44.3);
-        untilWhite(-.15, -.15, -100, -2400);
+        untilWhite(-.15, -.15, -100, -2100);
         if (!fail)
             moveTo(.2, 100);
         pressRed();
@@ -50,12 +50,13 @@ public class RedPusher extends MyOpMode {
             moveTo(.2, 230);
         pressRed();
 
+        moveTo(.3, 325);
         arcTurn(.37, -41.5);
         setFly(flyPow);
-        moveTo(.25, 2900, 6);
+        moveTo(.25, 3000, 6);
         delay(4000);
         door.setPosition(DOOR_OPEN);
         delay(1100);
-        moveTo(.2, 1800, 6);
+        moveTo(.2, 1900, 6);
     }
 }

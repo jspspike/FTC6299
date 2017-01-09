@@ -28,11 +28,12 @@ public class Shoot extends MyOpMode {
 
         telemetry.addData("Volatage", startingVoltage);
 
-        flywheel.setPower(flyPow);
 
+        delay(3000);
         arcTurn(.2, 40);
+        flywheel.setPower(flyPow);
         moveTo(.2, 2800, 8);
-        delay(7000);
+        delay(4000);
         door.setPosition(DOOR_OPEN);
         delay(500);
         door.setPosition(DOOR_CLOSED);
