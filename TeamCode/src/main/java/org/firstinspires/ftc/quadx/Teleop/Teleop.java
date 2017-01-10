@@ -58,8 +58,10 @@ public class Teleop extends MyOpMode {
         lServoL = hardwareMap.servo.get("servoL");
         lServoR = hardwareMap.servo.get("servoR");
 
-        fly.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
         manip.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -83,7 +85,7 @@ public class Teleop extends MyOpMode {
 
 
         telemetry.addData("Volatage", startingVoltage);
-        flyPow = flyPow();
+        flyPow = .5;
 
 
 
