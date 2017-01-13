@@ -164,12 +164,12 @@ public class Teleop extends MyOpMode {
                 manip.setPower(0);
             }
 
-            if (gamepad2.left_trigger > .05) {
+            if (gamepad2.right_trigger > .05) {
                 lServoL.setPosition(LEFT_SERVO_CLOSE);
                 lServoR.setPosition(RIGHT_SERVO_CLOSE);
             }
 
-            else if (gamepad2.right_trigger > .05) {
+            else if (gamepad2.left_trigger > .05) {
                 lServoL.setPosition(LEFT_SERVO_OPEN);
                 lServoR.setPosition(RIGHT_SERVO_OPEN);
             }

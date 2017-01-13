@@ -31,9 +31,9 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double BUTTONP_LEFT = 1;
     public static final double BUTTONP_RIGHT = 0;
     public static final double LEFT_SERVO_CLOSE = 0;
-    public static final double LEFT_SERVO_OPEN = .7;
-    public static final double RIGHT_SERVO_CLOSE = .8;
-    public static final double RIGHT_SERVO_OPEN = 0.15;
+    public static final double LEFT_SERVO_OPEN = .8;
+    public static final double RIGHT_SERVO_CLOSE = 1;
+    public static final double RIGHT_SERVO_OPEN = .2;
 
     public boolean flyWheelRunning = true;
 
