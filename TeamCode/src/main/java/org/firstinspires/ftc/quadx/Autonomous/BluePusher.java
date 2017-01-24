@@ -27,8 +27,8 @@ public class BluePusher extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        double flyPow = flyPow();
-        int moveVal = encoderPow();
+        double flyPow = .66;
+        int moveVal = encoderPow() + 40;
 
         waitForStart();
 
@@ -43,7 +43,7 @@ public class BluePusher extends MyOpMode {
 
         moveTo(.25, moveVal, .6, 1.5);
         arcTurnCorr(.5, -44.3);
-        untilWhite(.15, .15, 100, 2100);
+        untilWhite(.15, .15, 100, 1900);
         if (!fail)
             moveTo(.2, -140, .6, 1.5);
         pressBlue();
@@ -54,12 +54,12 @@ public class BluePusher extends MyOpMode {
         setManip(0);
         pressBlue();
 
-        moveTo(.2, -600);
+        moveTo(.2, -650);
         arcTurn(.45, -70, false);
-        arcTurn(.5, -61 );
-        setFly(flyPow);
-        moveTo(.2, 2520, 6);
-        delay(4000);
+        arcTurn(.5, -61.2);
+        flywheel.setPower(flyPow);
+        moveTo(.2, 2650, 6);
+        delay(1000);
         door.setPosition(DOOR_OPEN);
         delay(1100);
         moveTo(.2, 1600, 6);

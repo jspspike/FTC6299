@@ -5,12 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
 
 /**
- * Created by jspspike on 11/3/16.
+ * Created by jspspike on 1/15/17.
  */
 
-
-@Autonomous(name="Blue Pusher Long", group="Blue")
-public class BluePusherLong extends MyOpMode {
+@Autonomous(name="Red Pusher Long", group="Red")
+public class RedPusherLong extends MyOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hardwareMap();
@@ -27,10 +26,13 @@ public class BluePusherLong extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        double flyPow = .66;
-        int moveVal = encoderPow();
+        double flyPow = .68;
+        int moveVal = (encoderPow() + 3180) * -1;
+        double turnVal;
 
         waitForStart();
+
+        turnVal = getGyroYaw();
 
 
         telemetry.addData("MoveVal", moveVal);
@@ -39,24 +41,23 @@ public class BluePusherLong extends MyOpMode {
         floorL.enableLed(true);
         floorR.enableLed(true);
 
-        setManip(-.3);
 
-        moveTo(.25, moveVal, .6, 1.5);
-        arcTurnCorr(.5, -44.3);
-        untilWhiteRange(.35, .15, 15, 1800, 7000);
+        moveTo(-.25, moveVal, .6, 1.5);
+        arcTurnCorr(-.5, turnVal * -1 + .7);
+        untilWhiteRange(-.35, -.15, 15, 800, 3800);
         if (!fail)
-            moveTo(.2, -200, .6, 1.5);
+            moveTo(.2, 140, .6, 1.5);
         pressBlue();
 
-        untilWhiteRange(-.35, -.15, 15, 1500, 7000);
+        untilWhiteRange(.35, .15, 15, -1600, -5500);
         if (!fail)
-            moveTo(.2, 200, .6, 1.5);
+            moveTo(.2, -220, .6, 1.5);
         setManip(0);
         pressBlue();
 
-        arcTurn(.45, -85);
-        flywheel.setPower(flyPow);
-        moveTo(.2, 2050, 6);
+        arcTurn(.45, -75, false);
+        setFly(flyPow);
+        moveTo(.2, 1500);
         delay(1000);
         door.setPosition(DOOR_OPEN);
         delay(1100);

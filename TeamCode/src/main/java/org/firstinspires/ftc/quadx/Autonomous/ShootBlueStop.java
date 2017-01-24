@@ -9,8 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Shoot", group="Blue")
-public class Shoot extends MyOpMode {
+@Autonomous(name="Shoot Stop", group="Blue")
+public class ShootBlueStop extends MyOpMode {
 
 
     @Override
@@ -38,8 +38,5 @@ public class Shoot extends MyOpMode {
         delay(4000);
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
-        delay(5000);
-
-        moveTo(.4, 3600);
     }
 }

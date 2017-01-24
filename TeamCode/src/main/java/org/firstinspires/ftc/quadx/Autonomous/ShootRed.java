@@ -19,7 +19,7 @@ public class ShootRed extends MyOpMode {
         initSensors();
 
 
-        double flyPow = flyPow();
+        double flyPow = .66;
         waitForStart();
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -28,22 +28,17 @@ public class ShootRed extends MyOpMode {
         telemetry.addData("Volatage", startingVoltage);
 
 
+        delay(8000);
+        arcTurn(.5, -32);
         flywheel.setPower(flyPow);
-
-        delay(3000);
-        arcTurn(.2, -30);
         moveTo(.2, 3200, 8);
+        delay(2000);
+        door.setPosition(DOOR_OPEN);
         delay(4000);
-        door.setPosition(DOOR_OPEN);
-        delay(500);
         door.setPosition(DOOR_CLOSED);
-        delay(1500);
-        door.setPosition(DOOR_OPEN);
-        delay(900);
-        door.setPosition(DOOR_CLOSED);
-        delay(1000);
         flywheel.setPower(0);
+        delay(5000);
 
-        moveTo(.4, 3800);
+        moveTo(.4, 3600);
     }
 }

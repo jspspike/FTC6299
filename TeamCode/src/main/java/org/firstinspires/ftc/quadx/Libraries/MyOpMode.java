@@ -85,6 +85,7 @@ public abstract class MyOpMode extends LinearOpMode {
         manip = hardwareMap.dcMotor.get("manip");
         flywheel = hardwareMap.dcMotor.get("fly");
 
+        flywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         flywheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         buttonPusher = hardwareMap.servo.get("buttonP");
@@ -717,7 +718,7 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError - deg;
     }
 
-    public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail) throws InterruptedException {untilWhiteRange(pow, powWhite, cm, deg, degFail, .6, 1.4, 7000);}
+    public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail) throws InterruptedException {untilWhiteRange(pow, powWhite, cm, deg, degFail, .6, 1.5, 7000);}
 
     public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail, double threshold, double reduction, int tim) throws InterruptedException {
 
@@ -797,11 +798,11 @@ public abstract class MyOpMode extends LinearOpMode {
         if (pow > 0) {
             while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
                 if (getUltraDistance() > cm && getGyroYaw() < 3) {
-                    setMotors(powWhite, powWhite / (reduction));
+                    setMotors(powWhite, powWhite / (reduction + .05));
                 }
 
                 else if (getUltraDistance() < cm && getGyroYaw() > -3) {
-                    setMotors(powWhite / (reduction), powWhite);
+                    setMotors(powWhite / (reduction + .05), powWhite);
                 }
 
                 else {
@@ -835,11 +836,11 @@ public abstract class MyOpMode extends LinearOpMode {
         else {
             while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
                 if (getUltraDistance() > cm  && getGyroYaw() > -3) {
-                    setMotors(powWhite, powWhite / (reduction));
+                    setMotors(powWhite, powWhite / (reduction + .05));
                 }
 
                 else if (getUltraDistance() < cm  && getGyroYaw() < 3) {
-                    setMotors(powWhite / (reduction), powWhite);
+                    setMotors(powWhite / (reduction + .05), powWhite);
                 }
 
                 else {

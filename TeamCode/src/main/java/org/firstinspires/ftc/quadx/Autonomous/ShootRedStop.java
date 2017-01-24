@@ -9,9 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Shoot", group="Blue")
-public class Shoot extends MyOpMode {
-
+@Autonomous(name="Shoot Red Stop", group="Red")
+public class ShootRedStop extends MyOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,8 +18,8 @@ public class Shoot extends MyOpMode {
         initServos();
         initSensors();
 
-        double flyPow = .66;
 
+        double flyPow = .66;
         waitForStart();
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -30,16 +29,13 @@ public class Shoot extends MyOpMode {
 
 
         delay(8000);
-        arcTurn(.5, 40);
+        arcTurn(.5, -32);
         flywheel.setPower(flyPow);
-        moveTo(.2, 2800, 8);
+        moveTo(.2, 3200, 8);
         delay(2000);
         door.setPosition(DOOR_OPEN);
         delay(4000);
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
-        delay(5000);
-
-        moveTo(.4, 3600);
     }
 }
