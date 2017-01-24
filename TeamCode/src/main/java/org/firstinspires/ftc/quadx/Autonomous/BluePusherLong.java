@@ -9,8 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Blue Pusher", group="Blue")
-public class BluePusher extends MyOpMode {
+@Autonomous(name="Blue Pusher Long", group="Blue")
+public class BluePusherLong extends MyOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         hardwareMap();
@@ -28,7 +28,7 @@ public class BluePusher extends MyOpMode {
         telemetry.update();
 
         double flyPow = .66;
-        int moveVal = encoderPow() + 40;
+        int moveVal = encoderPow();
 
         waitForStart();
 
@@ -43,22 +43,20 @@ public class BluePusher extends MyOpMode {
 
         moveTo(.25, moveVal, .6, 1.5);
         arcTurnCorr(.5, -44.3);
-        untilWhite(.15, .15, 100, 1900);
-        if (!fail)
-            moveTo(.2, -140, .6, 1.5);
-        pressBlue();
-
-        untilWhiteRange(.35, .15, 15, 1450, 5930);
+        untilWhiteRange(.35, .15, 15, 1800, 7000);
         if (!fail)
             moveTo(.2, -200, .6, 1.5);
+        pressBlue();
+
+        untilWhiteRange(-.35, -.15, 15, 1500, 7000);
+        if (!fail)
+            moveTo(.2, 200, .6, 1.5);
         setManip(0);
         pressBlue();
 
-        moveTo(.2, -650);
-        arcTurn(.45, -70, false);
-        arcTurn(.5, -61.2);
+        arcTurn(.45, -85);
         flywheel.setPower(flyPow);
-        moveTo(.2, 2650, 6);
+        moveTo(.2, 2050, 6);
         delay(1000);
         door.setPosition(DOOR_OPEN);
         delay(1100);

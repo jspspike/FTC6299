@@ -29,8 +29,8 @@ public class RedPusher extends MyOpMode {
         telemetry.addData("Gyro", "Finished");
         telemetry.update();
 
-        double flyPow = flyPow();
-        int moveVal = -(encoderPow() + 40);
+        double flyPow = .66;
+        int moveVal = -(encoderPow() + 70);
 
         waitForStart();
 
@@ -38,24 +38,25 @@ public class RedPusher extends MyOpMode {
         floorR.enableLed(true);
 
 
-        moveTo(.2, moveVal);
+        moveTo(.25, moveVal);
         arcTurnCorr(-.5, 44.3);
-        untilWhite(-.15, -.15, 100, 3000);
-        moveTo(.2, 100);
+        untilWhite(-.15, -.15, -100, -1900);
+        if (!fail)
+            moveTo(.2, 100);
         pressRed();
 
-        untilWhiteRange(-.35, -.15, 14, -1000, -5000);
-        moveTo(.2, 230);
+        untilWhiteRange(-.35, -.15, 15, -1000, -5830);
+        if (!fail)
+            moveTo(.2, 230);
         pressRed();
 
-        arcTurn(.35, -46);
-        flywheel.setPower(flyPow);
-        moveTo(.25, 2800, 6);
-        delay(3500);
-        door.setPosition(DOOR_OPEN);
+        moveTo(.3, 325);
+        arcTurn(.37, -41.5);
+        setFly(flyPow);
+        moveTo(.25, 3150, 6);
         delay(1000);
-        flywheel.setPower(0);
-
-        moveTo(.2, 1800, 6);
+        door.setPosition(DOOR_OPEN);
+        delay(1100);
+        moveTo(.2, 1900, 6);
     }
 }
