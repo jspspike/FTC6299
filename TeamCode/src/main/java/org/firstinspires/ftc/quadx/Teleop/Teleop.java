@@ -188,10 +188,10 @@ public class Teleop extends MyOpMode {
             }
 
             if (gamepad1.right_trigger > .5){
-                manip.setPower(1);
+                manip.setPower(-1);
             }
             else if (gamepad1.left_trigger > .5){
-                manip.setPower(-1);
+                manip.setPower(1);
             }
             else {
                 manip.setPower(0);
@@ -220,7 +220,7 @@ public class Teleop extends MyOpMode {
                 buttonP.setPosition(.5);
 
             if (Math.abs(gamepad2.left_stick_y) > .05) {
-                liftL.setPower(gamepad2.left_stick_y);
+                liftL.setPower(-gamepad2.left_stick_y);
                 liftR.setPower(-gamepad2.left_stick_y);
             }
 

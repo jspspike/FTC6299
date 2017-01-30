@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
@@ -137,12 +136,12 @@ public abstract class MyOpMode extends LinearOpMode {
 
         ultraDistance = -1;
 
-        gyroParam                     = new BNO055IMU.Parameters();
-        gyroParam.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        gyroParam.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        gyroParam = new BNO055IMU.Parameters();
+        gyroParam.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        gyroParam.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         gyroParam.calibrationDataFile = "AdafruitIMUCalibration.json";
-        gyroParam.loggingEnabled      = true;
-        gyroParam.loggingTag          = "Gryo";
+        gyroParam.loggingEnabled = true;
+        gyroParam.loggingTag = "Gryo";
         gyroParam.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
 
@@ -162,10 +161,12 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void delay(long milliseconds) {
+        if (milliseconds < 0)
+            milliseconds = 0;
+
         try {
             Thread.sleep(milliseconds);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
         }
     }
@@ -219,9 +220,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (startingVoltage > 13.8) {
             return 4740;
-        }
-
-        else if (startingVoltage > 13.5) {
+        } else if (startingVoltage > 13.5) {
             return 4735;
         }
 
@@ -236,29 +235,17 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (startingVoltage >= 13.8) {
             return .39;
-        }
-
-        else if (startingVoltage >= 13.5) {
+        } else if (startingVoltage >= 13.5) {
             return .40;
-        }
-
-        else if (startingVoltage >= 13.3) {
+        } else if (startingVoltage >= 13.3) {
             return .41;
-        }
-
-        else if (startingVoltage >= 13) {
+        } else if (startingVoltage >= 13) {
             return .42;
-        }
-
-        else if (startingVoltage >= 12.7) {
+        } else if (startingVoltage >= 12.7) {
             return .43;
-        }
-
-        else if (startingVoltage >= 12.5) {
+        } else if (startingVoltage >= 12.5) {
             return .44;
-        }
-
-        else if (startingVoltage >= 12.3) {
+        } else if (startingVoltage >= 12.3) {
             return .46;
         }
 
@@ -269,7 +256,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         double turnAbs = Math.abs(turn);
         Orientation angles = gyro.getAngularOrientation();
-        if (turnAbs > 270 && Math.abs(angles.firstAngle)< 90)
+        if (turnAbs > 270 && Math.abs(angles.firstAngle) < 90)
             return (Math.abs(angles.firstAngle) - (turnAbs - 360));
         else if (turnAbs < 90 && Math.abs(angles.firstAngle) > 270)
             return ((Math.abs(angles.firstAngle) - 360) - turnAbs);
@@ -316,15 +303,16 @@ public abstract class MyOpMode extends LinearOpMode {
                 delay(1);
                 idle();
             }
-        }
-        else for (; currentPosition < pos; currentPosition += .005) {
+        } else for (; currentPosition < pos; currentPosition += .005) {
             servo.setPosition(currentPosition);
             delay(1);
             idle();
         }
     }
 
-    public void turnPID(double pow, double deg) throws InterruptedException {turnPID(pow, deg, 5000);}
+    public void turnPID(double pow, double deg) throws InterruptedException {
+        turnPID(pow, deg, 5000);
+    }
 
     public void turnPID(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
@@ -368,7 +356,9 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void turn(double pow, double deg) throws InterruptedException {turn(pow, deg, 15000);}
+    public void turn(double pow, double deg) throws InterruptedException {
+        turn(pow, deg, 15000);
+    }
 
     public void turn(double pow, double deg, int tim) throws InterruptedException {
 
@@ -387,9 +377,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(pow, -pow);
                 idle();
             }
-        }
-
-        else {
+        } else {
             while (deg < getGyroYaw() && time.milliseconds() < tim) {
                 setMotors(-pow, pow);
                 idle();
@@ -399,11 +387,17 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void moveToRange(double pow, double deg, int cm) throws InterruptedException {moveToRange(pow, deg, cm, 1.5);}
+    public void moveToRange(double pow, double deg, int cm) throws InterruptedException {
+        moveToRange(pow, deg, cm, 1.5);
+    }
 
-    public void moveToRange(double pow, double deg, int cm, double threshold) throws InterruptedException {moveToRange(pow, deg, cm, threshold, 4.0);}
+    public void moveToRange(double pow, double deg, int cm, double threshold) throws InterruptedException {
+        moveToRange(pow, deg, cm, threshold, 4.0);
+    }
 
-    public void moveToRange(double pow, double deg, int cm, double threshold, double red) throws InterruptedException { moveToRange(pow, deg, cm, threshold, red, 15000);}
+    public void moveToRange(double pow, double deg, int cm, double threshold, double red) throws InterruptedException {
+        moveToRange(pow, deg, cm, threshold, red, 15000);
+    }
 
     public void moveToRange(double pow, double deg, int cm, double threshold, double red, int tim) throws InterruptedException {
 
@@ -418,7 +412,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(deg > getEncoderAverage() && time.milliseconds() < tim) {
+            while (deg > getEncoderAverage() && time.milliseconds() < tim) {
                 if (getUltraDistance() < cm)
                     setMotors(pow / (red * .5), pow);
                 else if (getUltraDistance() > cm)
@@ -437,17 +431,15 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-
-        else {
-            while(Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
+        } else {
+            while (Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
                 if (getUltraDistance() < cm)
                     setMotors(pow / (red * 1.5), pow);
                 else if (getUltraDistance() > cm)
                     setMotors(pow, pow / (red * 1.5));
                 else {
                     if (getGyroYaw() > threshold)
-                        setMotors(pow , pow / red);
+                        setMotors(pow, pow / red);
                     else if (getGyroYaw() < -threshold)
                         setMotors(pow / red, pow);
                     else
@@ -463,11 +455,17 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void moveTo(double pow, double deg) throws InterruptedException {moveTo(pow, deg, .6);}
+    public void moveTo(double pow, double deg) throws InterruptedException {
+        moveTo(pow, deg, .6);
+    }
 
-    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {moveTo(pow, deg, threshold, 2.2   );}
+    public void moveTo(double pow, double deg, double threshold) throws InterruptedException {
+        moveTo(pow, deg, threshold, 2.2);
+    }
 
-    public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException { moveTo(pow, deg, threshold, red, 15000, true);}
+    public void moveTo(double pow, double deg, double threshold, double red) throws InterruptedException {
+        moveTo(pow, deg, threshold, red, 15000, true);
+    }
 
     public void moveTo(double pow, double deg, double threshold, double red, int tim, boolean stop) throws InterruptedException {
 
@@ -484,7 +482,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
                 if (getGyroYaw() + gyroError > threshold)
                     setMotors(pow / red, pow);
                 else if (getGyroYaw() + gyroError < -threshold)
@@ -498,12 +496,10 @@ public abstract class MyOpMode extends LinearOpMode {
                 Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
-        }
-
-        else {
-            while(opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
+        } else {
+            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
                 if (getGyroYaw() + gyroError > threshold)
-                    setMotors(-pow , -pow / red);
+                    setMotors(-pow, -pow / red);
                 else if (getGyroYaw() + gyroError < -threshold)
                     setMotors(-pow / red, -pow);
                 else
@@ -524,8 +520,9 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
 
-
-    public void turnCorr(double pow, double deg) throws InterruptedException {turnCorr(pow, deg, 8000);}
+    public void turnCorr(double pow, double deg) throws InterruptedException {
+        turnCorr(pow, deg, 8000);
+    }
 
     public void turnCorr(double pow, double deg, int tim) throws InterruptedException {
         if (!opModeIsActive())
@@ -540,7 +537,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(deg > getGyroYaw() && time.milliseconds() < tim) {
+            while (deg > getGyroYaw() && time.milliseconds() < tim) {
                 newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
 
                 if (newPow < .15)
@@ -551,10 +548,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-        else {
-            while(deg < getGyroYaw() && time.milliseconds() < tim) {
-                newPow = pow * (Math.abs(deg - getGyroYaw()) /80);
+        } else {
+            while (deg < getGyroYaw() && time.milliseconds() < tim) {
+                newPow = pow * (Math.abs(deg - getGyroYaw()) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
@@ -585,7 +581,9 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void arcTurnCorr(double pow, double deg) throws InterruptedException {arcTurnCorr(pow, deg, 6000);}
+    public void arcTurnCorr(double pow, double deg) throws InterruptedException {
+        arcTurnCorr(pow, deg, 6000);
+    }
 
     public void arcTurnCorr(double pow, double deg, int tim) throws InterruptedException {
 
@@ -601,7 +599,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+            while (opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
                 newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
 
                 if (newPow < .15)
@@ -616,9 +614,8 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-        else {
-            while(opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+        } else {
+            while (opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
                 newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
 
                 if (newPow < .15)
@@ -663,9 +660,13 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError - deg;
     }
 
-    public void arcTurn(double pow, double deg) throws InterruptedException {arcTurn(pow, deg, true);}
+    public void arcTurn(double pow, double deg) throws InterruptedException {
+        arcTurn(pow, deg, true);
+    }
 
-    public void arcTurn(double pow, double deg, boolean stop) throws InterruptedException {arcTurn(pow, deg, stop, 6000);}
+    public void arcTurn(double pow, double deg, boolean stop) throws InterruptedException {
+        arcTurn(pow, deg, stop, 6000);
+    }
 
     public void arcTurn(double pow, double deg, boolean stop, int tim) throws InterruptedException {
 
@@ -681,7 +682,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg + gyroError > 0) {
-            while(opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+            while (opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
                 newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
 
                 if (newPow < .15)
@@ -695,10 +696,9 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-        else {
-            while(opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
-                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) /80);
+        } else {
+            while (opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
 
                 if (newPow < .15)
                     newPow = .15;
@@ -719,7 +719,9 @@ public abstract class MyOpMode extends LinearOpMode {
         gyroError = getGyroYaw() + gyroError - deg;
     }
 
-    public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail) throws InterruptedException {untilWhiteRange(pow, powWhite, cm, deg, degFail, .6, 1.5, 7000);}
+    public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail) throws InterruptedException {
+        untilWhiteRange(pow, powWhite, cm, deg, degFail, .6, 1.5, 7000);
+    }
 
     public void untilWhiteRange(double pow, double powWhite, double cm, double deg, int degFail, double threshold, double reduction, int tim) throws InterruptedException {
 
@@ -738,17 +740,13 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
 
                 if (getUltraDistance() > cm && getGyroYaw() < 3) {
                     setMotors(pow, pow / (reduction));
-                }
-
-                else if (getUltraDistance() < cm && getGyroYaw() > -3) {
+                } else if (getUltraDistance() < cm && getGyroYaw() > -3) {
                     setMotors(pow / (reduction), pow);
-                }
-
-                else {
+                } else {
 
                     if (getGyroYaw() + gyroError > threshold)
                         setMotors(pow / (reduction), pow);
@@ -765,20 +763,14 @@ public abstract class MyOpMode extends LinearOpMode {
                     idle();
                 }
             }
-        }
+        } else {
+            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
 
-        else {
-            while(opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
-
-                if (getUltraDistance() > cm && getGyroYaw() > - 3) {
+                if (getUltraDistance() > cm && getGyroYaw() > -3) {
                     setMotors(pow, pow / (reduction));
-                }
-
-                else if (getUltraDistance() < cm && getGyroYaw() < 3) {
+                } else if (getUltraDistance() < cm && getGyroYaw() < 3) {
                     setMotors(pow / (reduction), pow);
-                }
-
-                else {
+                } else {
                     if (getGyroYaw() + gyroError > threshold)
                         setMotors(pow, pow / (reduction));
                     else if (getGyroYaw() + gyroError < -threshold)
@@ -800,13 +792,9 @@ public abstract class MyOpMode extends LinearOpMode {
             while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
                 if (getUltraDistance() > cm && getGyroYaw() < 3) {
                     setMotors(powWhite, powWhite / (reduction + .05));
-                }
-
-                else if (getUltraDistance() < cm && getGyroYaw() > -3) {
+                } else if (getUltraDistance() < cm && getGyroYaw() > -3) {
                     setMotors(powWhite / (reduction + .05), powWhite);
-                }
-
-                else {
+                } else {
 
                     if (getGyroYaw() + gyroError > threshold)
                         setMotors(powWhite / reduction, powWhite);
@@ -832,19 +820,13 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-
-        else {
+        } else {
             while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
-                if (getUltraDistance() > cm  && getGyroYaw() > -3) {
+                if (getUltraDistance() > cm && getGyroYaw() > -3) {
                     setMotors(powWhite, powWhite / (reduction + .05));
-                }
-
-                else if (getUltraDistance() < cm  && getGyroYaw() < 3) {
+                } else if (getUltraDistance() < cm && getGyroYaw() < 3) {
                     setMotors(powWhite / (reduction + .05), powWhite);
-                }
-
-                else {
+                } else {
                     if (getGyroYaw() + gyroError > threshold) {
                         setMotors(powWhite, powWhite / reduction);
                     } else if (getGyroYaw() + gyroError < -threshold) {
@@ -876,9 +858,13 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void untilWhite(double pow, double powWhite) throws InterruptedException {untilWhite(pow, powWhite, 0, 10000);}
+    public void untilWhite(double pow, double powWhite) throws InterruptedException {
+        untilWhite(pow, powWhite, 0, 10000);
+    }
 
-    public void untilWhite(double pow, double powWhite, int deg, int degFail) throws InterruptedException {untilWhite(pow, powWhite, deg, degFail, .6, 1.75, 7000);}
+    public void untilWhite(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
+        untilWhite(pow, powWhite, deg, degFail, .6, 1.75, 7000);
+    }
 
     public void untilWhite(double pow, double powWhite, int deg, int degFail, double threshold, double reduction, int tim) throws InterruptedException {
 
@@ -897,7 +883,7 @@ public abstract class MyOpMode extends LinearOpMode {
         time.reset();
 
         if (deg > 0) {
-            while(opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
 
                 if (getGyroYaw() + gyroError > threshold)
                     setMotors(pow / reduction, pow);
@@ -912,10 +898,8 @@ public abstract class MyOpMode extends LinearOpMode {
                 Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
-        }
-
-        else {
-            while(opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
+        } else {
+            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
 
                 if (getGyroYaw() + gyroError > threshold)
                     setMotors(pow, pow / reduction);
@@ -958,9 +942,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-
-        else {
+        } else {
             while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
 
                 if (getGyroYaw() + gyroError > threshold) {
@@ -997,7 +979,7 @@ public abstract class MyOpMode extends LinearOpMode {
         int count = 0;
 
         while (count < turns) {
-            while(floorR.getRawLightDetected() > grayR - .4) {
+            while (floorR.getRawLightDetected() > grayR - .4) {
                 setMotors(0, pow);
             }
 
@@ -1034,9 +1016,7 @@ public abstract class MyOpMode extends LinearOpMode {
             buttonPusher.setPosition(BUTTONP_LEFT);
             delay(800);
             buttonPusher.setPosition(BUTTONP_CENTER);
-        }
-
-        else {
+        } else {
             buttonPusher.setPosition(.55);
             delay(100);
             buttonPusher.setPosition(BUTTONP_RIGHT);
@@ -1066,9 +1046,7 @@ public abstract class MyOpMode extends LinearOpMode {
             delay(800);
             buttonPusher.setPosition(BUTTONP_CENTER);
 
-        }
-
-        else {
+        } else {
             buttonPusher.setPosition(.55);
             delay(100);
             buttonPusher.setPosition(BUTTONP_RIGHT);
@@ -1076,7 +1054,6 @@ public abstract class MyOpMode extends LinearOpMode {
             buttonPusher.setPosition(BUTTONP_CENTER);
         }
     }
-
 
 
     public void flyWheel(final double desiredSpeed) {
@@ -1118,7 +1095,65 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         };
     }
-    public void untilRange(double pow) throws InterruptedException {untilRange(pow, 30, .5, 2.2, 7000);}
+
+    public void untilWhiteAlign(double pow, double seekPow, double dis, double failDis) throws InterruptedException {
+        untilWhiteAlign(pow, seekPow, dis, failDis, .9, false);
+    }
+
+    public void untilWhiteAlign(double pow, double seekPow, double dis, double failDis, double reduction, boolean alignMove) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        resetEncoders();
+        delay(MOVEMENT_DELAY);
+
+        fail = false;
+
+        if (pow > 0) {
+            while (opModeIsActive() && getGyroYaw() > 2 && alignMove) {
+                setMotors(pow, pow);
+            }
+
+            while (dis > getEncoderAverage()) {
+                setMotors(pow, pow * reduction);
+            }
+
+            while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5)) {
+                setMotors(pow, pow * reduction);
+                if (getEncoderAverage() > failDis) {
+                    untilWhiteAlign(-.15, -.15, 0, 2700, .95, false);
+                    moveTo(.2, 90, .6, 1.5);
+                    fail = true;
+                    break;
+                }
+            }
+        } else {
+            while (opModeIsActive() && getGyroYaw() < -2 && alignMove) {
+                setMotors(pow, pow);
+            }
+
+            while (dis > getEncoderAverage()) {
+                setMotors(pow, pow * reduction);
+            }
+
+            while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5)) {
+                setMotors(seekPow, pow * reduction);
+                if (getEncoderAverage() > failDis) {
+                    untilWhiteAlign(.15, .15, 0, 2700, .95, false);
+                    moveTo(.2, -90, .6, 1.5);
+                    fail = true;
+                    break;
+                }
+            }
+        }
+
+        stopMotors();
+    }
+
+    public void untilRange(double pow) throws InterruptedException {
+        untilRange(pow, 30, .5, 2.2, 7000);
+    }
 
     public void untilRange(double pow, double endDistance, double threshold, double reduction, int tim) throws InterruptedException {
 
@@ -1145,17 +1180,13 @@ public abstract class MyOpMode extends LinearOpMode {
                 telemetry.update();
                 idle();
             }
-        }
-
-        else {
+        } else {
             while (opModeIsActive() && (getUltraDistance() > endDistance) && time.milliseconds() < tim) {
                 if (getGyroYaw() > threshold) {
                     setMotors(pow, pow / reduction);
-                }
-                else if (getGyroYaw() < -threshold) {
+                } else if (getGyroYaw() < -threshold) {
                     setMotors(pow / reduction, pow);
-                }
-                else {
+                } else {
                     setMotors(pow, pow);
                 }
 
@@ -1168,4 +1199,39 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
     }
+
+    public void moveParallel(double pow) {
+        if (!opModeIsActive())
+            return;
+
+        resetEncoders();
+        delay(MOVEMENT_DELAY);
+
+        while (getGyroYaw() > 3) {
+            setMotors(pow, pow);
+        }
+
+        stopMotors();
+    }
+
+
+    public void moveWhiteAlign(double pow, double reduction, double failsafe) {
+        if (!opModeIsActive())
+            return;
+
+        resetEncoders();
+        delay(MOVEMENT_DELAY);
+
+        while (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) {
+            if (getGyroYaw() > -2) {
+                setMotors(pow, pow * reduction);
+            } else if (getGyroYaw() < -2) {
+                setMotors(pow, .16 * (pow / Math.abs(getGyroYaw())));
+            }
+        }
+        stopMotors();
+        idle();
+    }
 }
+
+
