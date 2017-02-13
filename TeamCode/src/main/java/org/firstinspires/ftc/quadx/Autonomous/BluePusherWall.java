@@ -47,11 +47,17 @@ public class BluePusherWall extends MyOpMode {
         delay(delay);
 
         flywheel.setPower(flyPow);
-        moveTo(.35, 1500);
+        moveTo(.35, 1500, .6, 1.5);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurn(.45, 35);
-        untilWhiteAlign(.3, .15, 7000, 10000);
+        arcTurn(.45, 25);
+        moveAlign(.4, .2, 8000, 12000);
+        untilWhiteAlign(-.3, -.15, 0, 3000, .5, false, true);
+        if (!fail)
+            moveTo(.2, 170, .6, 1.5);
+        untilWhiteAlign(-.3, -.15, 2000, 5000, .5, false, false);
+        if (!fail)
+            moveTo(.2, 170, .6, 1.5);
     }
 }
