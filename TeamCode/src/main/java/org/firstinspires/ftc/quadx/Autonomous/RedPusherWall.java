@@ -9,8 +9,8 @@ import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
  */
 
 
-@Autonomous(name="Blue Pusher Wall", group="Blue")
-public class BluePusherWall extends MyOpMode {
+@Autonomous(name="Red Pusher Wall", group="Red")
+public class RedPusherWall extends MyOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -22,6 +22,13 @@ public class BluePusherWall extends MyOpMode {
 
         int delay = 0;
         double flyPow = .625;
+
+        double encoderDis = 5100;
+
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
+            encoderDis = 5150;
+            flyPow = .625;
+        }
 
         while (!opModeIsActive()) {
 
@@ -42,19 +49,13 @@ public class BluePusherWall extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        double encoderDis = 4600;
-
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            encoderDis = 4565;
-            flyPow = .625;
-        }
-
         waitForStart();
 
-        winch.setPower(-1);
+
+        winch.setPower(1);
         delay(1000);
-        hold.setPosition(HOLD_HOLD);
         winch.setPower(0);
+        hold.setPosition(HOLD_HOLD);
 
         delay(delay * 1000);
 
@@ -63,20 +64,21 @@ public class BluePusherWall extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurn(.55, 50);
-        moveTo(.35, encoderDis, 6, 1.5);
-        arcTurn(.5, -40);
-        untilWhiteAlign(.3, .17, 2000, 4500);
+        arcTurn(-.55, 65);
+        arcTurn(-.55, 60);
+        moveTo(-.35, 5150, .6, 1.5);
+        arcTurn(-.55, 45);
+        untilWhiteAlign(-.3, -.15, 2000, 5500);
         if (!fail)
-            moveTo(-.2, 190, .6, 1.5);
-        pressBlue();
-        untilWhiteAlign(-.3, -.15, 2300, 6200);
+            moveTo(.2, 170, .6, 1.5);
+        pressRed();
+        untilWhiteAlign(.3, .15, 3000, 6000);
         if (!fail)
-            moveTo(.2, 190, .6, 1.5);
-        pressBlue();
+            moveTo(-.2, 170, .6, 1.5);
+        pressRed();
         arcTurn(.4, -90);
-        moveTo(.35, 2700, .6, 1.5);
-        arcTurn(.4, -80);
+        moveTo(.35, 2500, .6, 1.5);
+        arcTurn(.4, 80);
 
         winch.setPower(1);
         hold.setPosition(HOLD_DISABLED);

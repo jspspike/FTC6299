@@ -91,11 +91,8 @@ public class Teleop extends MyOpMode {
         telemetry.addData("Volatage", startingVoltage);
         flyPow = .65;
 
-
-
         waitForStart();
         runtime.reset();
-
 
 
         resetStartTime();
@@ -131,7 +128,6 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(-gamepad1.right_stick_y*.25);
             }
 
-
             else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
@@ -139,22 +135,28 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-            if (gamepad1.x) {
-                liftActive = true;
+            if (gamepad1.x && !lessenPower && runtime.milliseconds() > 350) {
+                lessenPower= true;
+                runtime.reset();
+            } else if (gamepad1.x && lessenPower && runtime.milliseconds() > 350) {
+                lessenPower= false;
+                runtime.reset();;
             }
 
-            if (gamepad1.y) {
-                lessenPower = true;
-            }
-            if (gamepad1.a) {
+            if (gamepad1.a && !liftActive && runtime.milliseconds() > 350) {
+                liftActive = true;
+                runtime.reset();
+            } else if (gamepad1.a && liftActive && runtime.milliseconds() > 350) {
                 liftActive = false;
-                lessenPower = false;
+                runtime.reset();
             }
+
             if (gamepad2.right_trigger > .5) {
-                winch.setPower(1.0);
+                winch.setPower(-1.0);
+                delay(400);
                 hold.setPosition(HOLD_HOLD);
             } else if (gamepad2.left_trigger >.5) {
-                winch.setPower(-1.0);
+                winch.setPower(1.0);
                 hold.setPosition(HOLD_DISABLED);
             } else {
                 winch.setPower(0.0);

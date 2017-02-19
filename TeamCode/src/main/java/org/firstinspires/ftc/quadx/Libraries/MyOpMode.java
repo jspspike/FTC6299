@@ -29,10 +29,10 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double DOOR_OPEN = .2;
     public static final double DOOR_CLOSED = .6;
     public static final double ARM_CLOSED =  0.0;
-    public static final double BOOT_CLOSED = 0.0;
-    public static final double BOOT_HOLD = 0.32;
-    public static final double HOLD_DISABLED = .85;
-    public static final double HOLD_HOLD = .5;
+    public static final double BOOT_CLOSED = .2;
+    public static final double BOOT_HOLD = 0.45;
+    public static final double HOLD_DISABLED = .8;
+    public static final double HOLD_HOLD = .35;
 
     public static final double BUTTONP_CENTER = .47;
     public static final double BUTTONP_LEFT = 1;
@@ -167,15 +167,11 @@ public abstract class MyOpMode extends LinearOpMode {
         hold.setPosition(HOLD_DISABLED);
     }
 
-    public void delay(long milliseconds) {
+    public void delay(long milliseconds) throws InterruptedException {
         if (milliseconds < 0)
             milliseconds = 0;
 
-        try {
             Thread.sleep(milliseconds);
-        } catch (Exception e) {
-
-        }
     }
 
     public void setMotors(double left, double right) {
@@ -1005,7 +1001,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void pressRed() {
+    public void pressRed() throws InterruptedException {
 
         if (!opModeIsActive())
             return;
@@ -1033,7 +1029,7 @@ public abstract class MyOpMode extends LinearOpMode {
         }
     }
 
-    public void pressBlue() {
+    public void pressBlue() throws InterruptedException {
 
         if (!opModeIsActive())
             return;
@@ -1047,14 +1043,14 @@ public abstract class MyOpMode extends LinearOpMode {
         blueLeft += beaconR.red() - beaconL.red();
 
         if (blueLeft > 0) {
-            buttonPusher.setPosition(.45);
+            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
             buttonPusher.setPosition(BUTTONP_LEFT);
             delay(800);
             buttonPusher.setPosition(BUTTONP_CENTER);
 
         } else {
-            buttonPusher.setPosition(.55);
+            buttonPusher.setPosition(BUTTONP_CENTER + .03);
             delay(100);
             buttonPusher.setPosition(BUTTONP_RIGHT);
             delay(800);
@@ -1067,7 +1063,11 @@ public abstract class MyOpMode extends LinearOpMode {
         Runnable flyLoop = new Runnable() {
             @Override
             public void run() {
-                delay(300);
+                try {
+                    delay(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
                 int prevEncoderVal;
                 double pow = .65;
@@ -1091,7 +1091,11 @@ public abstract class MyOpMode extends LinearOpMode {
                         e.printStackTrace();
                     }
 
-                    delay(100);
+                    try {
+                        delay(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
                     speed = (flywheel.getCurrentPosition() - prevEncoderVal) / getRuntime();
                     prevEncoderVal = flywheel.getCurrentPosition();
@@ -1105,88 +1109,100 @@ public abstract class MyOpMode extends LinearOpMode {
 
 
 
-    public void untilWhiteAlign(double pow, double seekPow, double dis, double failDis) throws InterruptedException {
-        untilWhiteAlign(pow, seekPow, dis, failDis, .8, true, false);
+    public void untilWhiteAlign(double pow, double powWhite) throws InterruptedException {
+        untilWhiteAlign(pow, powWhite, 0, 10000);
     }
 
-    public void untilWhiteAlign(double pow, double seekPow, double dis, double failDis, double reduction, boolean alignMove, boolean onlyRight) throws InterruptedException {
+    public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
+        untilWhiteAlign(pow, powWhite, deg, degFail, .6, 7000);
+    }
+
+    public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim) throws InterruptedException {
 
         if (!opModeIsActive())
             return;
 
-        resetEncoders();
-        delay(MOVEMENT_DELAY);
-
         fail = false;
 
+        resetEncoders();
+        resetGyro();
+//        grayL = floorL.getRawLightDetected();
+//        grayR = floorR.getRawLightDetected();
+        delay(MOVEMENT_DELAY);
+
+        ElapsedTime time = new ElapsedTime();
+        time.reset();
+
         if (pow > 0) {
-            while (opModeIsActive() && getGyroYaw() > 5 && alignMove) {
-                setMotors(pow, pow);
-                telemetry.addData("Gryo", getGyroYaw());
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+
+                setMotors(pow, pow * reduction);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Encoder", getEncoderAverage());
                 telemetry.update();
-            }
-
-                while (dis > getEncoderAverage()) {
-                    setMotors(pow, pow * reduction);
-                telemetry.addData("Distance", getEncoderAverage());
-                telemetry.update();
-            }
-
-            if (!onlyRight) {
-                while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5)) {
-                    setMotors(pow, pow * reduction);
-                    if (getEncoderAverage() > failDis) {
-                        untilWhiteAlign(-.15, -.15, 0, 2700, .5, false, false);
-                        fail = true;
-                        break;
-                    }
-                }
-            }
-
-            else {
-                while (opModeIsActive() && floorR.getRawLightDetected() < grayR + .5) {
-                    setMotors(pow, pow * reduction);
-                    if (getEncoderAverage() > failDis) {
-                        untilWhiteAlign(-.15, -.15, 0, 2700, .5, false, false);
-                        fail = true;
-                        break;
-                    }
-                }
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
             }
         } else {
-            while (opModeIsActive() && getGyroYaw() - 180 < -5 && alignMove) {
-                setMotors(pow, pow);
-            }
+            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
 
-            while (dis > getEncoderAverage()) {
                 setMotors(pow, pow * reduction);
-                telemetry.addData("Distance", getEncoderAverage());
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Encoder", getEncoderAverage());
                 telemetry.update();
-            }
-
-            if (!onlyRight) {
-                while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5)) {
-                    setMotors(seekPow, pow * reduction);
-                    if (getEncoderAverage() > failDis) {
-                        untilWhiteAlign(.15, .15, 0, 2700, .5, false, false);
-                        fail = true;
-                        break;
-                    }
-                }
-            }
-
-            else {
-                while (opModeIsActive() &&  floorR.getRawLightDetected() < grayR + .5) {
-                    setMotors(seekPow, pow * reduction);
-                    if (getEncoderAverage() > failDis) {
-                        untilWhiteAlign(.15, .15, 0, 2700, .5, false, false);
-                        fail = true;
-                        break;
-                    }
-                }
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
             }
         }
 
+        if (pow > 0) {
+            while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
+
+                setMotors(powWhite, powWhite * reduction);
+
+                if (Math.abs(degFail) < getEncoderAverage()) {
+                    untilWhiteAlign(-.15, -.15, 0, 3000);
+                    moveTo(.2, 100, .6, 1.5);
+                    fail = true;
+                    break;
+                }
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("FloorL", floorL.getRawLightDetected());
+                telemetry.addData("FloorR", floorR.getRawLightDetected());
+                telemetry.addData("Encoder", getEncoderAverage());
+                Log.w("FloorL", "" + floorL.getRawLightDetected());
+                Log.w("FloorR", "" + floorR.getRawLightDetected());
+                telemetry.update();
+                idle();
+            }
+        } else {
+            while (opModeIsActive() && (floorL.getRawLightDetected() < grayL + .5 && floorR.getRawLightDetected() < grayR + .5) && time.milliseconds() < tim) {
+
+                setMotors(powWhite, powWhite * reduction);
+
+                if (Math.abs(degFail) < getEncoderAverage()) {
+                    untilWhiteAlign(.15, .15, 0, 3000);
+                    moveTo(.2, -150, .6, 1.5);
+                    fail = true;
+                    break;
+                }
+
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("FloorL", floorL.getRawLightDetected());
+                telemetry.addData("FloorR", floorR.getRawLightDetected());
+                telemetry.addData("Encoder", getEncoderAverage());
+                Log.w("FloorL", "" + floorL.getRawLightDetected());
+                Log.w("FloorR", "" + floorR.getRawLightDetected());
+                telemetry.update();
+                idle();
+            }
+        }
+
+        gyroError = getGyroYaw() + gyroError;
         stopMotors();
     }
 
@@ -1239,7 +1255,7 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void moveParallel(double pow) {
+    public void moveParallel(double pow) throws InterruptedException {
         if (!opModeIsActive())
             return;
 
