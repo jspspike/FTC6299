@@ -2,6 +2,7 @@ package org.firstinspires.ftc.quadx.Teleop;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -23,14 +24,15 @@ public class Teleop extends MyOpMode {
 
     Servo door;
     Servo buttonP;
-    Servo lServoL;
-    Servo lServoR;
-    Servo deployL;
-    Servo deployR;
+    CRServo winch;
+    Servo liftArm;
+    Servo boot;
+    Servo hold;
 
     double flyPow = 0.0;
     double oldFly = 0.0;
     double flyRPM = 0;
+    double bootDefault = BOOT_CLOSED;
     int rpmValCount = 0;
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
@@ -57,10 +59,10 @@ public class Teleop extends MyOpMode {
 
         door = hardwareMap.servo.get("door");
         buttonP = hardwareMap.servo.get("buttonP");
-        lServoL = hardwareMap.servo.get("servoL");
-        lServoR = hardwareMap.servo.get("servoR");
-        deployL = hardwareMap.servo.get("deployL");
-        deployR = hardwareMap.servo.get("deployR");
+        winch = hardwareMap.crservo.get("winch");
+        liftArm = hardwareMap.servo.get("liftArm");
+        boot = hardwareMap.servo.get("boot");
+        hold = hardwareMap.servo.get("hold");
 
         fly.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         fly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
@@ -80,13 +82,8 @@ public class Teleop extends MyOpMode {
 
         door.setPosition(.6);
         buttonP.setPosition(BUTTONP_CENTER);
-
-        lServoL.setPosition(LEFT_SERVO_CLOSE);
-        lServoR.setPosition(.75);
-
-
-        deployL.setPosition(0);
-        deployR.setPosition(.9);
+        boot.setPosition(bootDefault);
+        hold.setPosition(HOLD_DISABLED);
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
@@ -94,24 +91,19 @@ public class Teleop extends MyOpMode {
         telemetry.addData("Volatage", startingVoltage);
         flyPow = .65;
 
-
-
         waitForStart();
         runtime.reset();
-
 
 
         resetStartTime();
 
         while (opModeIsActive()) {
 
-
-
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive && lessenPower) {
-                motorBL.setPower(-gamepad1.left_stick_y*.25);
-                motorBR.setPower(gamepad1.right_stick_y*.25);
-                motorFL.setPower(-gamepad1.left_stick_y*.25);
-                motorFR.setPower(gamepad1.right_stick_y*.25);
+                motorBL.setPower(-gamepad1.right_stick_y*.25);
+                motorBR.setPower(gamepad1.left_stick_y*.25);
+                motorFL.setPower(-gamepad1.right_stick_y*.25);
+                motorFR.setPower(gamepad1.left_stick_y*.25);
             }
 
             else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && !liftActive && !lessenPower) {
@@ -136,7 +128,6 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(-gamepad1.right_stick_y*.25);
             }
 
-
             else {
                 motorBL.setPower(0);
                 motorBR.setPower(0);
@@ -144,33 +135,51 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-            if (gamepad1.x) {
-                liftActive = true;
+            if (gamepad1.x && !lessenPower && runtime.milliseconds() > 350) {
+                lessenPower= true;
+                runtime.reset();
+            } else if (gamepad1.x && lessenPower && runtime.milliseconds() > 350) {
+                lessenPower= false;
+                runtime.reset();;
             }
 
-            if (gamepad1.y) {
-                lessenPower = true;
-            }
-            if (gamepad1.a) {
+            if (gamepad1.a && !liftActive && runtime.milliseconds() > 350) {
+                liftActive = true;
+                runtime.reset();
+            } else if (gamepad1.a && liftActive && runtime.milliseconds() > 350) {
                 liftActive = false;
-                lessenPower = false;
+                runtime.reset();
             }
+
+            if (gamepad2.right_trigger > .5) {
+                winch.setPower(-1.0);
+                delay(400);
+                hold.setPosition(HOLD_HOLD);
+            } else if (gamepad2.left_trigger >.5) {
+                winch.setPower(1.0);
+                hold.setPosition(HOLD_DISABLED);
+            } else {
+                winch.setPower(0.0);
+            }
+
+
 
             if (gamepad2.left_bumper)
                 door.setPosition(.2);
             else if (gamepad2.right_bumper)
                 door.setPosition(.6);
 
-            if (gamepad2.a) {
-                flyPow = -.8;
-            }
 
-            else if (gamepad2.b) {
-                active = true;
+            if (gamepad2.a) {
+                bootDefault = BOOT_CLOSED;
             }
 
             else if (gamepad2.x) {
-                flyPow = -.6;
+                bootDefault = BOOT_HOLD;
+            }
+
+            if (gamepad2.b) {
+                active = true;
             }
 
             else if (gamepad2.y) {
@@ -187,40 +196,40 @@ public class Teleop extends MyOpMode {
                 Thread.sleep(150);
             }
 
+            if (gamepad2.dpad_up) {
+                boot.setPosition(1.0);
+            }
+
+            else {
+                boot.setPosition(bootDefault);
+            }
+
+            if (gamepad2.dpad_down) {
+                liftArm.setPosition(1.0);
+            }
+            else {
+                liftArm.setPosition(0);
+            }
+
             if (gamepad1.right_trigger > .5){
-                manip.setPower(1);
+                manip.setPower(-1);
             }
             else if (gamepad1.left_trigger > .5){
-                manip.setPower(-1);
+                manip.setPower(1);
             }
             else {
                 manip.setPower(0);
             }
 
-            if (gamepad2.left_trigger > .05) {
-                lServoL.setPosition(LEFT_SERVO_CLOSE);
-                lServoR.setPosition(RIGHT_SERVO_CLOSE);
-            }
-
-            else if (gamepad2.right_trigger > .05) {
-                deployL.setPosition(1);
-                deployR.setPosition(0);
-
-                delay(1000);
-
-                lServoL.setPosition(LEFT_SERVO_OPEN);
-                lServoR.setPosition(RIGHT_SERVO_OPEN);
-            }
-
             if (gamepad1.left_bumper)
-                buttonP.setPosition(1);
+                buttonP.setPosition(BUTTONP_LEFT);
             else if (gamepad1.right_bumper)
-                buttonP.setPosition(0);
+                buttonP.setPosition(BUTTONP_RIGHT);
             else
-                buttonP.setPosition(.5);
+                buttonP.setPosition(BUTTONP_CENTER);
 
             if (Math.abs(gamepad2.left_stick_y) > .05) {
-                liftL.setPower(gamepad2.left_stick_y);
+                liftL.setPower(-gamepad2.left_stick_y);
                 liftR.setPower(-gamepad2.left_stick_y);
             }
 
