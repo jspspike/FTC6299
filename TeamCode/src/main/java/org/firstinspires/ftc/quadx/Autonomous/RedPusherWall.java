@@ -49,20 +49,20 @@ public class RedPusherWall extends MyOpMode {
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
             encoderDis = 4950;
             flyPow = .625;
-            turnDeg = 64;
+            turnDeg = 60.5;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
-            turnDeg = 64.5;
+            turnDeg = 61;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.3) {
-            turnDeg = 64;
+            turnDeg = 61.5;
             flyPow = .627;
         }
 
         else  {
-            turnDeg = 65;
+            turnDeg = 62;
             flyPow = .63;
         }
 
@@ -90,7 +90,7 @@ public class RedPusherWall extends MyOpMode {
         if (!fail)
             moveTo(.2, 140, .6, 1.5);
         pressRed();
-        untilWhiteAlign(.3, .15, 2500, 6100);
+        untilWhiteAlign(.3, .15, 2300, 6100);
         if (!fail)
             moveTo(-.2, 170, .6, 1.5);
         pressRed();

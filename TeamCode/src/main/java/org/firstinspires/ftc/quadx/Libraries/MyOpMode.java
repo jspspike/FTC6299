@@ -686,7 +686,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (deg + gyroError > 0) {
             while (opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
-                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
 
                 if (newPow < .15)
                     newPow = .15;
@@ -701,7 +701,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         } else {
             while (opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
-                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
 
 
                 if (newPow < .15)
