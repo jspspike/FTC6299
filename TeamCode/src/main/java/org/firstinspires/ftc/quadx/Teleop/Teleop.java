@@ -89,7 +89,7 @@ public class Teleop extends MyOpMode {
 
 
         telemetry.addData("Volatage", startingVoltage);
-        flyPow = .65;
+        flyPow = .64;
 
         waitForStart();
         runtime.reset();

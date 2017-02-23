@@ -21,14 +21,10 @@ public class RedPusherWall extends MyOpMode {
         resetGyro();
 
         int delay = 0;
-        double flyPow = .625;
+        double flyPow = .627;
+        double turnDeg;
 
-        double encoderDis = 5100;
-
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            encoderDis = 5150;
-            flyPow = .625;
-        }
+        double encoderDis = 4950;
 
         while (!opModeIsActive()) {
 
@@ -46,13 +42,34 @@ public class RedPusherWall extends MyOpMode {
             telemetry.update();
             idle();
         }
+
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
+
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
+            encoderDis = 4950;
+            flyPow = .625;
+            turnDeg = 64;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.5) {
+            turnDeg = 64.5;
+        }
+
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.3) {
+            turnDeg = 64;
+            flyPow = .627;
+        }
+
+        else  {
+            turnDeg = 65;
+            flyPow = .63;
+        }
 
         waitForStart();
 
 
-        winch.setPower(1);
+        winch.setPower(-1);
         delay(1000);
         winch.setPower(0);
         hold.setPosition(HOLD_HOLD);
@@ -60,22 +77,24 @@ public class RedPusherWall extends MyOpMode {
         delay(delay * 1000);
 
         flywheel.setPower(flyPow);
-        moveTo(.35, 1500, .6, 1.5);
+        moveTo(.35, 1520, .6, 1.5);
+        delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
         arcTurn(-.55, 65);
-        arcTurn(-.55, 60);
-        moveTo(-.35, 5150, .6, 1.5);
+        arcTurn(-.55, turnDeg);
+        moveTo(-.35, encoderDis, 6, 1.5);
         arcTurn(-.55, 45);
-        untilWhiteAlign(-.3, -.15, 2000, 5500);
+        untilWhiteAlign(-.3, -.15, 1800, 5700);
         if (!fail)
-            moveTo(.2, 170, .6, 1.5);
+            moveTo(.2, 140, .6, 1.5);
         pressRed();
-        untilWhiteAlign(.3, .15, 3000, 6000);
+        untilWhiteAlign(.3, .15, 2500, 6100);
         if (!fail)
             moveTo(-.2, 170, .6, 1.5);
         pressRed();
+        moveTo(.4, -750);
         arcTurn(.4, -90);
         moveTo(.35, 2500, .6, 1.5);
         arcTurn(.4, 80);

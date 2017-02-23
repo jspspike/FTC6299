@@ -21,7 +21,7 @@ public class BluePusherWall extends MyOpMode {
         resetGyro();
 
         int delay = 0;
-        double flyPow = .625;
+        double flyPow = .63;
 
         while (!opModeIsActive()) {
 
@@ -42,11 +42,11 @@ public class BluePusherWall extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        double encoderDis = 4600;
+        double encoderDis = 4550;
 
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            encoderDis = 4565;
-            flyPow = .625;
+            encoderDis = 4530;
+            flyPow = .627;
         }
 
         waitForStart();
@@ -59,18 +59,19 @@ public class BluePusherWall extends MyOpMode {
         delay(delay * 1000);
 
         flywheel.setPower(flyPow);
-        moveTo(.35, 1500, .6, 1.5);
+        moveTo(.35, 1520, .6, 1.5);
+        delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
         arcTurn(.55, 50);
         moveTo(.35, encoderDis, 6, 1.5);
         arcTurn(.5, -40);
-        untilWhiteAlign(.3, .17, 2000, 4500);
+        untilWhiteAlign(.3, .17, 1850, 4500);
         if (!fail)
-            moveTo(-.2, 190, .6, 1.5);
+            moveTo(-.2, 210, .6, 1.5);
         pressBlue();
-        untilWhiteAlign(-.3, -.15, 2300, 6200);
+        untilWhiteAlign(-.3, -.15, 1950, 6150);
         if (!fail)
             moveTo(.2, 190, .6, 1.5);
         pressBlue();
