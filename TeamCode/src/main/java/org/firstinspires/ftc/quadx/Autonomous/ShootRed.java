@@ -70,7 +70,7 @@ public class ShootRed extends MyOpMode {
 
 
         delay(delay * 1000);
-        arcTurn(.5, -32);
+        arcTurn(.55, -32);
         flywheel.setPower(flyPow);
         moveTo(.2, 3100, 8);
         delay(2000);

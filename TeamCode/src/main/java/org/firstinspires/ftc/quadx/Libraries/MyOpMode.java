@@ -171,7 +171,7 @@ public abstract class MyOpMode extends LinearOpMode {
         if (milliseconds < 0)
             milliseconds = 0;
 
-            Thread.sleep(milliseconds);
+        Thread.sleep(milliseconds);
     }
 
     public void setMotors(double left, double right) {
@@ -660,18 +660,20 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
         delay(100);
+
         gyroError = getGyroYaw() + gyroError - deg;
     }
+
+
 
     public void arcTurn(double pow, double deg) throws InterruptedException {
         arcTurn(pow, deg, true);
     }
-
     public void arcTurn(double pow, double deg, boolean stop) throws InterruptedException {
         arcTurn(pow, deg, stop, 6000);
     }
 
-    public void arcTurn(double pow, double deg, boolean stop, int tim) throws InterruptedException {
+    public void  arcTurn(double pow, double deg, boolean stop, int tim) throws InterruptedException {
 
         if (!opModeIsActive())
             return;
@@ -719,6 +721,91 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (stop)
             stopMotors();
+        delay(100);
+        gyroError = getGyroYaw() + gyroError - deg;
+    }
+
+    public void arcTurnPID(double pow, double deg) throws InterruptedException {
+        arcTurnPID(pow, deg, 6000);
+    }
+
+    public void arcTurnPID(double pow, double deg, int tim) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+        double prop;
+        double inte = 0;
+        double deriv;
+        double error;
+        double lastError;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        delay(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg + gyroError > 0) {
+            lastError = deg - getGyroYaw();
+            while (opModeIsActive() && deg - 2.1 > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = deg - getGyroYaw();
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop + inte /* +  deriv*/;
+
+
+                if (pow > 0)
+                    setMotors(newPow, 0);
+                else
+                    setMotors(0, -newPow);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("NewPow", newPow);
+                telemetry.update();
+                Log.i("Error", ""  + error);
+                Log.i("Prop", ""  + prop);
+                Log.i("Inte", ""  + inte);
+                Log.i("Total", ""  + newPow);
+                resetStartTime();
+                lastError = error;
+                idle();
+            }
+        } else {
+            lastError = (deg - getGyroYaw()) * -1;
+            while (opModeIsActive() && deg + 2.1 < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = (deg - getGyroYaw()) * -1;
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop  +  inte /* + deriv*/;
+
+                if (pow > 0)
+                    setMotors(0, newPow);
+                else
+                    setMotors(-newPow, 0);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("NewPow", newPow);
+                telemetry.update();
+                Log.i("Error", ""  + error);
+                Log.i("Prop", ""  + prop);
+                Log.i("Inte", ""  + inte);
+                Log.i("Total", ""  + newPow);
+                lastError = error;
+                resetStartTime();
+                idle();
+            }
+        }
+
+        stopMotors();
+
         delay(100);
         gyroError = getGyroYaw() + gyroError - deg;
     }
@@ -1304,5 +1391,3 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 }
-
-

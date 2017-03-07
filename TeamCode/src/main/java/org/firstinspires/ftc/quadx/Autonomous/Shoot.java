@@ -67,7 +67,7 @@ public class Shoot extends MyOpMode {
 
         delay(delay * 1000);
 
-        arcTurn(.5, 40);
+        arcTurn(.55, 40);
         flywheel.setPower(flyPow);
         moveTo(.2, 2700, 8);
         delay(2000);
