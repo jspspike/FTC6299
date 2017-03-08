@@ -65,7 +65,7 @@ public class BluePusherWall extends MyOpMode {
 
         flywheel.setPower(flyPow);
         manip.setPower(.3);
-        moveTo(.35, 1530, .6, 1.5);
+        moveTo(.35, 1560, .6, 1.5);
         delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
@@ -75,12 +75,13 @@ public class BluePusherWall extends MyOpMode {
         manip.setPower(0);
         arcTurnPID(-.37, -33, 2000);
         manip.setPower(.3);
-        untilWhiteAlign(.3, .17, 1850, 4500);
+        untilWhiteAlign(.3, .16, 1500, 5000);
+        resetGyro();
         manip.setPower(0);
         if (!fail)
-            moveTo(-.2, 210, .6, 1.5);
+            moveTo(-.2, 170, .6, 1.5);
         pressBlue();
-        untilWhiteAlign(-.3, -.17, 1950, 6150);
+        untilWhiteAlign(-.3, -.16, 1950, 6150);
         if (!fail)
             moveTo(.2, 150, .6, 1.5);
         pressBlue();
