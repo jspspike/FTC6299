@@ -1390,4 +1390,71 @@ public abstract class MyOpMode extends LinearOpMode {
 
         stopMotors();
     }
+    public void moveToSlow(double pow, double deg) throws InterruptedException {
+        moveTo(pow, deg, .6);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold) throws InterruptedException {
+        moveTo(pow, deg, threshold, 2.2);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold, double red) throws InterruptedException {
+        moveTo(pow, deg, threshold, red, 15000, true);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold, double red, int tim, boolean stop) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        ElapsedTime time = new ElapsedTime();
+
+
+        resetGyro();
+        resetEncoders();
+        delay(MOVEMENT_DELAY);
+
+        time.reset();
+
+        if (deg > 0) {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+                double power = (((pow-.2)*(gyroError/deg))+.2);
+                if (getGyroYaw() + gyroError > threshold)
+                    setMotors(power / red, power);
+                else if (getGyroYaw() + gyroError < -threshold)
+                    setMotors(power, power / red);
+                else
+                    setMotors(power, power);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Encoder", getEncoderAverage());
+                telemetry.update();
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
+            }
+        } else {
+            while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
+                double power = (((pow-.2)*(gyroError/deg))+.2);
+                if (getGyroYaw() + gyroError > threshold)
+                    setMotors(-power, -power / red);
+                else if (getGyroYaw() + gyroError < -threshold)
+                    setMotors(-power / red, -power);
+                else
+                    setMotors(-power, -power);
+
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Encoder", getEncoderAverage());
+                telemetry.update();
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
+            }
+        }
+        if (stop)
+            stopMotors();
+
+        gyroError = getGyroYaw() + gyroError;
+    }
+
+
 }
