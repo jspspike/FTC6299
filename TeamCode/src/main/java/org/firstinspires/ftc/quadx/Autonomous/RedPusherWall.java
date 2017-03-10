@@ -43,8 +43,19 @@ public class RedPusherWall extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        waitForStart();
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
+            flyPow = .633;
+        }
 
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
+            flyPow = .638;
+        }
+
+        else {
+            flyPow = .645;
+        }
+
+        waitForStart();
 
         winch.setPower(-1);
         delay(1000);
@@ -54,27 +65,35 @@ public class RedPusherWall extends MyOpMode {
         delay(delay * 1000);
 
         flywheel.setPower(flyPow);
-        moveTo(.35, 1520, .6, 1.5);
+        manip.setPower(.3);
+        moveTo(.35, 1560, .6, 1.5);
+        manip.setPower(0);
         delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(-.3, 65);
-        arcTurnPID(-.3, 60, 4000);
-        moveTo(-.35, 4900, 6, 1.5);
-        arcTurnPID(.38, 30);
-        untilWhiteAlign(-.3, -.15, 1800, 5700);
+        arcTurnPID(-.3, 60, 2600);
+        arcTurnPID(-.35, 62, 3000);
+        moveTo(-.35, 6270, 6, 1.5);
+        gyroError = 0;
+        arcTurnPID(.38, 28, 2500);
+        untilWhiteAlign(-.3, -.15, 1800, 6100);
+        resetGyro();
         if (!fail)
             moveTo(.2, 140, .6, 1.5);
         pressRed();
+        manip.setPower(.3);
         untilWhiteAlign(.3, .15, 2300, 6100);
+        manip.setPower(0);
         if (!fail)
-            moveTo(-.2, 140, .6, 1.5);
+            moveTo(-.2, 150, .6, 1.5);
         pressRed();
         moveTo(.4, -750);
-        arcTurnPID(.4, -50);
+        manip.setPower(.3);
+        arcTurnPID(.4, -80, 3000);
         moveTo(.35, 2500, .6, 1.5);
-        arcTurnPID(.4, 55);
+        manip.setPower(0);
+        arcTurnPID(.4, 55, 2000);
 
         winch.setPower(1);
         hold.setPosition(HOLD_DISABLED);

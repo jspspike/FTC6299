@@ -75,7 +75,7 @@ public class BluePusherWall extends MyOpMode {
         manip.setPower(0);
         arcTurnPID(-.37, -33, 2000);
         manip.setPower(.3);
-        untilWhiteAlign(.3, .16, 1500, 5000);
+        untilWhiteAlign(.3, .16, 1420, 5000);
         resetGyro();
         manip.setPower(0);
         if (!fail)
@@ -86,10 +86,10 @@ public class BluePusherWall extends MyOpMode {
             moveTo(.2, 150, .6, 1.5);
         pressBlue();
         manip.setPower(.3);
-        arcTurnPID(.3, -68);
+        arcTurnPID(.3, -68, 3000);
         moveTo(.35, 2700, .6, 1.5);
         manip.setPower(0);
-        arcTurnPID(.4, -60);
+        arcTurnPID(.4, -60, 2000);
 
 
         winch.setPower(1);

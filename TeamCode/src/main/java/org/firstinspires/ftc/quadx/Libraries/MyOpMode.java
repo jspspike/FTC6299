@@ -30,7 +30,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double DOOR_CLOSED = .6;
     public static final double ARM_CLOSED =  0.0;
     public static final double BOOT_CLOSED = .2;
-    public static final double BOOT_HOLD = 0.51;
+    public static final double BOOT_HOLD = 0.56;
     public static final double HOLD_DISABLED = .8;
     public static final double HOLD_HOLD = .32;
 
@@ -1251,7 +1251,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(-.15, -.15, 0, 3000);
+                    untilWhiteAlign(-.15, -.15, 0, 2800);
                     moveTo(.2, 100, .6, 1.5);
                     fail = true;
                     break;
@@ -1272,7 +1272,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 0, 3000);
+                    untilWhiteAlign(.15, .15, 0, 2800);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;
