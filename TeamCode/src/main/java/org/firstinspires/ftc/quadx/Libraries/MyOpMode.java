@@ -36,7 +36,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
     public static final double BUTTONP_CENTER = .47;
     public static final double BUTTONP_LEFT = 1;
-    public static final double BUTTONP_RIGHT = 0;
+    public static final double BUTTONP_RIGHT = .31;
 
     public boolean flyWheelRunning = true;
 
@@ -1102,13 +1102,13 @@ public abstract class MyOpMode extends LinearOpMode {
         redLeft += beaconR.blue() - beaconL.blue();
 
         if (redLeft > 0) {
-            buttonPusher.setPosition(.45);
+            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
             buttonPusher.setPosition(BUTTONP_LEFT);
             delay(800);
             buttonPusher.setPosition(BUTTONP_CENTER);
         } else {
-            buttonPusher.setPosition(.55);
+            buttonPusher.setPosition(BUTTONP_CENTER + .03);
             delay(100);
             buttonPusher.setPosition(BUTTONP_RIGHT);
             delay(800);
@@ -1251,7 +1251,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(-.15, -.15, 0, 2800);
+                    untilWhiteAlign(-.15, -.15, 0, 2300);
                     moveTo(.2, 100, .6, 1.5);
                     fail = true;
                     break;
@@ -1272,7 +1272,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 0, 2800);
+                    untilWhiteAlign(.15, .15, 0, 2300);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;
@@ -1395,11 +1395,11 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void moveToSlow(double pow, double deg, double threshold) throws InterruptedException {
-        moveTo(pow, deg, threshold, 2.2);
+        moveToSlow(pow, deg, threshold, 2.2);
     }
 
     public void moveToSlow(double pow, double deg, double threshold, double red) throws InterruptedException {
-        moveTo(pow, deg, threshold, red, 15000, true);
+        moveToSlow(pow, deg, threshold, red, 15000, true);
     }
 
     public void moveToSlow(double pow, double deg, double threshold, double red, int tim, boolean stop) throws InterruptedException {
@@ -1427,6 +1427,7 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(power, power);
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Power", power);
                 telemetry.addData("Encoder", getEncoderAverage());
                 telemetry.update();
                 Log.w("Gyro", "" + getGyroYaw());
@@ -1444,6 +1445,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Power", power);
                 telemetry.addData("Encoder", getEncoderAverage());
                 telemetry.update();
                 Log.w("Gyro", "" + getGyroYaw());

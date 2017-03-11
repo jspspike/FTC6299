@@ -44,11 +44,11 @@ public class RedPusherWall extends MyOpMode {
         telemetry.update();
 
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
-            flyPow = .633;
+            flyPow = .636;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            flyPow = .638;
+            flyPow = .64;
         }
 
         else {
@@ -72,12 +72,11 @@ public class RedPusherWall extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(-.3, 60, 2600);
-        arcTurnPID(-.35, 62, 3000);
-        moveToSlow(-.35, 6270, 6, 1.5);
+        arcTurnPID(-.3, 135, 2500);
+        moveToSlow(-.35, 6380, 6, 1.5);
         gyroError = 0;
-        arcTurnPID(.38, 28, 2500);
-        untilWhiteAlign(-.3, -.15, 1800, 6100);
+        arcTurnPID(.38, 32, 2500);
+        untilWhiteAlign(-.3, -.15, 1800, 6000);
         resetGyro();
         if (!fail)
             moveTo(.2, 140, .6, 1.5);
@@ -86,9 +85,9 @@ public class RedPusherWall extends MyOpMode {
         untilWhiteAlign(.3, .15, 2300, 6100);
         manip.setPower(0);
         if (!fail)
-            moveTo(-.2, 150, .6, 1.5);
+            moveTo(-.2, 155, .6, 1.5);
         pressRed();
-        moveTo(.4, -750);
+        moveTo(.4, -790);
         manip.setPower(.3);
         arcTurnPID(.4, -80, 3000);
         moveTo(.35, 2500, .6, 1.5);
