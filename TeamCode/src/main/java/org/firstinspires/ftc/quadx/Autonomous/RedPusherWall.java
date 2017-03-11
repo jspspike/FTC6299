@@ -74,7 +74,7 @@ public class RedPusherWall extends MyOpMode {
         flywheel.setPower(0);
         arcTurnPID(-.3, 60, 2600);
         arcTurnPID(-.35, 62, 3000);
-        moveTo(-.35, 6270, 6, 1.5);
+        moveToSlow(-.35, 6270, 6, 1.5);
         gyroError = 0;
         arcTurnPID(.38, 28, 2500);
         untilWhiteAlign(-.3, -.15, 1800, 6100);

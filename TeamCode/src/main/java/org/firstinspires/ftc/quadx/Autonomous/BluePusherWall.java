@@ -71,7 +71,7 @@ public class BluePusherWall extends MyOpMode {
         delay(2000);
         flywheel.setPower(0);
         arcTurnPID(.3, 50, 4000);
-        moveTo(.35, 5250, 6, 1.5);
+        moveToSlow(.35, 5250, 6, 1.5);
         manip.setPower(0);
         arcTurnPID(-.37, -33, 2000);
         manip.setPower(.3);

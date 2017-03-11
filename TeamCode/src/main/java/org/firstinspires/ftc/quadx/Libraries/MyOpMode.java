@@ -1418,7 +1418,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (pow > 0) {
             while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
-                double power = (((pow-.2)*(gyroError/deg))+.2);
+                double power = (((pow-.2)*((deg - getEncoderAverage())/deg))+.2);
                 if (getGyroYaw() + gyroError > threshold)
                     setMotors(power / red, power);
                 else if (getGyroYaw() + gyroError < -threshold)
@@ -1434,7 +1434,7 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         } else {
             while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
-                double power = (((pow+.2)*(gyroError/deg))-.2);
+                double power = (((pow+.2)*((deg - getEncoderAverage())/deg))-.2);
                 if (getGyroYaw() + gyroError > threshold)
                     setMotors(power, power / red);
                 else if (getGyroYaw() + gyroError < -threshold)
