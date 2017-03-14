@@ -22,6 +22,8 @@ public class RedPusherWall extends MyOpMode {
 
         int delay = 0;
         double flyPow = .627;
+        int block = 0;
+        String blockStat = "";
 
         while (!opModeIsActive()) {
 
@@ -34,8 +36,29 @@ public class RedPusherWall extends MyOpMode {
                 delay(250);
             }
 
+            if(gamepad1.a){
+                block = 0;
+            }
+            if(gamepad1.b){
+                block = 1;
+            }
+            if(gamepad1.x){
+                block = 2;
+            }
+
+            if(block == 0){
+                blockStat = "center";
+            } else if (block == 1) {
+                blockStat = "block";
+            } else if (block == 2) {
+                blockStat = "ramp";
+            }
+
+
+
             telemetry.addData("Delay", delay);
             telemetry.addData("Gyro", getGyroYaw());
+            telemetry.addData("Block", blockStat);
             telemetry.update();
             idle();
         }
@@ -72,10 +95,11 @@ public class RedPusherWall extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(-.3, 135, 2500);
-        moveToSlow(-.35, 6380, 6, 1.5);
+        arcTurnPID(-.3, 72, 1500);
+        arcTurnPID(-.3, 71, 1500);
+        moveToSlow(-.35, 6525, 6, 1.5);
         gyroError = 0;
-        arcTurnPID(.38, 32, 2500);
+        arcTurnPID(.38, 27.5, 2000);
         untilWhiteAlign(-.3, -.15, 1800, 6000);
         resetGyro();
         if (!fail)
@@ -89,10 +113,17 @@ public class RedPusherWall extends MyOpMode {
         pressRed();
         moveTo(.4, -790);
         manip.setPower(.3);
-        arcTurnPID(.4, -80, 3000);
-        moveTo(.35, 2500, .6, 1.5);
-        manip.setPower(0);
-        arcTurnPID(.4, 55, 2000);
+        if(block == 1){
+            arcTurnPID(.3, -40, 2000);
+            moveTo(.3, 2000, .6, 1.5);
+        } else if(block == 2){
+            moveTo(.3, 1000, .6, 1.5);
+        }  else {
+            arcTurnPID(.4, -80, 3000);
+            moveTo(.35, 2500, .6, 1.5);
+            manip.setPower(0);
+            arcTurnPID(.4, 55, 2000);
+        }
 
         winch.setPower(1);
         hold.setPosition(HOLD_DISABLED);

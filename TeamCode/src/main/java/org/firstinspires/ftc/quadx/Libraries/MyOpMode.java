@@ -1096,23 +1096,31 @@ public abstract class MyOpMode extends LinearOpMode {
 
         delay(MOVEMENT_DELAY);
 
-        int redLeft = 0;
+        int redLeft;
 
-        redLeft += beaconL.red() - beaconR.red();
-        redLeft += beaconR.blue() - beaconL.blue();
+        for (int i = 0; i < 3; i++) {
 
-        if (redLeft > 0) {
-            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
-            buttonPusher.setPosition(BUTTONP_LEFT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
-        } else {
-            buttonPusher.setPosition(BUTTONP_CENTER + .03);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_RIGHT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            if (beaconL.blue() < 3 && beaconR.blue() < 3)
+                break;
+
+            redLeft = 0;
+            redLeft += beaconL.red() - beaconR.red();
+            redLeft += beaconR.blue() - beaconL.blue();
+
+            if (redLeft > 0) {
+                buttonPusher.setPosition(BUTTONP_CENTER - .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_LEFT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            } else {
+                buttonPusher.setPosition(BUTTONP_CENTER + .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_RIGHT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            }
 
         }
     }
@@ -1124,25 +1132,32 @@ public abstract class MyOpMode extends LinearOpMode {
 
         delay(MOVEMENT_DELAY);
 
-        int blueLeft = 0;
+        int blueLeft;
 
+        for (int i = 0; i < 3; i++) {
 
-        blueLeft += beaconL.blue() - beaconR.blue();
-        blueLeft += beaconR.red() - beaconL.red();
-
-        if (blueLeft > 0) {
-            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
-            buttonPusher.setPosition(BUTTONP_LEFT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            if (beaconL.red() < 3 && beaconR.red() < 3)
+                break;
 
-        } else {
-            buttonPusher.setPosition(BUTTONP_CENTER + .03);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_RIGHT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            blueLeft = 0;
+            blueLeft += beaconL.blue() - beaconR.blue();
+            blueLeft += beaconR.red() - beaconL.red();
+
+            if (blueLeft > 0) {
+                buttonPusher.setPosition(BUTTONP_CENTER - .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_LEFT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+
+            } else {
+                buttonPusher.setPosition(BUTTONP_CENTER + .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_RIGHT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            }
         }
     }
 
