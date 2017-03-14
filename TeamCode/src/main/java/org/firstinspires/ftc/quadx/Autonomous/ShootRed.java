@@ -14,7 +14,8 @@ public class ShootRed extends MyOpMode {
 
     long delay = 8;
     long ballDelay = 5;
-    boolean cap = true;
+    int cap = 0;
+    String capString = "";
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -42,20 +43,28 @@ public class ShootRed extends MyOpMode {
                 delay(250);
             }
 
-            if (gamepad1.y && cap) {
-                cap = false;
-                delay(250);
+            if (gamepad1.a){
+                cap = 0;
+            }
+            if (gamepad1.b){
+                cap = 1;
+            }
+            if(gamepad1.x){
+                cap = 2;
             }
 
-            else if (gamepad1.y && !cap) {
-                cap = true;
-                delay(250);
+            if (cap == 0) {
+                capString = "cap";
+            } else if (cap == 1){
+                capString = "block";
+            } else if (cap == 2){
+                capString = "ramp";
             }
-
             telemetry.addData("Delay", delay);
             telemetry.addData("Ball Delay", ballDelay);
             telemetry.addData("Hit ball", cap);
             telemetry.addData("Gyro", getGyroYaw());
+            telemetry.addData("Cap", capString);
             telemetry.update();
             idle();
         }
@@ -79,9 +88,13 @@ public class ShootRed extends MyOpMode {
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
 
-        if (cap) {
+        if (cap == 0) {
             delay(ballDelay * 1000);
             moveTo(.4, 3600);
+        } else if (cap == 1){
+
+        } else if (cap == 1){
+
         }
     }
 }
