@@ -54,7 +54,7 @@ public class ShootRed extends MyOpMode {
             }
 
             if (cap == 0) {
-                capString = "cap";
+                capString = "center";
             } else if (cap == 1){
                 capString = "block";
             } else if (cap == 2){
@@ -88,13 +88,13 @@ public class ShootRed extends MyOpMode {
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
 
-        if (cap == 0) {
+        if (cap == 1) {
+
+        } else if (cap == 2){
+
+        } else {
             delay(ballDelay * 1000);
             moveTo(.4, 3600);
-        } else if (cap == 1){
-
-        } else if (cap == 1){
-
         }
     }
 }
