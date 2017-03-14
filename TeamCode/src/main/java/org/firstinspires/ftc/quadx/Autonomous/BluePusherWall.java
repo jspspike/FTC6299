@@ -97,20 +97,20 @@ public class BluePusherWall extends MyOpMode {
         manip.setPower(0);
         arcTurnPID(-.37, -34, 1800);
         manip.setPower(.3);
-        untilWhiteAlign(.3, .16, 1420, 5200);
         resetGyro();
         manip.setPower(0);
         if (!fail)
+            untilWhiteAlign(.3, .16, 1420, 5200);
             moveTo(-.2, 170, .6, 1.5);
         pressBlue();
-        untilWhiteAlign(-.3, -.16, 1950, 6150);
+        untilWhiteAlign(-.3, -.16, 1750, 6150);
         if (!fail)
             moveTo(.2, 150, .6, 1.5);
         pressBlue();
         manip.setPower(.3);
         if(block == 1){
             arcTurnPID(.3, -60, 2500);
-            moveTo(.4,4800,.6,1.5);
+            moveTo(.4,5100,.6,1.5);
             manip.setPower(0);
         } else if(block == 2){
             arcTurnPID(.3, -90, 1500);

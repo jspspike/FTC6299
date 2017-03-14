@@ -95,11 +95,11 @@ public class RedPusherWall extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(-.3, 72, 1500);
-        arcTurnPID(-.3, 71, 1500);
+        arcTurnPID(-.35, 70, 1500);
+        arcTurnPID(-.35, 67, 1500);
         moveToSlow(-.35, 6525, 6, 1.5);
         gyroError = 0;
-        arcTurnPID(.38, 27.5, 2000);
+        arcTurnPID(.38, 29, 2000);
         untilWhiteAlign(-.3, -.15, 1800, 6000);
         resetGyro();
         if (!fail)
@@ -111,14 +111,18 @@ public class RedPusherWall extends MyOpMode {
         if (!fail)
             moveTo(-.2, 155, .6, 1.5);
         pressRed();
-        moveTo(.4, -790);
-        manip.setPower(.3);
         if(block == 1){
+            manip.setPower(.3);
             arcTurnPID(.3, -40, 2000);
             moveTo(.3, 2000, .6, 1.5);
+            manip.setPower(0);
         } else if(block == 2){
-            moveTo(.3, 1000, .6, 1.5);
+            arcTurnPID(.35, -26, 2000);
+            moveTo(.3, 2200, .6, 1.5);
+            manip.setPower(0);
         }  else {
+            moveTo(.4, -790);
+            manip.setPower(.3);
             arcTurnPID(.4, -80, 3000);
             moveTo(.35, 2500, .6, 1.5);
             manip.setPower(0);
