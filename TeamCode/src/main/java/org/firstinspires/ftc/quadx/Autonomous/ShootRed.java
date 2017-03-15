@@ -62,14 +62,13 @@ public class ShootRed extends MyOpMode {
             }
             telemetry.addData("Delay", delay);
             telemetry.addData("Ball Delay", ballDelay);
-            telemetry.addData("Hit ball", cap);
             telemetry.addData("Gyro", getGyroYaw());
             telemetry.addData("Cap", capString);
             telemetry.update();
             idle();
         }
 
-        double flyPow = .65;
+        double flyPow = .64;
         waitForStart();
 
         double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -79,7 +78,7 @@ public class ShootRed extends MyOpMode {
 
 
         delay(delay * 1000);
-        arcTurn(.55, -32);
+        arcTurnPID(.4, -32, 1800);
         flywheel.setPower(flyPow);
         moveTo(.2, 3100, 8);
         delay(2000);
@@ -89,9 +88,15 @@ public class ShootRed extends MyOpMode {
         flywheel.setPower(0);
 
         if (cap == 1) {
-
+            gyroError = 0;
+            arcTurnPID(.35, 80, 1700);
+            moveTo(.3, 2900, .6, 1.5);
+            arcTurnPID(.35, -80, 1700);
+            moveTo(.3, 2600, .6, 1.5);
         } else if (cap == 2){
-
+            gyroError = 0;
+            arcTurnPID(-.35, -63, 1700);
+            moveToSlow(.5, 8500, .6, 1.5);
         } else {
             delay(ballDelay * 1000);
             moveTo(.4, 3600);

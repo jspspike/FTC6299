@@ -30,7 +30,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double DOOR_CLOSED = .6;
     public static final double ARM_CLOSED =  0.0;
     public static final double BOOT_CLOSED = .2;
-    public static final double BOOT_HOLD = 0.56;
+    public static final double BOOT_HOLD = 0.59;
     public static final double HOLD_DISABLED = .8;
     public static final double HOLD_HOLD = .32;
 

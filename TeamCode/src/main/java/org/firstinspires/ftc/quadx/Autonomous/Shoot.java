@@ -24,7 +24,7 @@ public class Shoot extends MyOpMode {
         initServos();
         initSensors();
 
-        double flyPow = .65;
+        double flyPow = .64;
 
         while (!opModeIsActive()) {
 
@@ -67,7 +67,6 @@ public class Shoot extends MyOpMode {
 
             telemetry.addData("Delay", delay);
             telemetry.addData("Ball Delay", ballDelay);
-            telemetry.addData("Hit ball", cap);
             telemetry.addData("Gyro", getGyroYaw());
             telemetry.addData("Cap", capString);
             telemetry.update();
@@ -78,18 +77,24 @@ public class Shoot extends MyOpMode {
 
         delay(delay * 1000);
 
-        arcTurn(.55, 40);
+        arcTurnPID(.4, 35, 1300);
         flywheel.setPower(flyPow);
-        moveTo(.2, 2700, 8);
+        moveTo(.2, 2650, 8);
         delay(2000);
         door.setPosition(DOOR_OPEN);
         delay(4000);
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
         if (cap == 1) {
-
+            gyroError = 0;
+            arcTurnPID(-.3, -80, 1700);
+            moveTo(.3, 7000, .6, 1.5);
+            arcTurnPID(.35, 80, 1700);
+            moveTo(.3, 3100, .6, 1.5);
         } else if (cap == 2) {
-
+            gyroError = 0;
+            arcTurnPID(.35, 63, 1700);
+            moveToSlow(.5, 4500, .6, 1.5);
         } else {
             delay(ballDelay * 1000);
             moveTo(.4, 3600);
