@@ -37,9 +37,13 @@ public class Teleop extends MyOpMode {
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
     boolean active = false;
-    boolean liftActive = false;
-    boolean lessenPower = false;
 
+    boolean liftActive = false;
+    int lessenPower = 0;
+    boolean wallPower = false;
+
+    double gamepad1_left;
+    double gamepad1_right;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -89,7 +93,7 @@ public class Teleop extends MyOpMode {
 
 
         telemetry.addData("Volatage", startingVoltage);
-        flyPow = .65;
+        flyPow = .64;
 
         waitForStart();
         runtime.reset();
@@ -99,33 +103,46 @@ public class Teleop extends MyOpMode {
 
         while (opModeIsActive()) {
 
-            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive && lessenPower) {
-                motorBL.setPower(-gamepad1.right_stick_y*.25);
-                motorBR.setPower(gamepad1.left_stick_y*.25);
-                motorFL.setPower(-gamepad1.right_stick_y*.25);
-                motorFR.setPower(gamepad1.left_stick_y*.25);
+            gamepad1_left = gamepad1.left_stick_y;
+            gamepad1_right = gamepad1.right_stick_y;
+
+            if (lessenPower == 2) {
+                gamepad1_left *= .25;
+                gamepad1_right *= .25;
             }
 
-            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && !liftActive && !lessenPower) {
-                motorBL.setPower(gamepad1.left_stick_y);
-                motorBR.setPower(-gamepad1.right_stick_y);
-                motorFL.setPower(gamepad1.left_stick_y);
-                motorFR.setPower(-gamepad1.right_stick_y);
+            else if (lessenPower == 1) {
+                gamepad1_left *= .55;
+                gamepad1_right *= .55;
             }
 
-
-            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive) {
-                motorBL.setPower(-gamepad1.right_stick_y);
-                motorBR.setPower(gamepad1.left_stick_y);
-                motorFL.setPower(-gamepad1.right_stick_y);
-                motorFR.setPower(gamepad1.left_stick_y);
+            if (liftActive) {
+                gamepad1_left *= -1;
+                gamepad1_right *= -1;
             }
 
-            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && lessenPower) {
-                motorBL.setPower(gamepad1.left_stick_y*.25);
-                motorBR.setPower(-gamepad1.right_stick_y*.25);
-                motorFL.setPower(gamepad1.left_stick_y*.25);
-                motorFR.setPower(-gamepad1.right_stick_y*.25);
+            if (wallPower && liftActive) {
+                gamepad1_left *= .4;
+                gamepad1_right *= .7;
+            }
+
+            else if (wallPower) {
+                gamepad1_left *= .7;
+                gamepad1_right *= .4;
+            }
+
+            if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive) {
+                motorBL.setPower(gamepad1_right);
+                motorBR.setPower(-gamepad1_left);
+                motorFL.setPower(gamepad1_right);
+                motorFR.setPower(-gamepad1_left);
+            }
+
+            else if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05)) {
+                motorBL.setPower(gamepad1_left);
+                motorBR.setPower(-gamepad1_right);
+                motorFL.setPower(gamepad1_left);
+                motorFR.setPower(-gamepad1_right);
             }
 
             else {
@@ -135,12 +152,19 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-            if (gamepad1.x && !lessenPower && runtime.milliseconds() > 350) {
-                lessenPower= true;
+            if (gamepad1.x && (lessenPower == 0 || lessenPower == 1) && runtime.milliseconds() > 350) {
+                lessenPower = 2;
                 runtime.reset();
-            } else if (gamepad1.x && lessenPower && runtime.milliseconds() > 350) {
-                lessenPower= false;
-                runtime.reset();;
+            }
+
+            else if (gamepad1.b && (lessenPower == 0 || lessenPower == 2) && runtime.milliseconds() > 350) {
+                lessenPower = 1;
+                runtime.reset();
+            }
+
+            else if ((gamepad1.x  || gamepad1.b) && (lessenPower == 1 || lessenPower == 2) && runtime.milliseconds() > 350) {
+                lessenPower= 0;
+                runtime.reset();
             }
 
             if (gamepad1.a && !liftActive && runtime.milliseconds() > 350) {
@@ -149,6 +173,28 @@ public class Teleop extends MyOpMode {
             } else if (gamepad1.a && liftActive && runtime.milliseconds() > 350) {
                 liftActive = false;
                 runtime.reset();
+            }
+
+            if (gamepad1.b && !liftActive && runtime.milliseconds() > 350) {
+                liftActive = true;
+                runtime.reset();
+            } else if (gamepad1.b && liftActive && runtime.milliseconds() > 350) {
+                liftActive = false;
+                runtime.reset();
+            }
+
+            if (gamepad1.dpad_left) {
+                wallPower = false;
+            }
+
+            else if (gamepad1.dpad_right) {
+                wallPower = true;
+            }
+
+            if (gamepad1.y) {
+                liftActive = false;
+                lessenPower = 0;
+                wallPower = false;
             }
 
             if (gamepad2.right_trigger > .5) {

@@ -30,13 +30,13 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double DOOR_CLOSED = .6;
     public static final double ARM_CLOSED =  0.0;
     public static final double BOOT_CLOSED = .2;
-    public static final double BOOT_HOLD = 0.45;
+    public static final double BOOT_HOLD = 0.59;
     public static final double HOLD_DISABLED = .8;
-    public static final double HOLD_HOLD = .35;
+    public static final double HOLD_HOLD = .32;
 
     public static final double BUTTONP_CENTER = .47;
     public static final double BUTTONP_LEFT = 1;
-    public static final double BUTTONP_RIGHT = 0;
+    public static final double BUTTONP_RIGHT = .31;
 
     public boolean flyWheelRunning = true;
 
@@ -171,7 +171,7 @@ public abstract class MyOpMode extends LinearOpMode {
         if (milliseconds < 0)
             milliseconds = 0;
 
-            Thread.sleep(milliseconds);
+        Thread.sleep(milliseconds);
     }
 
     public void setMotors(double left, double right) {
@@ -660,18 +660,20 @@ public abstract class MyOpMode extends LinearOpMode {
         }
         stopMotors();
         delay(100);
+
         gyroError = getGyroYaw() + gyroError - deg;
     }
+
+
 
     public void arcTurn(double pow, double deg) throws InterruptedException {
         arcTurn(pow, deg, true);
     }
-
     public void arcTurn(double pow, double deg, boolean stop) throws InterruptedException {
         arcTurn(pow, deg, stop, 6000);
     }
 
-    public void arcTurn(double pow, double deg, boolean stop, int tim) throws InterruptedException {
+    public void  arcTurn(double pow, double deg, boolean stop, int tim) throws InterruptedException {
 
         if (!opModeIsActive())
             return;
@@ -686,7 +688,7 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (deg + gyroError > 0) {
             while (opModeIsActive() && deg > getGyroYaw() + gyroError && time.milliseconds() < tim) {
-                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
 
                 if (newPow < .15)
                     newPow = .15;
@@ -701,7 +703,8 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         } else {
             while (opModeIsActive() && deg < getGyroYaw() + gyroError && time.milliseconds() < tim) {
-                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 80);
+                newPow = Math.abs(pow) * (Math.abs(deg - getGyroYaw()) / 70);
+
 
                 if (newPow < .15)
                     newPow = .15;
@@ -718,6 +721,91 @@ public abstract class MyOpMode extends LinearOpMode {
 
         if (stop)
             stopMotors();
+        delay(100);
+        gyroError = getGyroYaw() + gyroError - deg;
+    }
+
+    public void arcTurnPID(double pow, double deg) throws InterruptedException {
+        arcTurnPID(pow, deg, 6000);
+    }
+
+    public void arcTurnPID(double pow, double deg, int tim) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+        double prop;
+        double inte = 0;
+        double deriv;
+        double error;
+        double lastError;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        delay(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg + gyroError > 0) {
+            lastError = deg - getGyroYaw();
+            while (opModeIsActive() && deg - 2.1 > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = deg - getGyroYaw();
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop + inte /* +  deriv*/;
+
+
+                if (pow > 0)
+                    setMotors(newPow, 0);
+                else
+                    setMotors(0, -newPow);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("NewPow", newPow);
+                telemetry.update();
+                Log.i("Error", ""  + error);
+                Log.i("Prop", ""  + prop);
+                Log.i("Inte", ""  + inte);
+                Log.i("Total", ""  + newPow);
+                resetStartTime();
+                lastError = error;
+                idle();
+            }
+        } else {
+            lastError = (deg - getGyroYaw()) * -1;
+            while (opModeIsActive() && deg + 2.1 < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = (deg - getGyroYaw()) * -1;
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop  +  inte /* + deriv*/;
+
+                if (pow > 0)
+                    setMotors(0, newPow);
+                else
+                    setMotors(-newPow, 0);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("NewPow", newPow);
+                telemetry.update();
+                Log.i("Error", ""  + error);
+                Log.i("Prop", ""  + prop);
+                Log.i("Inte", ""  + inte);
+                Log.i("Total", ""  + newPow);
+                lastError = error;
+                resetStartTime();
+                idle();
+            }
+        }
+
+        stopMotors();
+
         delay(100);
         gyroError = getGyroYaw() + gyroError - deg;
     }
@@ -1008,23 +1096,31 @@ public abstract class MyOpMode extends LinearOpMode {
 
         delay(MOVEMENT_DELAY);
 
-        int redLeft = 0;
+        int redLeft;
 
-        redLeft += beaconL.red() - beaconR.red();
-        redLeft += beaconR.blue() - beaconL.blue();
+        for (int i = 0; i < 3; i++) {
 
-        if (redLeft > 0) {
-            buttonPusher.setPosition(.45);
             delay(100);
-            buttonPusher.setPosition(BUTTONP_LEFT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
-        } else {
-            buttonPusher.setPosition(.55);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_RIGHT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            if (beaconL.blue() < 3 && beaconR.blue() < 3)
+                break;
+
+            redLeft = 0;
+            redLeft += beaconL.red() - beaconR.red();
+            redLeft += beaconR.blue() - beaconL.blue();
+
+            if (redLeft > 0) {
+                buttonPusher.setPosition(BUTTONP_CENTER - .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_LEFT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            } else {
+                buttonPusher.setPosition(BUTTONP_CENTER + .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_RIGHT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            }
 
         }
     }
@@ -1036,25 +1132,32 @@ public abstract class MyOpMode extends LinearOpMode {
 
         delay(MOVEMENT_DELAY);
 
-        int blueLeft = 0;
+        int blueLeft;
 
+        for (int i = 0; i < 3; i++) {
 
-        blueLeft += beaconL.blue() - beaconR.blue();
-        blueLeft += beaconR.red() - beaconL.red();
-
-        if (blueLeft > 0) {
-            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
-            buttonPusher.setPosition(BUTTONP_LEFT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            if (beaconL.red() < 3 && beaconR.red() < 3)
+                break;
 
-        } else {
-            buttonPusher.setPosition(BUTTONP_CENTER + .03);
-            delay(100);
-            buttonPusher.setPosition(BUTTONP_RIGHT);
-            delay(800);
-            buttonPusher.setPosition(BUTTONP_CENTER);
+            blueLeft = 0;
+            blueLeft += beaconL.blue() - beaconR.blue();
+            blueLeft += beaconR.red() - beaconL.red();
+
+            if (blueLeft > 0) {
+                buttonPusher.setPosition(BUTTONP_CENTER - .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_LEFT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+
+            } else {
+                buttonPusher.setPosition(BUTTONP_CENTER + .03);
+                delay(100);
+                buttonPusher.setPosition(BUTTONP_RIGHT);
+                delay(800);
+                buttonPusher.setPosition(BUTTONP_CENTER);
+            }
         }
     }
 
@@ -1163,7 +1266,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(-.15, -.15, 0, 3000);
+                    untilWhiteAlign(-.15, -.15, 0, 2300);
                     moveTo(.2, 100, .6, 1.5);
                     fail = true;
                     break;
@@ -1184,7 +1287,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 0, 3000);
+                    untilWhiteAlign(.15, .15, 0, 2300);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;
@@ -1302,6 +1405,73 @@ public abstract class MyOpMode extends LinearOpMode {
 
         stopMotors();
     }
+    public void moveToSlow(double pow, double deg) throws InterruptedException {
+        moveTo(pow, deg, .6);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold) throws InterruptedException {
+        moveToSlow(pow, deg, threshold, 2.2);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold, double red) throws InterruptedException {
+        moveToSlow(pow, deg, threshold, red, 15000, true);
+    }
+
+    public void moveToSlow(double pow, double deg, double threshold, double red, int tim, boolean stop) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        ElapsedTime time = new ElapsedTime();
+
+
+        resetGyro();
+        resetEncoders();
+        delay(MOVEMENT_DELAY);
+
+        time.reset();
+
+        if (pow > 0) {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+                double power = (((pow-.2)*((deg - getEncoderAverage())/deg))+.2);
+                if (getGyroYaw() + gyroError > threshold)
+                    setMotors(power / red, power);
+                else if (getGyroYaw() + gyroError < -threshold)
+                    setMotors(power, power / red);
+                else
+                    setMotors(power, power);
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Power", power);
+                telemetry.addData("Encoder", getEncoderAverage());
+                telemetry.update();
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
+            }
+        } else {
+            while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
+                double power = (((pow+.2)*((deg - getEncoderAverage())/deg))-.2);
+                if (getGyroYaw() + gyroError > threshold)
+                    setMotors(power, power / red);
+                else if (getGyroYaw() + gyroError < -threshold)
+                    setMotors(power / red, power);
+                else
+                    setMotors(power, power);
+
+                telemetry.addData("Gyro", getGyroYaw());
+                telemetry.addData("Gyro Error", gyroError);
+                telemetry.addData("Power", power);
+                telemetry.addData("Encoder", getEncoderAverage());
+                telemetry.update();
+                Log.w("Gyro", "" + getGyroYaw());
+                idle();
+            }
+        }
+        if (stop)
+            stopMotors();
+
+        gyroError = getGyroYaw() + gyroError;
+    }
+
+
 }
-
-

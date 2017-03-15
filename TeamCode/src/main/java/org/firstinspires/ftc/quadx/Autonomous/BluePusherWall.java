@@ -21,7 +21,9 @@ public class BluePusherWall extends MyOpMode {
         resetGyro();
 
         int delay = 0;
-        double flyPow = .625;
+        double flyPow = .633;
+        int block = 0;
+        String blockStat = "";
 
         while (!opModeIsActive()) {
 
@@ -34,19 +36,44 @@ public class BluePusherWall extends MyOpMode {
                 delay(250);
             }
 
+            if(gamepad1.a) {
+                block = 0;
+            }
+            if(gamepad1.b) {
+                block = 1;
+            }
+            if(gamepad1.x) {
+                block = 2;
+            }
+
+            if(block == 0){
+                blockStat = "center";
+            } else if(block == 1){
+                blockStat = "block";
+            } else if (block == 2){
+                blockStat = "ramp";
+            }
+
+
             telemetry.addData("Delay", delay);
             telemetry.addData("Gyro", getGyroYaw());
+            telemetry.addData("Block", blockStat);
             telemetry.update();
             idle();
         }
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        double encoderDis = 4600;
+        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
+            flyPow = .633;
+        }
 
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.7) {
-            encoderDis = 4565;
-            flyPow = .625;
+        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
+            flyPow = .638;
+        }
+
+        else {
+            flyPow = .645;
         }
 
         waitForStart();
@@ -59,24 +86,44 @@ public class BluePusherWall extends MyOpMode {
         delay(delay * 1000);
 
         flywheel.setPower(flyPow);
-        moveTo(.35, 1500, .6, 1.5);
+        manip.setPower(.3);
+        moveTo(.35, 1560, .6, 1.5);
+        delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurn(.55, 50);
-        moveTo(.35, encoderDis, 6, 1.5);
-        arcTurn(.5, -40);
-        untilWhiteAlign(.3, .17, 2000, 4500);
+        arcTurnPID(.3, 48, 2500);
+        moveToSlow(.35, 5490, 6, 1.5);
+        manip.setPower(0);
+        arcTurnPID(-.37, -34, 1800);
+        manip.setPower(.3);
+        resetGyro();
+        manip.setPower(0);
         if (!fail)
-            moveTo(-.2, 190, .6, 1.5);
+            untilWhiteAlign(.3, .16, 1420, 5200);
+            moveTo(-.2, 170, .6, 1.5);
         pressBlue();
-        untilWhiteAlign(-.3, -.15, 2300, 6200);
+        untilWhiteAlign(-.3, -.16, 1750, 6150);
         if (!fail)
-            moveTo(.2, 190, .6, 1.5);
+            moveTo(.2, 150, .6, 1.5);
         pressBlue();
-        arcTurn(.4, -90);
-        moveTo(.35, 2700, .6, 1.5);
-        arcTurn(.4, -80);
+        manip.setPower(.3);
+        if(block == 1){
+            arcTurnPID(.3, -60, 2500);
+            moveTo(.4,5100,.6,1.5);
+            manip.setPower(0);
+        } else if(block == 2){
+            arcTurnPID(.3, -90, 1500);
+            arcTurnPID(.3, -93, 1500);
+            moveToSlow(.35, 5500, 6, 1.5);
+            manip.setPower(0);
+        } else {
+            arcTurnPID(.3, -68, 3000);
+            moveTo(.35, 2700, .6, 1.5);
+            manip.setPower(0);
+            arcTurnPID(.4, -60, 2000);
+        }
+
 
         winch.setPower(1);
         hold.setPosition(HOLD_DISABLED);
