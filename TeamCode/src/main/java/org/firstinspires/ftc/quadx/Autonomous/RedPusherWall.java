@@ -113,12 +113,12 @@ public class RedPusherWall extends MyOpMode {
         pressRed();
         if(block == 1){
             manip.setPower(.3);
-            arcTurnPID(.3, -40, 2000);
-            moveTo(.3, 2000, .6, 1.5);
+            arcTurnPID(-.4, 60, 2000);
+            moveTo(.3, -5000, .6, 1.5);
             manip.setPower(0);
         } else if(block == 2){
-            arcTurnPID(.35, -26, 2000);
-            moveTo(.3, 2200, .6, 1.5);
+            arcTurnPID(.45, -30, 2000);
+            moveTo(.3, 2500, .6, 1.5, 4000, true);
             manip.setPower(0);
         }  else {
             moveTo(.4, -790);

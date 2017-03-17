@@ -21,7 +21,7 @@ public class BluePusherWall extends MyOpMode {
         resetGyro();
 
         int delay = 0;
-        double flyPow = .633;
+        double flyPow;
         int block = 0;
         String blockStat = "";
 
@@ -65,11 +65,11 @@ public class BluePusherWall extends MyOpMode {
         telemetry.update();
 
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
-            flyPow = .633;
+            flyPow = .636;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            flyPow = .638;
+            flyPow = .64;
         }
 
         else {
@@ -95,13 +95,13 @@ public class BluePusherWall extends MyOpMode {
         arcTurnPID(.3, 48, 2500);
         moveToSlow(.35, 5490, 6, 1.5);
         manip.setPower(0);
-        arcTurnPID(-.37, -34, 1800);
+        arcTurnPID(-.37, -35, 1800);
         manip.setPower(.3);
         resetGyro();
-        manip.setPower(0);
+        untilWhiteAlign(.3, .16, 1420, 5200);
         if (!fail)
-            untilWhiteAlign(.3, .16, 1420, 5200);
             moveTo(-.2, 170, .6, 1.5);
+        manip.setPower(0);
         pressBlue();
         untilWhiteAlign(-.3, -.16, 1750, 6150);
         if (!fail)
@@ -110,11 +110,11 @@ public class BluePusherWall extends MyOpMode {
         manip.setPower(.3);
         if(block == 1){
             arcTurnPID(.3, -60, 2500);
-            moveTo(.4,5100,.6,1.5);
+            moveTo(.4, 5350, .6, 1.5);
             manip.setPower(0);
         } else if(block == 2){
             arcTurnPID(.3, -90, 1500);
-            arcTurnPID(.3, -93, 1500);
+            arcTurnPID(.3, -85, 1500);
             moveToSlow(.35, 5500, 6, 1.5);
             manip.setPower(0);
         } else {

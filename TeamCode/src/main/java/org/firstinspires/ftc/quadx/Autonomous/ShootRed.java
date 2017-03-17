@@ -78,7 +78,7 @@ public class ShootRed extends MyOpMode {
 
 
         delay(delay * 1000);
-        arcTurnPID(.4, -32, 1800);
+        arcTurnPID(.4, -36, 1800);
         flywheel.setPower(flyPow);
         moveTo(.2, 3100, 8);
         delay(2000);
@@ -89,14 +89,16 @@ public class ShootRed extends MyOpMode {
 
         if (cap == 1) {
             gyroError = 0;
-            arcTurnPID(.35, 80, 1700);
-            moveTo(.3, 2900, .6, 1.5);
+            arcTurnPID(-.35, 80, 1700);
+            moveTo(.3, 5500, .6, 1.5);
             arcTurnPID(.35, -80, 1700);
-            moveTo(.3, 2600, .6, 1.5);
+            moveTo(.3, 3800, .6, 1.5);
+            arcTurnPID(.35, -45, 1700);
+            moveTo(.3, 2700, .6, 1.5);
         } else if (cap == 2){
             gyroError = 0;
             arcTurnPID(-.35, -63, 1700);
-            moveToSlow(.5, 8500, .6, 1.5);
+            moveToSlow(.5, 8050, .6, 1.5, 5000, true);
         } else {
             delay(ballDelay * 1000);
             moveTo(.4, 3600);
