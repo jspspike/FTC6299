@@ -1287,7 +1287,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 0, 2300);
+                    untilWhiteAlign(.15, .15, 60, 2300);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;

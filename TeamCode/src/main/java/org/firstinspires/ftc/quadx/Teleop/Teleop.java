@@ -209,7 +209,6 @@ public class Teleop extends MyOpMode {
             }
 
 
-
             if (gamepad2.left_bumper)
                 door.setPosition(.2);
             else if (gamepad2.right_bumper)
@@ -284,7 +283,9 @@ public class Teleop extends MyOpMode {
                 liftR.setPower(0);
             }
 
-            if (active)
+            if (gamepad2.back)
+                fly.setPower(-1);
+            else if (active)
                 fly.setPower(flyPow);
             else
                 fly.setPower(0);
