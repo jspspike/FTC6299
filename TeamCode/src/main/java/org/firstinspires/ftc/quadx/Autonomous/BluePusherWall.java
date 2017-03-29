@@ -65,15 +65,15 @@ public class BluePusherWall extends MyOpMode {
         telemetry.update();
 
         if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
-            flyPow = .636;
+            flyPow = .639;
         }
 
         else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
-            flyPow = .64;
+            flyPow = .643;
         }
 
         else {
-            flyPow = .645;
+            flyPow = .647;
         }
 
         waitForStart();
@@ -87,18 +87,18 @@ public class BluePusherWall extends MyOpMode {
 
         flywheel.setPower(flyPow);
         manip.setPower(.3);
-        moveTo(.35, 1560, .6, 1.5);
+        moveTo(.35, 1900, .6, 1.5);
         delay(500);
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(.3, 48, 2500);
-        moveToSlow(.35, 5490, 6, 1.5);
+        arcTurnPID(.3, 47.5, 2500);
+        moveToSlow(.35, 5400, 6, 1.5, 6000, true);
         manip.setPower(0);
-        arcTurnPID(-.37, -35, 1800);
+        arcTurnPID(-.37, -40, 1800);
         manip.setPower(.3);
         resetGyro();
-        untilWhiteAlign(.3, .16, 1420, 5200);
+        untilWhiteAlign(.35, .16, 2650, 5200);
         if (!fail)
             moveTo(-.2, 170, .6, 1.5);
         manip.setPower(0);

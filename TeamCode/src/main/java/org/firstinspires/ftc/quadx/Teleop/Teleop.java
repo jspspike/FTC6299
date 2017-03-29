@@ -250,18 +250,18 @@ public class Teleop extends MyOpMode {
                 boot.setPosition(bootDefault);
             }
 
-            if (gamepad2.left_stick_button && !holdArm && runtime.milliseconds() > 350) {
+            if (gamepad2.right_stick_button && !holdArm && runtime.milliseconds() > 350) {
                 holdArm = true;
                 runtime.reset();
             }
 
-            else if (gamepad2.left_stick_button && holdArm && runtime.milliseconds() > 350) {
+            else if (gamepad2.right_stick_button && holdArm && runtime.milliseconds() > 350) {
                 holdArm = false;
                 runtime.reset();
             }
 
             if (holdArm) {
-                liftArm.setPosition(.35);
+                liftArm.setPosition(.2);
             }
 
             else if (gamepad2.dpad_down) {
