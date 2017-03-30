@@ -95,7 +95,7 @@ public class BluePusherWall extends MyOpMode {
         arcTurnPID(.3, 47.5, 2500);
         moveToSlow(.35, 5400, 6, 1.5, 6000, true);
         manip.setPower(0);
-        arcTurnPID(-.37, -40, 1800);
+        arcTurnPID(-.37, -42, 1800);
         manip.setPower(.3);
         resetGyro();
         untilWhiteAlign(.35, .16, 2650, 5200);

@@ -98,7 +98,7 @@ public class RedPusherWall extends MyOpMode {
         arcTurnPID(-.35, 70, 1500);
         arcTurnPID(-.35, 68, 1500);
         moveToSlow(-.35, 5930, 6, 1.5, 6000, true);
-        arcTurnPID(.38, 32, 2000);
+        arcTurnPID(.38, 36, 2000);
         untilWhiteAlign(-.35, -.15, 1800, 6000);
         resetGyro();
         if (!fail)

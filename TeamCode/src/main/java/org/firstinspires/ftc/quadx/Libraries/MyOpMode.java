@@ -1205,7 +1205,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
-        untilWhiteAlign(pow, powWhite, deg, degFail, .7 , 7000);
+        untilWhiteAlign(pow, powWhite, deg, degFail, .85 , 7000);
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim) throws InterruptedException {
