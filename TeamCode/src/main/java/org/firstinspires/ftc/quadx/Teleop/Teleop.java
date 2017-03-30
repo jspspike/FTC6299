@@ -37,6 +37,7 @@ public class Teleop extends MyOpMode {
     double[] rpmVals = new double[POLL_RATE];
     double rpmAvg;
     boolean active = false;
+    boolean holdArm = false;
 
     boolean liftActive = false;
     int lessenPower = 0;
@@ -209,7 +210,6 @@ public class Teleop extends MyOpMode {
             }
 
 
-
             if (gamepad2.left_bumper)
                 door.setPosition(.2);
             else if (gamepad2.right_bumper)
@@ -250,7 +250,21 @@ public class Teleop extends MyOpMode {
                 boot.setPosition(bootDefault);
             }
 
-            if (gamepad2.dpad_down) {
+            if (gamepad2.right_stick_button && !holdArm && runtime.milliseconds() > 350) {
+                holdArm = true;
+                runtime.reset();
+            }
+
+            else if (gamepad2.right_stick_button && holdArm && runtime.milliseconds() > 350) {
+                holdArm = false;
+                runtime.reset();
+            }
+
+            if (holdArm) {
+                liftArm.setPosition(.2);
+            }
+
+            else if (gamepad2.dpad_down) {
                 liftArm.setPosition(1.0);
             }
             else {
@@ -284,7 +298,9 @@ public class Teleop extends MyOpMode {
                 liftR.setPower(0);
             }
 
-            if (active)
+            if (gamepad2.back)
+                fly.setPower(-1);
+            else if (active)
                 fly.setPower(flyPow);
             else
                 fly.setPower(0);

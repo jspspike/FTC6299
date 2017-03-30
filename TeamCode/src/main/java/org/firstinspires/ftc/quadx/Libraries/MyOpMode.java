@@ -30,7 +30,7 @@ public abstract class MyOpMode extends LinearOpMode {
     public static final double DOOR_CLOSED = .6;
     public static final double ARM_CLOSED =  0.0;
     public static final double BOOT_CLOSED = .2;
-    public static final double BOOT_HOLD = 0.59;
+    public static final double BOOT_HOLD = 0.615;
     public static final double HOLD_DISABLED = .8;
     public static final double HOLD_HOLD = .32;
 
@@ -1098,31 +1098,26 @@ public abstract class MyOpMode extends LinearOpMode {
 
         int redLeft;
 
-        for (int i = 0; i < 3; i++) {
+        redLeft = 0;
+        redLeft += beaconL.red() - beaconR.red();
+        redLeft += beaconR.blue() - beaconL.blue();
 
+        if (redLeft > 0) {
+            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
-            if (beaconL.blue() < 3 && beaconR.blue() < 3)
-                break;
-
-            redLeft = 0;
-            redLeft += beaconL.red() - beaconR.red();
-            redLeft += beaconR.blue() - beaconL.blue();
-
-            if (redLeft > 0) {
-                buttonPusher.setPosition(BUTTONP_CENTER - .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_LEFT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-            } else {
-                buttonPusher.setPosition(BUTTONP_CENTER + .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_RIGHT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-            }
-
+            buttonPusher.setPosition(BUTTONP_LEFT);
+            delay(800);
+            buttonPusher.setPosition(BUTTONP_CENTER);
+        } else {
+            buttonPusher.setPosition(BUTTONP_CENTER + .03);
+            delay(100);
+            buttonPusher.setPosition(BUTTONP_RIGHT);
+            delay(800);
+            buttonPusher.setPosition(BUTTONP_CENTER);
         }
+
+
+
     }
 
     public void pressBlue() throws InterruptedException {
@@ -1134,31 +1129,24 @@ public abstract class MyOpMode extends LinearOpMode {
 
         int blueLeft;
 
-        for (int i = 0; i < 3; i++) {
+        blueLeft = 0;
+        blueLeft += beaconL.blue() - beaconR.blue();
+        blueLeft += beaconR.red() - beaconL.red();
 
+        if (blueLeft > 0) {
+            buttonPusher.setPosition(BUTTONP_CENTER - .03);
             delay(100);
-            if (beaconL.red() < 3 && beaconR.red() < 3)
-                break;
-
-            blueLeft = 0;
-            blueLeft += beaconL.blue() - beaconR.blue();
-            blueLeft += beaconR.red() - beaconL.red();
-
-            if (blueLeft > 0) {
-                buttonPusher.setPosition(BUTTONP_CENTER - .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_LEFT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-
-            } else {
-                buttonPusher.setPosition(BUTTONP_CENTER + .03);
-                delay(100);
-                buttonPusher.setPosition(BUTTONP_RIGHT);
-                delay(800);
-                buttonPusher.setPosition(BUTTONP_CENTER);
-            }
+            buttonPusher.setPosition(BUTTONP_LEFT);
+            delay(800);
+            buttonPusher.setPosition(BUTTONP_CENTER);
+        } else {
+            buttonPusher.setPosition(BUTTONP_CENTER + .03);
+            delay(100);
+            buttonPusher.setPosition(BUTTONP_RIGHT);
+            delay(800);
+            buttonPusher.setPosition(BUTTONP_CENTER);
         }
+
     }
 
 
@@ -1217,7 +1205,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
-        untilWhiteAlign(pow, powWhite, deg, degFail, .6, 7000);
+        untilWhiteAlign(pow, powWhite, deg, degFail, .85 , 7000);
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim) throws InterruptedException {
@@ -1235,6 +1223,8 @@ public abstract class MyOpMode extends LinearOpMode {
 
         ElapsedTime time = new ElapsedTime();
         time.reset();
+
+
 
         if (pow > 0) {
             while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
@@ -1287,7 +1277,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 0, 2300);
+                    untilWhiteAlign(.15, .15, 60, 2300);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;
