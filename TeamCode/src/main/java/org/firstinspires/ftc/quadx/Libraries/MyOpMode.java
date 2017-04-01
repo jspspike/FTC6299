@@ -359,37 +359,6 @@ public abstract class MyOpMode extends LinearOpMode {
         stopMotors();
     }
 
-    public void turn(double pow, double deg) throws InterruptedException {
-        turn(pow, deg, 15000);
-    }
-
-    public void turn(double pow, double deg, int tim) throws InterruptedException {
-
-        if (!opModeIsActive())
-            return;
-
-        resetGyro();
-        delay(MOVEMENT_DELAY);
-
-        ElapsedTime time = new ElapsedTime();
-
-        time.reset();
-
-        if (deg > 0) {
-            while (deg > getGyroYaw() && time.milliseconds() < tim) {
-                setMotors(pow, -pow);
-                idle();
-            }
-        } else {
-            while (deg < getGyroYaw() && time.milliseconds() < tim) {
-                setMotors(-pow, pow);
-                idle();
-            }
-        }
-
-        stopMotors();
-    }
-
     public void moveToRange(double pow, double deg, int cm) throws InterruptedException {
         moveToRange(pow, deg, cm, 1.5);
     }
@@ -764,13 +733,14 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(newPow, 0);
                 else
                     setMotors(0, -newPow);
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("NewPow", newPow);
-                telemetry.update();
-                Log.i("Error", ""  + error);
-                Log.i("Prop", ""  + prop);
-                Log.i("Inte", ""  + inte);
-                Log.i("Total", ""  + newPow);
+
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("NewPow", newPow);
+//                telemetry.update();
+//                Log.i("Error", "" + error);
+//                Log.i("Prop", "" + prop);
+//                Log.i("Inte", "" + inte);
+//                Log.i("Total", "" + newPow);
                 resetStartTime();
                 lastError = error;
                 idle();
@@ -791,13 +761,188 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(0, newPow);
                 else
                     setMotors(-newPow, 0);
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("NewPow", newPow);
-                telemetry.update();
-                Log.i("Error", ""  + error);
-                Log.i("Prop", ""  + prop);
-                Log.i("Inte", ""  + inte);
-                Log.i("Total", ""  + newPow);
+
+//            telemetry.addData("Gyro", getGyroYaw());
+//            telemetry.addData("NewPow", newPow);
+//            telemetry.update();
+//            Log.i("Error", ""  + error);
+//            Log.i("Prop", ""  + prop);
+//            Log.i("Inte", ""  + inte);
+//            Log.i("Total", ""  + newPow);
+                lastError = error;
+                resetStartTime();
+                idle();
+            }
+        }
+
+        stopMotors();
+
+        delay(100);
+        gyroError = getGyroYaw() + gyroError - deg;
+    }
+
+    public void arcTurnPIDHy(double pow, double deg) throws InterruptedException {
+        arcTurnPIDHy(pow, deg, 6000);
+    }
+
+    public void arcTurnPIDHy(double pow, double deg, int tim) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+        double prop;
+        double inte = 0;
+        double deriv;
+        double error;
+        double lastError;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        delay(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg + gyroError > 0) {
+            lastError = deg - getGyroYaw();
+            while (opModeIsActive() && deg - 2.1 > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = deg - getGyroYaw();
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop + inte /* +  deriv*/;
+
+
+                if (pow > 0)
+                    setMotors(newPow, newPow / -1.8);
+                else
+                    setMotors(newPow / 1.8, -newPow);
+
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("NewPow", newPow);
+//                telemetry.update();
+//                Log.i("Error", "" + error);
+//                Log.i("Prop", "" + prop);
+//                Log.i("Inte", "" + inte);
+//                Log.i("Total", "" + newPow);
+                resetStartTime();
+                lastError = error;
+                idle();
+            }
+        } else {
+            lastError = (deg - getGyroYaw()) * -1;
+            while (opModeIsActive() && deg + 2.1 < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = (deg - getGyroYaw()) * -1;
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop  +  inte /* + deriv*/;
+
+                if (pow > 0)
+                    setMotors(newPow / -1.8, newPow);
+                else
+                    setMotors(-newPow, newPow / 1.8);
+
+//            telemetry.addData("Gyro", getGyroYaw());
+//            telemetry.addData("NewPow", newPow);
+//            telemetry.update();
+//            Log.i("Error", ""  + error);
+//            Log.i("Prop", ""  + prop);
+//            Log.i("Inte", ""  + inte);
+//            Log.i("Total", ""  + newPow);
+                lastError = error;
+                resetStartTime();
+                idle();
+            }
+        }
+
+        stopMotors();
+
+        delay(100);
+        gyroError = getGyroYaw() + gyroError - deg;
+    }
+
+    public void turn(double pow, double deg) throws InterruptedException {
+        turn(pow, deg, 6000);
+    }
+
+    public void turn(double pow, double deg, int tim) throws InterruptedException {
+
+        if (!opModeIsActive())
+            return;
+
+        double newPow;
+        double prop;
+        double inte = 0;
+        double deriv;
+        double error;
+        double lastError;
+
+        ElapsedTime time = new ElapsedTime();
+
+        resetGyro();
+        delay(MOVEMENT_DELAY);
+        time.reset();
+
+        if (deg + gyroError > 0) {
+            lastError = deg - getGyroYaw();
+            while (opModeIsActive() && deg - 2.1 > getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = deg - getGyroYaw();
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop + inte /* +  deriv*/;
+
+
+                if (pow > 0)
+                    setMotors(newPow, 0);
+                else
+                    setMotors(0, -newPow);
+
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("NewPow", newPow);
+//                telemetry.update();
+//                Log.i("Error", "" + error);
+//                Log.i("Prop", "" + prop);
+//                Log.i("Inte", "" + inte);
+//                Log.i("Total", "" + newPow);
+                resetStartTime();
+                lastError = error;
+                idle();
+            }
+        } else {
+            lastError = (deg - getGyroYaw()) * -1;
+            while (opModeIsActive() && deg + 2.1 < getGyroYaw() + gyroError && time.milliseconds() < tim) {
+
+                error = (deg - getGyroYaw()) * -1;
+
+                prop = (error * Math.abs(pow)) * .02455 + .015;
+                inte = inte + (getRuntime() * error * .000013);
+                deriv = ((error - lastError) / getRuntime()) * .000006;
+
+                newPow = prop  +  inte /* + deriv*/;
+
+                if (pow > 0)
+                    setMotors(0, newPow);
+                else
+                    setMotors(-newPow, 0);
+
+//            telemetry.addData("Gyro", getGyroYaw());
+//            telemetry.addData("NewPow", newPow);
+//            telemetry.update();
+//            Log.i("Error", ""  + error);
+//            Log.i("Prop", ""  + prop);
+//            Log.i("Inte", ""  + inte);
+//            Log.i("Total", ""  + newPow);
                 lastError = error;
                 resetStartTime();
                 idle();
@@ -1205,7 +1350,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
-        untilWhiteAlign(pow, powWhite, deg, degFail, .85 , 7000);
+        untilWhiteAlign(pow, powWhite, deg, degFail, .65 , 7000);
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim) throws InterruptedException {
@@ -1261,14 +1406,14 @@ public abstract class MyOpMode extends LinearOpMode {
                     fail = true;
                     break;
                 }
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("FloorL", floorL.getRawLightDetected());
-                telemetry.addData("FloorR", floorR.getRawLightDetected());
-                telemetry.addData("Encoder", getEncoderAverage());
-                Log.w("FloorL", "" + floorL.getRawLightDetected());
-                Log.w("FloorR", "" + floorR.getRawLightDetected());
-                telemetry.update();
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("FloorL", floorL.getRawLightDetected());
+//                telemetry.addData("FloorR", floorR.getRawLightDetected());
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                Log.w("FloorL", "" + floorL.getRawLightDetected());
+//                Log.w("FloorR", "" + floorR.getRawLightDetected());
+//                telemetry.update();
                 idle();
             }
         } else {
@@ -1283,14 +1428,14 @@ public abstract class MyOpMode extends LinearOpMode {
                     break;
                 }
 
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("FloorL", floorL.getRawLightDetected());
-                telemetry.addData("FloorR", floorR.getRawLightDetected());
-                telemetry.addData("Encoder", getEncoderAverage());
-                Log.w("FloorL", "" + floorL.getRawLightDetected());
-                Log.w("FloorR", "" + floorR.getRawLightDetected());
-                telemetry.update();
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("FloorL", floorL.getRawLightDetected());
+//                telemetry.addData("FloorR", floorR.getRawLightDetected());
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                Log.w("FloorL", "" + floorL.getRawLightDetected());
+//                Log.w("FloorR", "" + floorR.getRawLightDetected());
+//                telemetry.update();
                 idle();
             }
         }
