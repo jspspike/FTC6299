@@ -92,7 +92,7 @@ public class BluePusherWall extends MyOpMode {
         door.setPosition(DOOR_OPEN);
         delay(2000);
         flywheel.setPower(0);
-        arcTurnPID(.3, 52, 2500);
+        arcTurnPID(.3, 53, 2500);
         moveToSlow(.35, 5200, 6, 1.5, 6000, true);
         manip.setPower(0);
         arcTurnPID(-.37, -45.5, 1800);

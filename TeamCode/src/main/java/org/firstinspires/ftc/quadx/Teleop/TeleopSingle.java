@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.quadx.Libraries.MyOpMode;
 
-@TeleOp(name="TeleOp", group="Teleop")
+@TeleOp(name="TeleOp Single", group="Teleop")
 
-public class Teleop extends MyOpMode {
+public class TeleopSingle extends MyOpMode {
 
     DcMotor fly;
     DcMotor manip;
@@ -107,31 +107,6 @@ public class Teleop extends MyOpMode {
             gamepad1_left = gamepad1.left_stick_y;
             gamepad1_right = gamepad1.right_stick_y;
 
-            if (lessenPower == 2) {
-                gamepad1_left *= .25;
-                gamepad1_right *= .25;
-            }
-
-            else if (lessenPower == 1) {
-                gamepad1_left *= .55;
-                gamepad1_right *= .55;
-            }
-
-            if (liftActive) {
-                gamepad1_left *= -1;
-                gamepad1_right *= -1;
-            }
-
-            if (wallPower && liftActive) {
-                gamepad1_left *= .4;
-                gamepad1_right *= .7;
-            }
-
-            else if (wallPower) {
-                gamepad1_left *= .7;
-                gamepad1_right *= .4;
-            }
-
             if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && liftActive) {
                 motorBL.setPower(gamepad1_right);
                 motorBR.setPower(-gamepad1_left);
@@ -153,111 +128,27 @@ public class Teleop extends MyOpMode {
                 motorFR.setPower(0);
             }
 
-            if (gamepad1.x && (lessenPower == 0 || lessenPower == 1) && runtime.milliseconds() > 350) {
-                lessenPower = 2;
-                runtime.reset();
-            }
-
-            else if (gamepad1.b && (lessenPower == 0 || lessenPower == 2) && runtime.milliseconds() > 350) {
-                lessenPower = 1;
-                runtime.reset();
-            }
-
-            else if ((gamepad1.x  || gamepad1.b) && (lessenPower == 1 || lessenPower == 2) && runtime.milliseconds() > 350) {
-                lessenPower= 0;
-                runtime.reset();
-            }
-
-            if (gamepad1.a && !liftActive && runtime.milliseconds() > 350) {
-                liftActive = true;
-                runtime.reset();
-            } else if (gamepad1.a && liftActive && runtime.milliseconds() > 350) {
-                liftActive = false;
-                runtime.reset();
-            }
-
-            if (gamepad1.b && !liftActive && runtime.milliseconds() > 350) {
-                liftActive = true;
-                runtime.reset();
-            } else if (gamepad1.b && liftActive && runtime.milliseconds() > 350) {
-                liftActive = false;
-                runtime.reset();
-            }
-
-            if (gamepad1.dpad_left) {
-                wallPower = false;
-            }
-
-            else if (gamepad1.dpad_right) {
-                wallPower = true;
-            }
-
-            if (gamepad1.y) {
-                liftActive = false;
-                lessenPower = 0;
-                wallPower = false;
-            }
-
-            if (gamepad2.right_trigger > .5) {
-                winch.setPower(-1.0);
-                delay(400);
-                hold.setPosition(HOLD_HOLD);
-            } else if (gamepad2.left_trigger >.5) {
-                winch.setPower(1.0);
-                hold.setPosition(HOLD_DISABLED);
-            } else {
-                winch.setPower(0.0);
-            }
-
-
-            if (gamepad2.left_bumper)
+            if (gamepad1.left_bumper)
                 door.setPosition(.2);
-            else if (gamepad2.right_bumper)
+            else if (gamepad1.right_bumper)
                 door.setPosition(.6);
 
-
-            if (gamepad2.a) {
-                bootDefault = BOOT_CLOSED;
-            }
-
-            else if (gamepad2.x) {
-                bootDefault = BOOT_HOLD;
-            }
-
-            if (gamepad2.b) {
+            if (gamepad1.b) {
                 active = true;
             }
 
-            else if (gamepad2.y) {
+            else if (gamepad1.y) {
                 active = false;
             }
 
-            if (gamepad2.dpad_left) {
+            if (gamepad1.dpad_left) {
                 flyPow -= .01;
                 Thread.sleep(150);
             }
 
-            else if (gamepad2.dpad_right) {
+            else if (gamepad1.dpad_right) {
                 flyPow += .01;
                 Thread.sleep(150);
-            }
-
-            if (gamepad2.dpad_up) {
-                boot.setPosition(1.0);
-            }
-
-            else {
-                boot.setPosition(bootDefault);
-            }
-
-            if (gamepad2.right_stick_button && !holdArm && runtime.milliseconds() > 350) {
-                holdArm = true;
-                runtime.reset();
-            }
-
-            else if (gamepad2.right_stick_button && holdArm && runtime.milliseconds() > 350) {
-                holdArm = false;
-                runtime.reset();
             }
 
             if (holdArm) {
@@ -279,23 +170,6 @@ public class Teleop extends MyOpMode {
             }
             else {
                 manip.setPower(0);
-            }
-
-            if (gamepad1.left_bumper)
-                buttonP.setPosition(BUTTONP_LEFT);
-            else if (gamepad1.right_bumper)
-                buttonP.setPosition(BUTTONP_RIGHT);
-            else
-                buttonP.setPosition(BUTTONP_CENTER);
-
-            if (Math.abs(gamepad2.left_stick_y) > .05) {
-                liftL.setPower(-gamepad2.left_stick_y);
-                liftR.setPower(-gamepad2.left_stick_y);
-            }
-
-            else {
-                liftL.setPower(0);
-                liftR.setPower(0);
             }
 
             if (gamepad2.back)
