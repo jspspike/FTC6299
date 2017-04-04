@@ -83,10 +83,10 @@ public class ShootRed extends MyOpMode {
         moveTo(.2, 3100, 8);
         delay(2000);
         door.setPosition(DOOR_OPEN);
-        delay(4000);
+        delay(2500);
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
-
+        delay(ballDelay * 1000);
         if (cap == 1) {
             gyroError = 0;
             arcTurnPID(-.35, 80, 1700);
@@ -100,7 +100,6 @@ public class ShootRed extends MyOpMode {
             arcTurnPID(-.35, -63, 1700);
             moveToSlow(.5, 8050, .6, 1.5, 5000, true);
         } else {
-            delay(ballDelay * 1000);
             moveTo(.4, 3600);
         }
     }
