@@ -96,9 +96,9 @@ public class RedPusherWall extends MyOpMode {
         delay(2000);
         flywheel.setPower(0);
         arcTurnPID(-.35, 70, 1500);
-        arcTurnPID(-.35, 67.5, 1500);
-        moveToSlow(-.35, 5820, 6, 1.5, 6000, true);
-        arcTurnPID(.38, 35.5, 2000);
+        arcTurnPID(-.35, 66.5, 1500);
+        moveToSlow(-.35, 6070, 6, 1.5, 6000, true);
+        arcTurnPID(.38, 34.5, 2000);
         untilWhiteAlign(-.35, -.15, 1800, 6000, .8, 7000);
         resetGyro();
         if (!fail)
@@ -108,7 +108,7 @@ public class RedPusherWall extends MyOpMode {
         untilWhiteAlign(.3, .15, 2300, 6100);
         manip.setPower(0);
         if (!fail)
-            moveTo(-.2, 170, .6, 1.5);
+            moveTo(.2, -170, .6, 1.5);
         pressRed();
         if(block == 1){
             manip.setPower(.3);
