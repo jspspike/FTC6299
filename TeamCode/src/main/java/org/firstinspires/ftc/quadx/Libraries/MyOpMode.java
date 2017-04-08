@@ -461,11 +461,11 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(pow, pow / red);
                 else
                     setMotors(pow, pow);
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("Encoder", getEncoderAverage());
-                telemetry.update();
-                Log.w("Gyro", "" + getGyroYaw());
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                telemetry.update();
+//                Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
         } else {
@@ -477,11 +477,11 @@ public abstract class MyOpMode extends LinearOpMode {
                 else
                     setMotors(-pow, -pow);
 
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("Encoder", getEncoderAverage());
-                telemetry.update();
-                Log.w("Gyro", "" + getGyroYaw());
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                telemetry.update();
+//                Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
         }
@@ -1350,10 +1350,10 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail) throws InterruptedException {
-        untilWhiteAlign(pow, powWhite, deg, degFail, .65 , 7000);
+        untilWhiteAlign(pow, powWhite, deg, degFail, .65 , 7000, true);
     }
 
-    public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim) throws InterruptedException {
+    public void untilWhiteAlign(double pow, double powWhite, int deg, int degFail, double reduction, int tim, boolean failSafe) throws InterruptedException {
 
         if (!opModeIsActive())
             return;
@@ -1369,12 +1369,21 @@ public abstract class MyOpMode extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
         time.reset();
 
-
+        double prevEncoder = 0;
+        ElapsedTime time2 = new ElapsedTime();
+        time2.reset();
 
         if (pow > 0) {
             while (opModeIsActive() && deg > getEncoderAverage() && time.milliseconds() < tim) {
-
                 setMotors(pow, pow * reduction);
+                if (time2.seconds() > .25) {
+                    if (getEncoderAverage() - prevEncoder < 100 && failSafe) {
+                        arcTurnPID(-.65, -20, 1000);
+                        tim += 1;
+                    }
+                    time2.reset();
+                    prevEncoder = getEncoderAverage();
+                }
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("Gyro Error", gyroError);
                 telemetry.addData("Encoder", getEncoderAverage());
@@ -1384,8 +1393,15 @@ public abstract class MyOpMode extends LinearOpMode {
             }
         } else {
             while (opModeIsActive() && Math.abs(deg) > getEncoderAverage() && time.milliseconds() < tim) {
-
                 setMotors(pow, pow * reduction);
+                if (time2.seconds() > .25) {
+                    if (getEncoderAverage() - prevEncoder < 100 && failSafe) {
+                        arcTurnPID(.65, 20, 1000);
+                        tim += 1;
+                    }
+                    time2.reset();
+                    prevEncoder = getEncoderAverage();
+                }
                 telemetry.addData("Gyro", getGyroYaw());
                 telemetry.addData("Gyro Error", gyroError);
                 telemetry.addData("Encoder", getEncoderAverage());
@@ -1401,10 +1417,19 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(-.15, -.15, 0, 2300);
+                    untilWhiteAlign(-.15, -.15, 0, 2300, .65, 3000, false);
                     moveTo(.2, 100, .6, 1.5);
                     fail = true;
                     break;
+                }
+
+                if (time2.seconds() > .25) {
+                    if (getEncoderAverage() - prevEncoder < 100 && failSafe) {
+                        arcTurnPID(-.65, -15, 1000);
+                        tim += 1;
+                    }
+                    time2.reset();
+                    prevEncoder = getEncoderAverage();
                 }
 //                telemetry.addData("Gyro", getGyroYaw());
 //                telemetry.addData("Gyro Error", gyroError);
@@ -1422,10 +1447,19 @@ public abstract class MyOpMode extends LinearOpMode {
                 setMotors(powWhite, powWhite * reduction);
 
                 if (Math.abs(degFail) < getEncoderAverage()) {
-                    untilWhiteAlign(.15, .15, 60, 2300);
+                    untilWhiteAlign(.15, .15, 60, 2300, .65, 3000, false);
                     moveTo(.2, -150, .6, 1.5);
                     fail = true;
                     break;
+                }
+
+                if (time2.seconds() > .25) {
+                    if (getEncoderAverage() - prevEncoder < 100  && failSafe) {
+                        arcTurnPID(.65, 15, 1000);
+                        tim += 1;
+                    }
+                    time2.reset();
+                    prevEncoder = getEncoderAverage();
                 }
 
 //                telemetry.addData("Gyro", getGyroYaw());
@@ -1575,12 +1609,12 @@ public abstract class MyOpMode extends LinearOpMode {
                     setMotors(power, power / red);
                 else
                     setMotors(power, power);
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("Power", power);
-                telemetry.addData("Encoder", getEncoderAverage());
-                telemetry.update();
-                Log.w("Gyro", "" + getGyroYaw());
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("Power", power);
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                telemetry.update();
+//                Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
         } else {
@@ -1593,12 +1627,12 @@ public abstract class MyOpMode extends LinearOpMode {
                 else
                     setMotors(power, power);
 
-                telemetry.addData("Gyro", getGyroYaw());
-                telemetry.addData("Gyro Error", gyroError);
-                telemetry.addData("Power", power);
-                telemetry.addData("Encoder", getEncoderAverage());
-                telemetry.update();
-                Log.w("Gyro", "" + getGyroYaw());
+//                telemetry.addData("Gyro", getGyroYaw());
+//                telemetry.addData("Gyro Error", gyroError);
+//                telemetry.addData("Power", power);
+//                telemetry.addData("Encoder", getEncoderAverage());
+//                telemetry.update();
+//                Log.w("Gyro", "" + getGyroYaw());
                 idle();
             }
         }
