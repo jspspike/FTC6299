@@ -1426,7 +1426,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 if (time2.seconds() > .25) {
                     if (getEncoderAverage() - prevEncoder < 100 && failSafe) {
                         arcTurnPID(-.65, -15, 1000);
-                        tim += 1;
+                        tim += 1000;
                     }
                     time2.reset();
                     prevEncoder = getEncoderAverage();
@@ -1456,7 +1456,7 @@ public abstract class MyOpMode extends LinearOpMode {
                 if (time2.seconds() > .25) {
                     if (getEncoderAverage() - prevEncoder < 100  && failSafe) {
                         arcTurnPID(.65, 15, 1000);
-                        tim += 1;
+                        tim += 1000;
                     }
                     time2.reset();
                     prevEncoder = getEncoderAverage();

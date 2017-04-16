@@ -79,26 +79,27 @@ public class Shoot extends MyOpMode {
 
         arcTurnPID(.4, 35, 1300);
         flywheel.setPower(flyPow);
-        moveTo(.2, 2650, 8);
-        delay(2000);
+        moveTo(.2, 3000, 8);
+        delay(1000);
         door.setPosition(DOOR_OPEN);
-        delay(2500);
+        delay(2000);
         door.setPosition(DOOR_CLOSED);
         flywheel.setPower(0);
-        delay(ballDelay * 1000);
         if (cap == 1) {
             gyroError = 0;
             arcTurnPID(-.3, -80, 1700);
-            moveTo(.3, 7000, .6, 1.5);
-            arcTurnPID(.35, 80, 1700);
-            moveTo(.3, 3100, .6, 1.5);
-            arcTurnPID(.35, 37, 1700);
-            moveTo(.3, 2000, .6, 1.5);
+            moveTo(.3, 3550, .6, 1.5);
+            arcTurnPID(.35, 78, 1700);
+            moveTo(.3, 6800, .6, 1.5);
+            delay(ballDelay * 1000);
+            moveTo(.3, -2800, .6, 1.5);
         } else if (cap == 2) {
+            delay(ballDelay * 1000);
             gyroError = 0;
             arcTurnPID(.35, 63, 1700);
             moveToSlow(.5, 4500, .6, 1.5, 5000, true);
         } else {
+            delay(ballDelay * 1000);
             moveTo(.4, 3600);
         }
     }
