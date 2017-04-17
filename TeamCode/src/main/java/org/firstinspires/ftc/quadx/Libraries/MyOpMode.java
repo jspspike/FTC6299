@@ -215,7 +215,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public int encoderPow() {
-        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage();
 
         if (startingVoltage > 13.9) {
             return 4755;
@@ -232,7 +232,7 @@ public abstract class MyOpMode extends LinearOpMode {
     }
 
     public double flyPow() {
-        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage();
 
         telemetry.addData("Voltage", startingVoltage);
 

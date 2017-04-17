@@ -66,11 +66,11 @@ public class RedPusherWall extends MyOpMode {
         telemetry.addData("Gyro", "Completed");
         telemetry.update();
 
-        if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.85) {
+        if (hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage() > 13.85) {
             flyPow = .615;
         }
 
-        else if (hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage() > 13.6) {
+        else if (hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage() > 13.6) {
             flyPow = .623;
         }
 

@@ -71,7 +71,7 @@ public class ShootRed extends MyOpMode {
         double flyPow = .64;
         waitForStart();
 
-        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+        double startingVoltage = hardwareMap.voltageSensor.get("Motor Controller 6").getVoltage();
 
 
         telemetry.addData("Volatage", startingVoltage);
