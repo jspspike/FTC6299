@@ -125,7 +125,7 @@ public abstract class MyOpMode extends LinearOpMode {
         telemetry.addData("Sensors", "Initializing...");
         telemetry.update();
 
-        beaconL.setI2cAddress(I2cAddr.create8bit(0x20));
+        beaconL.setI2cAddress(I2cAddr.create8bit(0x2c));
         beaconR.setI2cAddress(I2cAddr.create8bit(0x2a));
 
         floorL.enableLed(false);
